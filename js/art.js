@@ -14,7 +14,7 @@
     ui: (name) => img(`img/ui/${name}.webp`, name),
     favicon() {
       const l = document.createElement('link');
-      l.rel = 'icon'; l.href = 'img/logo.svg';
+      l.rel = 'icon'; l.href = 'img/logo.png';
       document.head.append(l);
     },
   };
