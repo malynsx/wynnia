@@ -61,8 +61,8 @@
       const rows = W.STATS.map(s => {
         const [c, l, x] = m.s[s.k];
         const set = (i) => (v) => { m.s[s.k][i] = v; W.clampMount(m); commit(); };
-        return el('div', { class: 'srow' },
-          el('span', { class: 'sname', style: { color: s.color }, ...{} }, W.statName(s, m.type)),
+        return el('div', { class: 'srow', style: { '--c': s.color } },
+          el('span', { class: 'sname' }, W.art.stat(s.k), W.statName(s, m.type)),
           el('div', { class: 'bar' }, el('i', { class: 'bmax', style: { width: Math.min(100, x / 0.6) + '%' } }), el('i', { class: 'blim', style: { width: Math.min(100, l / 0.6) + '%' } }),
             el('i', { class: 'bcur', style: { width: Math.min(100, c / 0.6) + '%', background: s.color } })),
           W.numIn(c, set(0), 1, 999), W.numIn(l, set(1), 1, 999), W.numIn(x, set(2), 1, 999));
@@ -76,9 +76,9 @@
             el('div', { class: 'fields' },
               el('input', { type: 'text', value: m.name, maxlength: 24, onchange: (e) => { m.name = e.target.value || 'Unnamed'; commit(); } }),
               el('div', { class: 'two' },
-                W.sel(Object.entries(W.TYPES).map(([k, v]) => [k, v.name]), m.type, set('type')),
-                W.sel(W.BODY_COLORS.map(c => c[0]), m.c1, set('c1')),
-                W.sel(W.MANE_COLORS.map(c => c[0]), m.c2, set('c2'))))),
+                W.sel(Object.entries(W.TYPES).map(([k, v]) => [k, v.name]), m.type, (v) => { m.type = v; m.c1 = W.COLORS[v].body[0][0]; m.c2 = W.COLORS[v].second[0][0]; commit(); }),
+                W.sel(W.COLORS[m.type].body.map(c => c[0]), m.c1, set('c1')),
+                W.sel(W.COLORS[m.type].second.map(c => c[0]), m.c2, set('c2'))))),
           head, ...rows,
           el('div', { class: 'legend' }, el('i', { class: 'k1' }), 'Level', el('i', { class: 'k2' }), 'Limit', el('i', { class: 'k3' }), 'Max'),
           el('div', { class: 'btns' },

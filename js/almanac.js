@@ -18,7 +18,7 @@
 
   W.pages.almanac = function (root) {
     const types = Object.entries(W.TYPES).map(([k, t]) => W.win(t.name,
-      el('div', { class: 'tcard' }, W.slot(W.art.mount(k, 'Bay', 'Night'), { big: true }),
+      el('div', { class: 'tcard' }, W.slot(W.art.mount(k, W.COLORS[k].body[0][0], W.COLORS[k].second[0][0]), { big: true }),
         el('div', {}, el('p', {}, t.trait), el('div', { class: 'kv' },
           kvr('Requires', `Combat Lv ${t.level} · ${t.quest}`), kvr('Enclosure', t.home), kvr('Buy / items', `24 Emerald Blocks · ${t.items}`), kvr('Find', t.where), kvr('Train on', t.training))))));
 
@@ -32,25 +32,31 @@
       el('p', { class: 'hint' }, 'Total limit points a single material gives. Some wiki entries are given as “x or y”; this uses the midpoint rounded.'));
 
     const colorBars = (arr) => el('div', { class: 'bars' }, arr.map(c => el('div', { class: 'brow' },
-      el('span', {}, el('i', { class: 'sw', style: { background: c[2] } }), c[0]), el('div', { class: 'cbar' }, el('i', { class: 'gold', style: { width: c[1] / 35 * 100 + '%' } }), el('b', {}, c[1] + '%')))));
-    const combos = [];
-    W.BODY_COLORS.forEach(b => W.MANE_COLORS.forEach(m => combos.push([b[0], m[0], b[1] * m[1] / 100])));
-    combos.sort((a, b) => a[2] - b[2]);
-    const colors = W.win('Colours', el('div', { class: 'cols2' }, el('div', {}, el('div', { class: 'cap left' }, 'Body'), colorBars(W.BODY_COLORS)), el('div', {}, el('div', { class: 'cap left' }, 'Mane / sides'), colorBars(W.MANE_COLORS))),
-      el('div', { class: 'cap left' }, 'Ten rarest looks (if the two rolls are independent)'),
-      el('table', { class: 'tbl' }, el('tbody', {}, combos.slice(0, 10).map(c => el('tr', {}, el('td', {}, el('i', { class: 'sw', style: { background: W.colorHex(c[0]) } }), c[0], ' / ', el('i', { class: 'sw', style: { background: W.colorHex(c[1]) } }), c[1]), el('td', {}, '1 in ' + W.num(100 / c[2], 0)))))),
-      el('p', { class: 'hint' }, 'Spawn rates are crowd-sourced (WynnToolZ) as listed on the wiki. Foals get a random mix of the parents’ colours.'));
+      el('span', {}, c[0]), el('div', { class: 'cbar' }, el('i', { class: 'gold', style: { width: c[1] / 35 * 100 + '%' } }), el('b', {}, c[1] + '%')))));
+    const colors = W.win('Colours', el('div', { id: 'colbox' }));
+    let ct = 'horse';
+    const drawColors = () => {
+      const C = W.COLORS[ct], combos = [];
+      C.body.forEach(b => C.second.forEach(m => combos.push([b[0], m[0], b[1] * m[1] / 100])));
+      combos.sort((a, b) => a[2] - b[2]);
+      colors.querySelector('#colbox').replaceChildren(
+        el('div', { class: 'toggles' }, Object.keys(W.COLORS).map(k => el('button', { class: 'tog' + (k === ct ? ' on' : ''), onclick: () => { ct = k; drawColors(); } }, W.TYPES[k].name))),
+        el('div', { class: 'cols2' }, el('div', {}, el('div', { class: 'cap left' }, C.labels[0]), colorBars(C.body)), el('div', {}, el('div', { class: 'cap left' }, C.labels[1]), colorBars(C.second))),
+        el('div', { class: 'cap left' }, 'Ten rarest looks (if the two rolls are independent)'),
+        el('div', { class: 'rare' }, combos.slice(0, 10).map(c => el('div', { class: 'rr' }, W.slot(W.art.mount(ct, c[0], c[1])), el('div', {}, el('b', {}, `${c[0]} · ${c[1]}`), el('small', {}, '1 in ' + W.num(100 / c[2], 0)))))),
+        el('p', { class: 'hint' }, 'Spawn rates are crowd-sourced (WynnToolZ) as listed on the wiki. Foals get a random mix of the parents’ colours.'));
+    };
 
-    const stats = W.win('The Eight Stats', el('div', { class: 'statlist' }, W.STATS.map(s => el('div', {}, el('b', { style: { color: s.color } }, s.name + (s.alt ? ` (${s.alt} on Wyverns)` : '')), el('span', {}, s.note)))),
+    const stats = W.win('The Eight Stats', el('div', { class: 'statlist' }, W.STATS.map(s => el('div', {}, el('b', {}, W.art.stat(s.k), el('span', {}, s.name + (s.alt ? ` (${s.alt} on Wyverns)` : ''))), el('span', {}, s.note)))),
       el('div', { class: 'kv' }, kvr('Level', 'Raised by powerups while riding, up to the limit.'), kvr('Limit', 'Raised by feeding materials, up to the max.'), kvr('Max', 'Hard cap. Only breeding raises it.'), kvr('Potential', 'Sum of the eight max values. A new mount is 240.')));
 
     const src = W.win('Sources & Honesty', el('ul', { class: 'rules' },
       el('li', {}, el('a', { href: 'https://wynncraft.wiki.gg/wiki/Mounts', target: '_blank', rel: 'noopener' }, 'Wynncraft Wiki — Mounts'), ' and ', el('a', { href: 'https://wynncraft.wiki.gg/wiki/Horses', target: '_blank', rel: 'noopener' }, 'Horses'), ' (both marked incomplete).'),
       el('li', {}, 'Community guide on the Wynncraft forums for averaging and tree-building advice.'),
       el('li', { class: 'unk' }, 'Unknown / estimated: the breeding bonus, the variance, and the 11-average feed time. These are adjustable and can be fitted in the Ledger.'),
-      el('li', {}, 'Fan-made, not affiliated with Wynncraft or Mojang. No game files are used; the sprites are drawn in code.')));
+      el('li', {}, 'Fan-made, not affiliated with Wynncraft or Mojang. Mount renders and icons are from the Wynncraft Wiki and belong to their respective owners.')));
 
-    root.replaceChildren(el('div', { class: 'cols' }, el('div', {}, ...types, stats), el('div', {}, feed, pts, colors, src)));
+    root.replaceChildren(el('div', { class: 'cols' }, el('div', {}, ...types, stats), el('div', {}, feed, pts, colors, src))); drawColors();
     function kvr(k, v) { return el('div', {}, el('span', {}, k), el('b', {}, v)); }
   };
 })(window.W);

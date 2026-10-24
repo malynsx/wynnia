@@ -13,7 +13,7 @@
       const rows = W.STATS.map(s => {
         const [c, l] = m.s[s.k], need = Math.max(0, Math.ceil((l - c) / cfg.gain - 1e-9));
         tp += need;
-        return el('tr', {}, el('td', { class: 'sname', style: { color: s.color } }, W.statName(s, m.type)), el('td', {}, `${c} → ${l}`), el('td', {}, need), el('td', {}, need * 2));
+        return el('tr', {}, el('td', { class: 'sname' }, W.art.stat(s.k), W.statName(s, m.type)), el('td', {}, `${c} → ${l}`), el('td', {}, need), el('td', {}, need * 2));
       });
       return W.win('Training Planner',
         el('div', { class: 'form' },
@@ -29,7 +29,7 @@
     }
     function pickups() {
       return W.win('Powerups', el('table', { class: 'tbl' }, el('thead', {}, el('tr', {}, el('th', {}, 'Pickup'), el('th', {}, 'Effect'))),
-        el('tbody', {}, W.POWERUPS.map(([n, e, k]) => { const st = W.STATS.find(s => s.k === k); return el('tr', {}, el('td', {}, el('span', { class: 'dot', style: { background: st ? st.color : '#4ad' } }), n), el('td', {}, e)); }))));
+        el('tbody', {}, W.POWERUPS.map(([n, e, k]) => { const st = W.STATS.find(s => s.k === k); return el('tr', {}, el('td', { class: 'sname' }, (k ? W.art.stat(k) : W.art.ui(n.includes('boot') ? 'speed-boost' : 'energy-boost')), n), el('td', {}, e)); }))));
     }
     function notes() {
       return W.win('Training notes', el('ul', { class: 'rules' },

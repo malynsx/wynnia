@@ -21,20 +21,23 @@ window.W = window.W || {};
     adasaur: { name: 'Adasaur', items: 'Harness · Ocarina', home: 'Aldwell Sanctuary, Fruma', level: 115, quest: 'Burning Bonds',     where: 'Aldwell  [-1230, 59, -729]',  trait: 'Quick acceleration and high step height, poor handling.', training: 'Detlas — it is flat.' },
   };
 
-  /* Crowd-sourced spawn rates from WynnToolZ, as listed on the wiki Horses page. */
-  W.BODY_COLORS = [
-    ['Bay', 34.9, '#7a4326'], ['Gray', 17.4, '#8a8a8a'], ['Black', 16.4, '#25232a'], ['Silver', 7.2, '#bcc0c8'],
-    ['Cherry', 6.6, '#8a2f28'], ['Chestnut', 6, '#a8592b'], ['Beige', 4.2, '#d9c498'], ['Tan', 3.7, '#bb9660'],
-    ['Gold', 2, '#dbac2c'], ['White', 1.6, '#f4f2ec'],
-  ];
-  W.MANE_COLORS = [
-    ['Argent', 20.9, '#d9dce1'], ['Night', 17.9, '#181a26'], ['Dawn', 16.5, '#eab9a0'], ['Reddish', 12.4, '#ad472d'],
-    ['Fawn', 9, '#c9a47b'], ['Dusk', 8.4, '#5f4d73'], ['Pale', 7.2, '#e8dec9'], ['Ash', 3.3, '#9c9c97'],
-    ['Sable', 2.4, '#30251d'], ['Rich', 2.1, '#5b2b15'],
-  ];
-  W.colorHex = (name) => {
-    const f = W.BODY_COLORS.concat(W.MANE_COLORS).find(c => c[0] === name);
-    return f ? f[2] : '#888';
+  /* Crowd-sourced spawn rates (WynnToolZ) as listed on the wiki Horses / Wyverns / Adasaurs pages. */
+  W.COLORS = {
+    horse: {
+      labels: ['Body', 'Mane & sides'],
+      body: [['Bay', 34.9], ['Gray', 17.4], ['Black', 16.4], ['Silver', 7.2], ['Cherry', 6.6], ['Chestnut', 6], ['Beige', 4.2], ['Tan', 3.7], ['Gold', 2], ['White', 1.6]],
+      second: [['Argent', 20.9], ['Night', 17.9], ['Dawn', 16.5], ['Reddish', 12.4], ['Fawn', 9], ['Dusk', 8.4], ['Pale', 7.2], ['Ash', 3.3], ['Sable', 2.4], ['Rich', 2.1]],
+    },
+    wyvern: {
+      labels: ['Scales', 'Horns & spikes'],
+      body: [['Azure', 28.5], ['Golden', 14.5], ['Infernal', 14.5], ['Ebony', 13.7], ['Cerulean', 8.6], ['Bronze', 6], ['Hollow', 6], ['Jade', 3.5], ['Fledge', 2.8], ['Mystic', 1.7]],
+      second: [['Kander', 16.8], ['Horn', 15.9], ['Cinder', 15.6], ['Tusk', 14.7], ['Rose', 9.4], ['Ivory', 9.3], ['Quartz', 6.5], ['Onyx', 6.2], ['Shell', 3], ['Sapphire', 2.6]],
+    },
+    adasaur: {
+      labels: ['Body', 'Accents'],
+      body: [['Cobalt', 22.3], ['Crimson', 20.6], ['Ash', 15.4], ['Dusk', 10], ['Amber', 8.7], ['Emerald', 7.6], ['Plum', 4.7], ['Albino', 4.7], ['Sable', 4.1], ['Dust', 2]],
+      second: [['Moss', 17.5], ['Bleach', 16.4], ['Tawny', 12.9], ['Sage', 12.7], ['Blood', 9.8], ['Raven', 9.2], ['Royal', 6.8], ['Misty', 6.4], ['Rose', 6.1], ['Maroon', 2]],
+    },
   };
 
   /* Feeding. */

@@ -1,10 +1,10 @@
 (function (W) {
   const TABS = [
-    ['stable', 'Stable', () => W.art.mount('horse', 'Chestnut', 'Argent')],
+    ['stable', 'Stable', () => W.art.ui('saddleicon')],
     ['feeder', 'Feeder', () => W.art.mat('grain')],
     ['lineage', 'Lineage', () => W.art.mat('gem')],
     ['cookbook', 'Cookbook', () => W.art.mat('meat')],
-    ['training', 'Training', () => W.art.mat('oil')],
+    ['training', 'Training', () => W.art.stat('speed')],
     ['almanac', 'Almanac', () => W.art.mat('paper')],
     ['ledger', 'Ledger', () => W.art.mat('plank')],
   ];

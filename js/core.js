@@ -5,7 +5,7 @@
     for (const [k, v] of Object.entries(attrs || {})) {
       if (v == null || v === false) continue;
       if (k === 'class') e.className = v;
-      else if (k === 'style' && typeof v === 'object') Object.assign(e.style, v);
+      else if (k === 'style' && typeof v === 'object') { for (const [a, b] of Object.entries(v)) a.startsWith('--') ? e.style.setProperty(a, b) : (e.style[a] = b); }
       else if (k === 'html') e.innerHTML = v;
       else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
       else e.setAttribute(k, v === true ? '' : v);
@@ -54,7 +54,7 @@
     W.STATKEYS.forEach(k => s[k] = [1, 10, 30]);
     return Object.assign({
       id: 'm' + Math.random().toString(36).slice(2, 9), name: 'New ' + W.TYPES[type].name,
-      type, c1: 'Bay', c2: 'Night', s,
+      type, c1: W.COLORS[type].body[0][0], c2: W.COLORS[type].second[0][0], s,
     }, over);
   };
   W.demoMounts = () => {
@@ -66,7 +66,7 @@
     return [
       mk('Biscuit', 'horse', 'Chestnut', 'Argent', [34,32,30,34,30,28,30,30], [34,32,30,34,30,28,30,30], [24,12,10,18,9,6,5,8]),
       mk('Ember', 'horse', 'Black', 'Reddish', [36,30,32,32,30,30,28,30], [36,30,32,32,30,30,28,30], [26,10,9,14,6,6,5,5]),
-      mk('Skyrunner', 'wyvern', 'Silver', 'Dusk', [20,20,26,22,20,20,22,20], [30,30,36,32,30,30,32,30], [10,10,26,12,8,8,10,5]),
+      mk('Skyrunner', 'wyvern', 'Cerulean', 'Ivory', [20,20,26,22,20,20,22,20], [30,30,36,32,30,30,32,30], [10,10,26,12,8,8,10,5]),
     ];
   };
   W.state = { mounts: [], settings: W.defaultSettings(), ledger: [], feeder: { a: null, b: null }, selected: null };
@@ -165,13 +165,14 @@
   };
   W.mountSlot = (m, opts = {}) => {
     if (!m) return W.slot(null, opts);
-    return W.slot(W.art.mount(m.type, m.c1, m.c2), Object.assign({ count: W.potential(m), tip: () => W.mountTip(m) }, opts));
-  };
-  W.win = (title, ...body) => el('section', { class: 'win' }, el('h2', {}, title), ...body);
-  W.sel = (opts, val, on) => {
-    const s = el('select', { onchange: (e) => on(e.target.value) }, opts.map(o => el('option', { value: o[0] ?? o, selected: (o[0] ?? o) === val }, o[1] ?? o)));
+    const s = W.slot(W.art.mount(m.type, m.c1, m.c2), Object.assign({ count: W.potential(m), tip: () => W.mountTip(m) }, opts));
+    s.style.setProperty('--glow', W.rank(W.potential(m)).color);
+    s.classList.add('glow');
     return s;
   };
+  W.win = (title, ...body) => el('section', { class: 'win' }, el('h2', {}, title), ...body);
+  W.sel = (opts, val, on) => el('select', { onchange: (e) => on(e.target.value) },
+    opts.map(o => { const [v, t] = Array.isArray(o) ? o : [o, o]; return el('option', { value: v, selected: String(v) === String(val) }, t); }));
   W.numIn = (val, on, min = 0, max = 9999, step = 1) =>
     el('input', { type: 'number', value: val, min, max, step, onchange: (e) => on(+e.target.value) });
 

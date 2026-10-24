@@ -77,7 +77,7 @@
       if (W.STATKEYS.some(k => a.s[k][1] < a.s[k][2] || b.s[k][1] < b.s[k][2])) warns.push('A parent has limit below its max. Only limits are inherited, so feed them to max first.');
       const rows = W.STATS.map(s => {
         const k = s.k, avg = (a.s[k][1] + b.s[k][1]) / 2;
-        return el('tr', {}, el('td', { class: 'sname', style: { color: s.color } }, W.statName(s, a.type)), el('td', {}, a.s[k][1]), el('td', {}, b.s[k][1]), el('td', {}, W.num(avg)),
+        return el('tr', {}, el('td', { class: 'sname' }, W.art.stat(s.k), W.statName(s, a.type)), el('td', {}, a.s[k][1]), el('td', {}, b.s[k][1]), el('td', {}, W.num(avg)),
           el('td', {}, el('b', {}, W.num(avg + set.bonus)), ` ± ${W.num(set.sd)}`), el('td', {}, Math.max(a.s[k][0], b.s[k][0])));
       });
       return W.win('Prediction',

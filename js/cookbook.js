@@ -24,7 +24,7 @@
         el('div', { class: 'cap left' }, 'Materials you have'),
         toggles(W.MATS, 'cats', o => o.name, o => W.art.mat(o.k)),
         el('div', { class: 'cap left' }, 'Stats to improve'),
-        toggles(W.STATS, 'only', o => W.statName(o, m.type)));
+        toggles(W.STATS, 'only', o => W.statName(o, m.type), o => W.art.stat(o.k)));
     }
 
     function plan() {
@@ -38,7 +38,7 @@
         W.slot(W.art.mat(k), { count: c, tip: `${c} × level ${cfg.level} ${W.MATS.find(x => x.k === k).name}` })));
       const rows = r.steps.map((s, i) => el('tr', {},
         el('td', {}, i + 1), el('td', {}, el('span', { class: 'ico' }, W.art.mat(s.cat.k)), s.cat.name),
-        el('td', {}, Object.entries(s.split).map(([k, p]) => { const st = W.STATS.find(x => x.k === k); return el('span', { class: 'chip', style: { color: st.color } }, `+${p} ${W.statName(st, m.type).slice(0, 4)}`); })),
+        el('td', {}, Object.entries(s.split).map(([k, p]) => { const st = W.STATS.find(x => x.k === k); return el('span', { class: 'chip' }, W.art.stat(k), `+${p} ${W.statName(st, m.type)}`); })),
         el('td', {}, W.num(s.avgAfter, 2)), el('td', {}, W.fmtDur(s.mins))));
       const wasted = r.steps.reduce((a, s) => a + W.matPoints(cfg.level) - s.gain, 0);
       return W.win('Plan',
@@ -57,7 +57,7 @@
       const rows = W.MATS.map(c => {
         const sp = W.splitMat(c, cfg.level);
         return el('div', { class: 'matrow' }, W.slot(W.art.mat(c.k)), el('div', {}, el('b', {}, c.name),
-          el('div', {}, Object.entries(sp).map(([k, p]) => { const st = W.STATS.find(x => x.k === k); return el('span', { class: 'chip', style: { color: st.color } }, `+${p} ${st.name}`); }))));
+          el('div', {}, Object.entries(sp).map(([k, p]) => { const st = W.STATS.find(x => x.k === k); return el('span', { class: 'chip' }, W.art.stat(k), `+${p} ${st.name}`); }))));
       });
       return W.win(`Level ${cfg.level} materials — ${W.matPoints(cfg.level)} pts each`, el('div', { class: 'matlist' }, rows),
         el('p', { class: 'hint' }, 'Points go to the first-listed stat the most (3:2:1 or 2:1). Overflow past a stat’s max is lost. The wiki sees no difference between ✫ tiers.'));
