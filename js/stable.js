@@ -42,6 +42,7 @@
       const io = el('textarea', { rows: 3, placeholder: 'Paste exported stable JSON here to import…' });
       return el('div', {},
         W.win('Enclosure — Saddle Slots', g, el('p', { class: 'hint' }, 'Click a saddle to edit it. The number is the mount’s Potential. Everything is saved in this browser only.')),
+        W.win('Import from Wynntils', wynntilsBox()),
         W.win('Stable Summary', stats),
         W.win('Backup & Share',
           el('div', { class: 'btns' },
@@ -53,18 +54,43 @@
             el('button', { class: 'danger', onclick: () => { if (confirm('Delete every mount?')) { S.mounts = []; S.selected = null; commit(); } } }, 'Clear all')),
           io));
     }
+
+    function wynntilsBox() {
+      const ta = el('textarea', { rows: 3, placeholder: 'Paste the copied item string here (several are fine)…' });
+      const out = el('div', { class: 'imp' });
+      const run = () => {
+        const res = WynntilsDecode.decodeText(ta.value);
+        out.replaceChildren();
+        if (!res.length) { out.append(el('div', { class: 'warn' }, 'No Wynntils item string found in that text.')); return; }
+        const fresh = [];
+        res.forEach(r => {
+          if (!r.ok) { out.append(el('div', { class: 'warn' }, '⚠ ' + r.error)); return; }
+          const d = WynntilsDecode.toAppMount(r.mount), C = W.COLORS[d.type];
+          const m = W.newMount(d.type, { name: d.name, s: d.s });
+          if (C.body.some(c => c[0] === d.c1)) m.c1 = d.c1;
+          if (C.second.some(c => c[0] === d.c2)) m.c2 = d.c2;
+          W.clampMount(m); fresh.push(m);
+          out.append(el('div', { class: 'impRow' }, W.mountSlot(m), el('div', {}, el('b', {}, `${m.name} — ${W.TYPES[m.type].name}, ${m.c1}/${m.c2}`),
+            el('small', {}, `Potential ${W.potential(m)} · average limit ${W.num(W.avgLim(m), 1)}${d.estimated ? ' · max values estimated by Wynntils' : ''}`))));
+        });
+        if (fresh.length) out.append(el('div', { class: 'btns' }, el('button', { onclick: () => { S.mounts.push(...fresh); S.selected = fresh[0].id; commit(); } }, `Add ${fresh.length} to stable`)));
+      };
+      ta.addEventListener('input', run);
+      return el('div', {}, el('p', { class: 'hint', style: { marginTop: 0 } }, 'Open the mount in-game, use the Wynntils item share / copy option, and paste it here. The stats, colours and type are read straight out of the string.'), ta, out);
+    }
     const kv = (k, v) => el('div', {}, el('span', {}, k), el('b', {}, v));
 
     function right(m) {
       if (!m) return W.win('Mount', el('p', { class: 'empty' }, 'Select a saddle on the left, or click the + slot to add one.'));
       const r = W.rank(W.potential(m));
+      const top = Math.max(...W.STATKEYS.map(k => m.s[k][2]));
       const rows = W.STATS.map(s => {
         const [c, l, x] = m.s[s.k];
         const set = (i) => (v) => { m.s[s.k][i] = v; W.clampMount(m); commit(); };
         return el('div', { class: 'srow', style: { '--c': s.color } },
           el('span', { class: 'sname' }, W.art.stat(s.k), W.statName(s, m.type)),
-          el('div', { class: 'bar' }, el('i', { class: 'bmax', style: { width: Math.min(100, x / 0.6) + '%' } }), el('i', { class: 'blim', style: { width: Math.min(100, l / 0.6) + '%' } }),
-            el('i', { class: 'bcur', style: { width: Math.min(100, c / 0.6) + '%', background: s.color } })),
+          el('div', { class: 'bar' }, el('i', { class: 'bmax', style: { width: (x / top * 100) + '%' } }), el('i', { class: 'blim', style: { width: (l / top * 100) + '%' } }),
+            el('i', { class: 'bcur', style: { width: (c / top * 100) + '%', background: s.color } })),
           W.numIn(c, set(0), 1, 999), W.numIn(l, set(1), 1, 999), W.numIn(x, set(2), 1, 999));
       });
       const head = el('div', { class: 'srow shead' }, el('span'), el('span'), el('span', {}, 'Level'), el('span', {}, 'Limit'), el('span', {}, 'Max'));
@@ -97,7 +123,7 @@
               kv('Breeding', W.canBreed(m) ? '✔ ready' : `needs +${W.num((20 - W.avgLim(m)) * 8, 0)} limit points`),
               kv('Limit room left', W.STATKEYS.reduce((a, k) => a + m.s[k][2] - m.s[k][1], 0) + ' pts'),
               kv('Levels to train', W.STATKEYS.reduce((a, k) => a + m.s[k][1] - m.s[k][0], 0) + ' pickups'))),
-          el('p', { class: 'hint' }, '*Ranks are this site’s own scale for fun; the game only shows Potential.')));
+          el('p', { class: 'hint' }, '*Tiers follow the Wynntils tooltip colours for Potential (red, gold, yellow, green, aqua).')));
     }
     draw();
   };

@@ -86,13 +86,13 @@ window.W = window.W || {};
   W.BREED_MIN_AVG = 20;
   W.BREED_HOURS = 6;
 
+  /* Potential colour tiers, as used by the Wynntils mount tooltip. */
   W.RANKS = [
-    { min: 0,   name: 'Common',    color: '#ffffff' },
-    { min: 300, name: 'Unique',    color: '#ffff55' },
-    { min: 400, name: 'Rare',      color: '#ff55ff' },
-    { min: 520, name: 'Legendary', color: '#55ffff' },
-    { min: 700, name: 'Fabled',    color: '#ff5555' },
-    { min: 950, name: 'Mythic',    color: '#b05cff' },
+    { min: 0,    name: 'Tier I',   color: '#ff6b6b' },
+    { min: 555,  name: 'Tier II',  color: '#ffaa00' },
+    { min: 870,  name: 'Tier III', color: '#ffee55' },
+    { min: 1185, name: 'Tier IV',  color: '#5fe05f' },
+    { min: 1500, name: 'Tier V',   color: '#55ffff' },
   ];
   W.rank = (pot) => { let r = W.RANKS[0]; for (const x of W.RANKS) if (pot >= x.min) r = x; return r; };
 

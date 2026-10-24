@@ -15,7 +15,7 @@
     nav.replaceChildren(...TABS.map(([k, label, icon]) => W.el('a', { href: '#' + k, class: 'tab' + (k === name ? ' on' : '') }, icon(), W.el('span', {}, label))));
     main.replaceChildren();
     W.pages[name](main);
-    document.title = `${TABS.find(t => t[0] === name)[1]} · Stable Ledger`;
+    document.title = `${TABS.find(t => t[0] === name)[1]} · Paddock`;
   }
   document.addEventListener('DOMContentLoaded', () => {
     W.load(); W.art.favicon();
