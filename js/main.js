@@ -5,16 +5,18 @@
     ['lineage', 'Lineage', () => W.art.mat('gem')],
     ['cookbook', 'Cookbook', () => W.art.mat('meat')],
     ['training', 'Training', () => W.art.stat('speed')],
+    ['player', 'Player', () => W.art.stat('boost')],
     ['almanac', 'Almanac', () => W.art.mat('paper')],
     ['ledger', 'Ledger', () => W.art.mat('plank')],
   ];
   W.go = (name) => { location.hash = name; };
   function route() {
-    const name = TABS.some(t => t[0] === location.hash.slice(1)) ? location.hash.slice(1) : 'stable';
+    const [hn, hq] = location.hash.slice(1).split('?');
+    const name = TABS.some(t => t[0] === hn) ? hn : 'stable';
     const nav = document.getElementById('tabs'), main = document.getElementById('main');
     nav.replaceChildren(...TABS.map(([k, label, icon]) => W.el('a', { href: '#' + k, class: 'tab' + (k === name ? ' on' : '') }, icon(), W.el('span', {}, label))));
     main.replaceChildren();
-    W.pages[name](main);
+    W.pages[name](main, new URLSearchParams(hq || ''));
     document.title = `${TABS.find(t => t[0] === name)[1]} · Paddock`;
   }
   document.addEventListener('DOMContentLoaded', () => {
