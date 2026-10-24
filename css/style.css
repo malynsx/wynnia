@@ -111,7 +111,7 @@ input:focus, select:focus, textarea:focus, button:focus-visible { outline: 3px s
 .fields { display: grid; gap: 10px; flex: 1; min-width: 0; }
 .fields input[type=text] { width: 100%; font: 400 30px var(--hand); }
 .two { display: flex; gap: 8px; flex-wrap: wrap; } .two select { flex: 1 1 110px; }
-.srow, .crow { --c: #999; display: grid; grid-template-columns: minmax(120px, 170px) minmax(24px, 1fr) 62px 62px 62px; gap: 10px; align-items: center; padding: 5px 10px; margin: 4px 0; border-left: 6px solid var(--c); background: var(--card2); border-radius: 3px; }
+.srow, .crow { --c: #999; display: grid; grid-template-columns: max-content minmax(16px, 1fr) 68px 68px 68px; gap: 10px; align-items: center; padding: 5px 10px; margin: 4px 0; border-left: 6px solid var(--c); background: var(--card2); border-radius: 3px; }
 .srow input[type=number] { width: 100%; padding: 3px 6px; font-size: 17px; }
 .shead { background: none; border-left-color: transparent; color: var(--mute); font: 400 20px var(--hand); text-align: center; }
 .sname { font-weight: 700; display: flex; align-items: center; gap: 9px; font-size: 18px; }
@@ -178,3 +178,12 @@ td.sname .sprite { margin-right: 10px; }
 .crow { grid-template-columns: 170px 1fr 90px; } .crow b { text-align: right; font-weight: 700; }
 .win > input[type=text] { width: 100%; margin-top: 12px; }
 @media (prefers-reduced-motion: no-preference) { .slot, button, .tab { transition: background .1s, transform .08s; } }
+
+/* sprites fill their slot regardless of how the slot is sized */
+.slot .sprite { position: absolute; inset: 5%; width: 90%; height: 90%; }
+.slot.big .sprite { inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); }
+/* plain number fields, no spinner arrows */
+input[type=number] { -moz-appearance: textfield; appearance: textfield; text-align: center; }
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.srow input[type=number] { padding: 3px 2px; }
+.form input[type=number] { text-align: left; padding-left: 10px; }
