@@ -5,6 +5,7 @@
     ['lineage', 'Lineage', () => W.art.mat('gem')],
     ['cookbook', 'Cookbook', () => W.art.mat('meat')],
     ['training', 'Training', () => W.art.stat('speed')],
+    ['want', 'Wanted', () => W.art.ui('speed-boost')],
     ['player', 'Player', () => W.art.stat('boost')],
     ['almanac', 'Almanac', () => W.art.mat('paper')],
     ['ledger', 'Ledger', () => W.art.mat('plank')],

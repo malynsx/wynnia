@@ -187,3 +187,24 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; text-ali
 input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .srow input[type=number] { padding: 3px 2px; }
 .form input[type=number] { text-align: left; padding-left: 10px; }
+
+/* wanted poster */
+.wstats { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 18px; }
+.wst { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: var(--card2); border-left: 6px solid var(--navy); padding: 4px 8px; border-radius: 3px; }
+.wst { min-width: 0; } .wst input { width: 70px; flex: none; }
+.poster-wrap { margin-bottom: 26px; }
+.poster { background: #f1e3b8; color: #2a1d0b; border: 4px solid var(--navy); border-radius: 6px; box-shadow: 0 5px 0 var(--navy); padding: 22px 24px 20px; position: relative; }
+.ptag { font: 400 54px/1 var(--logo); color: #8c2d1f; text-align: center; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 14px; }
+.phero { display: flex; gap: 18px; align-items: center; margin-bottom: 14px; }
+.phero h3 { font-size: 38px; } .phero small { display: block; font-size: 18px; color: #5a4a2a; }
+.ppot { font: 400 30px var(--hand); margin-top: 4px; color: #2a1d0b; }
+.pstats { display: grid; gap: 5px; }
+.poster .crow { grid-template-columns: 1fr auto; background: rgba(23,48,74,.12); color: #2a1d0b; }
+.poster .sname { color: #2a1d0b; }
+.poster .hint { color: #5a4a2a; }
+.pnote { margin-top: 12px; padding: 8px 12px; background: rgba(23,48,74,.12); font-size: 18px; border-radius: 3px; }
+.pign { margin-top: 12px; font: 400 26px var(--hand); text-align: right; }
+.chatline { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+.chatline code { flex: 1; background: var(--navy); color: #fff; padding: 8px 10px; border-radius: 4px; font: 500 15px/1.4 ui-monospace, Consolas, monospace; overflow-wrap: anywhere; }
+.chatline button { flex: none; }
+@media (max-width: 640px) { .wstats { grid-template-columns: 1fr; } }
