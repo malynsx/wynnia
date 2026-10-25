@@ -25,10 +25,16 @@
       im.onload = () => {
         const c = document.createElement('canvas'); c.width = c.height = 64;
         const g = c.getContext('2d');
-        const hex = (r) => { g.beginPath(); for (let i = 0; i < 6; i++) { const a = Math.PI / 3 * i - Math.PI / 2; g.lineTo(32 + r * Math.cos(a), 32 + r * Math.sin(a)); } g.closePath(); };
-        hex(31); g.fillStyle = '#17304a'; g.fill();
-        hex(27); g.fillStyle = '#f7d25e'; g.fill();
-        hex(21); g.fillStyle = '#24425f'; g.fill();
+        /* the header's shield, scaled into 64x64 (its path is drawn on a 100x116 box) */
+        const shield = (inset) => {
+          const k = 64 / 116, x = (v) => 5 + (v + (v < 50 ? inset : v > 50 ? -inset : 0)) * k, y = (v) => 0.5 + v * k;
+          g.beginPath(); g.moveTo(x(50), y(4 + inset)); g.lineTo(x(94), y(18 + inset)); g.lineTo(x(94), y(58));
+          g.bezierCurveTo(x(94), y(86 - inset), x(74), y(102 - inset), x(50), y(112 - inset * 1.3));
+          g.bezierCurveTo(x(26), y(102 - inset), x(6), y(86 - inset), x(6), y(58)); g.lineTo(x(6), y(18 + inset)); g.closePath();
+        };
+        shield(0); g.fillStyle = '#17304a'; g.fill();
+        shield(7); g.fillStyle = '#f7d25e'; g.fill();
+        shield(15); g.fillStyle = '#24425f'; g.fill();
         g.save(); g.translate(32, 32); g.rotate(-0.14);
         const h = 34, w = h * im.width / im.height;
         g.drawImage(im, -w / 2, -h / 2 - 1, w, h); g.restore();
