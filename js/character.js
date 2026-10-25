@@ -11,13 +11,22 @@
   const fmt = (n) => n == null ? null : Number(n).toLocaleString();
   const per = (n, hours, unit) => (n != null && hours > 0) ? `${W.num(n / hours, n / hours < 10 ? 1 : 0)} ${unit}` : null;
 
-  function barList(obj, colour) {
-    const rows = Object.entries(obj || {}).sort((a, b) => b[1] - a[1]);
-    if (!rows.length) return el('p', { class: 'empty' }, 'None yet.');
-    const top = rows[0][1] || 1;
-    return el('div', { class: 'blist' }, rows.map(([name, n]) => el('div', { class: 'brow2' },
-      el('span', {}, name.replace(/^Corrupted /, ''), /^Corrupted /.test(name) ? el('em', {}, 'Corrupted') : null),
-      el('div', { class: 'cbar' }, el('i', { class: colour, style: { width: n / top * 100 + '%' } }), el('b', {}, n)))));
+  /* Dungeon / raid tiles: corrupted runs fold into their dungeon as a second bar segment. */
+  function runTiles(obj, kind) {
+    const map = {};
+    Object.entries(obj || {}).forEach(([name, n]) => {
+      const base = name.replace(/^Corrupted /, ''), t = map[base] || (map[base] = { name: base, normal: 0, corrupted: 0 });
+      if (/^Corrupted /.test(name)) t.corrupted += n; else t.normal += n;
+    });
+    const rows = Object.values(map).map(t => ({ ...t, total: t.normal + t.corrupted })).sort((a, b) => b.total - a.total);
+    if (!rows.length) return el('p', { class: 'empty' }, kind === 'raid' ? 'No raids cleared yet.' : 'No dungeons cleared yet.');
+    const top = rows[0].total || 1;
+    return el('div', { class: 'runtiles ' + kind }, rows.map((t, i) => el('div', { class: 'runtile' + (i === 0 ? ' fav' : '') },
+      el('div', { class: 'rthead' }, el('b', { title: t.name }, t.name)),
+      el('div', { class: 'rtnum' }, el('b', {}, t.total.toLocaleString()), el('span', {}, t.total === 1 ? 'clear' : 'clears'), i === 0 ? el('span', { class: 'rtfav' }, 'Most run') : null),
+      el('div', { class: 'rtbar' }, el('i', { class: 'n', style: { width: t.normal / top * 100 + '%' } }), el('i', { class: 'c', style: { width: t.corrupted / top * 100 + '%' } })),
+      !t.corrupted ? el('small', {}, kind === 'raid' ? 'Raid' : 'Normal only') : !t.normal ? el('small', {}, el('em', {}, 'Corrupted only'))
+        : el('small', {}, `${t.normal} normal · `, el('em', {}, `${t.corrupted} corrupted`)))));
   }
 
   W.charDetail = (c, player, ref) => {
@@ -101,9 +110,8 @@
       W.win(`Professions · ${gatherTotal} gathering, ${craftTotal} crafting levels`,
         el('div', { class: 'cap left', style: { marginTop: 0 } }, 'Gathering'), el('div', { class: 'pgrid' }, GATHER.map(profCard)),
         el('div', { class: 'cap left' }, 'Crafting'), el('div', { class: 'pgrid' }, CRAFT.map(profCard))),
-      el('div', { class: 'cols' },
-        W.win(`Dungeons · ${(c.dungeons && c.dungeons.total) || 0} runs`, barList(c.dungeons && c.dungeons.list, 'gold')),
-        W.win(`Raids · ${(c.raids && c.raids.total) || 0} runs`, barList(c.raids && c.raids.list, 'good'))),
+      W.win(`Dungeons · ${(c.dungeons && c.dungeons.total) || 0} clears`, runTiles(c.dungeons && c.dungeons.list, 'dungeon')),
+      W.win(`Raids · ${(c.raids && c.raids.total) || 0} clears`, runTiles(c.raids && c.raids.list, 'raid')),
       questBox,
       el('div', { class: 'btns', style: { marginTop: 0 } },
         el('a', { class: 'btnlink', href: `#items/loadout?u=${encodeURIComponent(player.username)}&c=${encodeURIComponent(c.id)}` }, 'Build a loadout for this character'),

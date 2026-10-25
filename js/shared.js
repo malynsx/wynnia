@@ -106,27 +106,49 @@
   W.baseColor = (k) => { const m = /(earth|thunder|water|fire|air)/i.exec(k); return m ? W.ELEM[m[1].toLowerCase()] : (/health/i.test(k) ? '#ff5555' : '#ffaa00'); };
 
   /* Wynncraft-style item tooltip. */
+  /* Item card laid out like the in-game tooltip: framed icon, rarity and type tags, DPS or health up top with
+     element glyphs, skill requirement gems, class and level, then identifications. */
+  const GLYPH = { neutral: '✣', earth: '✤', thunder: '✦', water: '❉', fire: '✹', air: '❋' };
+  const HITS = { superSlow: 0.51, verySlow: 0.83, slow: 1.5, normal: 2.05, fast: 2.5, veryFast: 3.1, superFast: 4.3 };
+  const SKILLS = [['strength', 'Str', 'earth'], ['dexterity', 'Dex', 'thunder'], ['intelligence', 'Int', 'water'], ['defence', 'Def', 'fire'], ['agility', 'Agi', 'air']];
+  const range = (v) => Array.isArray(v) ? (v[0] === v[1] ? String(v[0]) : `${v[0]}–${v[1]}`) : String(v);
+  const glyph = (e) => el('span', { class: 'ig', style: { color: W.ELEM[e] } }, GLYPH[e]);
+  const divider = () => el('div', { class: 'idiv' }, el('i'), el('span', {}, '◆◆'), el('i'));
   W.itemCard = (it, opts = {}) => {
-    const lines = [];
-    const order = (k) => ['ealth', 'Damage', 'earth', 'thunder', 'water', 'fire', 'air'].findIndex(w => k.toLowerCase().includes(w.toLowerCase())) * 2 + (/Defence/.test(k) ? 1 : 0);
-    if (it.b) Object.entries(it.b).sort((a, b) => order(a[0]) - order(b[0])).forEach(([k, v]) => lines.push(el('div', { class: 'il' },
-      el('span', { style: { color: W.baseColor(k) } }, W.BASE_NAMES[k] || words(k)), el('span', {}, Array.isArray(v) ? (v[0] === v[1] ? v[0] : `${v[0]}–${v[1]}`) : v))));
-    const req = [];
-    if (it.c) req.push(cap(it.c));
-    req.push('Lv. ' + it.l);
-    if (it.q) Object.entries(it.q).forEach(([k, v]) => req.push(`${cap(k).slice(0, 3)} ${v}`));
-    const ids = it.i ? Object.entries(it.i).map(([k, v]) => el('div', { class: 'il' },
-      el('span', { class: W.idGood(k, v) ? 'pos' : 'neg' }, W.fmtId(k, v)), el('span', { class: 'idn' }, W.idInfo(k).name))) : [];
-    return el('div', { class: 'icard' + (opts.compact ? ' compact' : '') },
-      el('div', { class: 'ihead' }, el('div', { class: 'iicon' }, W.art.item(it.ic)),
-        el('div', { class: 'ititle' }, el('div', { class: 'iname', style: { color: W.tierColor(it.r) } }, it.n),
-          el('div', { class: 'isub' }, `${(W.TIERS[it.r] || ['Item'])[0]} ${cap(it.t)}${it.as ? ' · ' + words(it.as) + ' attack' : ''}`)),
+    const col = W.tierColor(it.r), b = it.b || {}, tier = (W.TIERS[it.r] || ['Item'])[0];
+    const text = it.r === 'mythic' ? '#cf5ce8' : col;   // mythic purple is too dark to read on the card
+    const weapon = ['bow', 'spear', 'wand', 'dagger', 'relik'].includes(it.t);
+    const dmg = ['neutral', 'earth', 'thunder', 'water', 'fire', 'air'].map(e => [e, b[e === 'neutral' ? 'baseDamage' : 'base' + cap(e) + 'Damage']]).filter(([, v]) => v != null && (Array.isArray(v) ? v[1] : v));
+    const defs = ['earth', 'thunder', 'water', 'fire', 'air'].map(e => [e, b['base' + cap(e) + 'Defence']]).filter(([, v]) => v);
+    const hp = b.baseHealth != null ? (Array.isArray(b.baseHealth) ? b.baseHealth[1] : b.baseHealth) : null;
+    const top = weapon ? el('div', { class: 'itop' },
+      it.dps ? el('div', { class: 'ibig', style: { color: text } }, el('b', {}, Math.round(it.dps).toLocaleString()), el('span', {}, 'DPS')) : null,
+      it.as ? el('div', { class: 'ispeed' }, words(it.as), HITS[it.as] ? el('span', {}, ` (${HITS[it.as]} hits/s)`) : null) : null,
+      dmg.length ? el('div', { class: 'ichips' }, dmg.map(([e, v]) => el('span', {}, glyph(e), range(v)))) : null)
+      : (hp || defs.length) ? el('div', { class: 'itop' },
+        hp ? el('div', { class: 'ibig hp' }, el('b', {}, hp.toLocaleString()), el('span', {}, 'Health')) : null,
+        defs.length ? el('div', { class: 'ichips' }, defs.map(([e, v]) => el('span', { class: v < 0 ? 'neg' : '' }, glyph(e), (v > 0 ? '+' : '') + v))) : null) : null;
+    const q = it.q || {};
+    const reqs = SKILLS.some(([k]) => q[k]) ? el('div', { class: 'iskills' }, SKILLS.map(([k, short, e]) => el('div', { class: 'isk' + (q[k] ? ' on' : '') },
+      el('small', {}, short.toUpperCase()), el('span', { class: 'gem', style: q[k] ? { '--ec': W.ELEM[e] } : null }, el('i', {}, GLYPH[e])), el('b', {}, q[k] || 0)))) : null;
+    const meta = el('div', { class: 'imeta' },
+      it.c || weapon ? el('div', { class: 'il' }, el('span', {}, 'Class'), el('span', {}, cap(it.c || ({ bow: 'archer', spear: 'warrior', wand: 'mage', dagger: 'assassin', relik: 'shaman' })[it.t] || '—'))) : null,
+      el('div', { class: 'il' }, el('span', {}, 'Combat Level'), el('span', {}, it.l)));
+    const ids = it.i ? Object.entries(it.i).map(([k, v]) => el('div', { class: 'il' }, el('span', { class: 'idn' }, W.idInfo(k).name), el('span', { class: W.idGood(k, v) ? 'pos' : 'neg' }, W.fmtId(k, v)))) : [];
+    return el('div', { class: 'icard' + (opts.compact ? ' compact' : ''), style: { '--rc': col } },
+      el('div', { class: 'ihead' },
+        el('div', { class: 'iframe' }, el('div', { class: 'iicon' }, W.art.item(it.ic))),
+        el('div', { class: 'ititle' }, el('div', { class: 'iname', style: { color: text } }, it.n),
+          el('div', { class: 'itags' }, el('span', { class: 'itier' }, tier.toUpperCase()), el('span', { class: 'itype' }, cap(it.t).replace('_', ' ').toUpperCase()))),
         opts.action || null),
-      lines.length ? el('div', { class: 'iblock' }, lines) : null,
-      el('div', { class: 'ireq' }, req.join(' · ')),
+      top, top ? divider() : null,
+      reqs, meta,
+      ids.length ? divider() : null,
       ids.length ? el('div', { class: 'iblock' }, ids) : null,
-      it.m ? el('div', { class: 'imajor' }, 'Major ID: ', it.m.join(', ')) : null,
-      el('div', { class: 'ifoot' }, [it.ps ? `${it.ps} powder slot${it.ps > 1 ? 's' : ''}` : null, it.dps ? `${it.dps} avg DPS` : null, it.rs ? cap(it.rs) : null].filter(Boolean).join(' · ')),
+      it.m ? el('div', { class: 'imajor' }, el('b', {}, 'Major ID: '), it.m.join(', ')) : null,
+      it.ps || it.rs ? el('div', { class: 'ifoot' },
+        it.ps ? el('span', { class: 'islots' }, Array.from({ length: it.ps }, () => el('i')), `${it.ps} powder slot${it.ps > 1 ? 's' : ''}`) : null,
+        it.rs ? el('span', {}, cap(String(it.rs).replace('_', ' '))) : null) : null,
       opts.actions || null);
   };
 

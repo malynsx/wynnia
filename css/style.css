@@ -764,3 +764,74 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 .tab.pop, .sub.pop { animation: tabpop .25s ease-out; }
 @keyframes tabpop { 0% { transform: translateY(2px) scale(.96); } 60% { transform: translateY(-1px) scale(1.02); } 100% { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .page.enter, .tab.pop, .sub.pop { animation: none; } .tab:active { transform: none; } }
+/* profession cards: the body column may shrink, so long names shorten instead of pushing the bar out of the card */
+.pbody { grid-template-columns: minmax(0, 1fr); } .pbody > * { min-width: 0; }
+.phead2 b { font-size: 17px; }
+
+/* dungeon and raid tiles */
+.runtiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+.runtile { display: grid; gap: 6px; align-content: start; background: var(--card2); border: 3px solid var(--navy); border-radius: 6px; padding: 10px 12px 9px; min-width: 0; box-shadow: 0 3px 0 var(--navy); }
+.runtile.fav { border-color: var(--gold-d); box-shadow: 0 3px 0 var(--gold-d); }
+.rthead { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
+.rthead b { font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.rtfav { flex: none; background: var(--gold); color: var(--dark); font: 700 11px var(--ui); text-transform: uppercase; letter-spacing: .05em; padding: 2px 6px; border-radius: 3px; }
+.rtnum { display: flex; align-items: baseline; gap: 6px; } .rtnum b { font: 400 32px/1 var(--hand); color: var(--gold); } .rtnum span { color: var(--mute); font-size: 14px; }
+.raid .rtnum b { color: #7fe08f; }
+.rtbar { display: flex; height: 8px; background: var(--navy); border-radius: 4px; overflow: hidden; }
+.rtbar i { display: block; height: 100%; } .rtbar i.n { background: var(--gold); } .rtbar i.c { background: #b44be0; } .raid .rtbar i.n { background: #4fbf6a; }
+.runtile small { color: var(--mute); font-size: 13px; } .runtile small em { font-style: normal; color: #d9a3f0; }
+
+/* item cards, in-game tooltip layout (flat colours, no gradient) */
+.icard { --rc: #fff; padding: 14px 16px 12px; line-height: 1.45; }
+.icard .ihead { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; margin-bottom: 10px; }
+.iframe { width: 54px; height: 54px; display: grid; place-items: center; position: relative; }
+.iframe::before { content: ''; position: absolute; inset: 6px; transform: rotate(45deg); background: #1d1430; border: 3px solid var(--rc); box-shadow: 0 0 0 2px #0a0612; border-radius: 3px; }
+.iframe .iicon { position: relative; width: 36px; height: 36px; padding: 0; background: none; }
+.iframe .iicon img { width: 100%; height: 100%; image-rendering: pixelated; }
+.ititle { min-width: 0; } .icard .iname { font: 400 23px/1.1 var(--hand); overflow-wrap: anywhere; }
+.itags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.itags span { font: 700 11px/1 var(--ui); letter-spacing: .08em; padding: 3px 6px 2px; border-radius: 2px; }
+.itier { background: var(--rc); color: #120c1c; } .itype { color: #d8cfe8; box-shadow: inset 0 0 0 2px #4a3d66; }
+.itop { display: grid; gap: 4px; justify-items: start; }
+.ibig { display: flex; align-items: baseline; gap: 6px; } .ibig b { font: 400 34px/1 var(--hand); } .ibig span { font: 700 14px var(--ui); color: #c9bfdc; letter-spacing: .05em; }
+.ibig.hp b { color: #ff5555; }
+.ispeed { color: #c9bfdc; font-size: 14px; } .ispeed span { color: #8d81a3; }
+.ichips { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 15px; } .ichips span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.ichips span.neg { color: #ff5555; }
+.ig { font-size: 15px; line-height: 1; }
+.idiv { display: flex; align-items: center; gap: 8px; margin: 10px 0 8px; color: #6e5a96; font-size: 9px; letter-spacing: 2px; }
+.idiv i { flex: 1; height: 2px; background: #2f2445; }
+.iskills { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom: 8px; text-align: center; }
+.isk { display: grid; justify-items: center; gap: 3px; color: #5d5275; }
+.isk small { font: 700 11px var(--ui); letter-spacing: .06em; } .isk b { font-size: 14px; }
+.isk .gem { width: 26px; height: 26px; display: grid; place-items: center; transform: rotate(45deg); background: #241a36; border: 2px solid #3a2f52; border-radius: 3px; }
+.isk .gem i { transform: rotate(-45deg); font-style: normal; font-size: 13px; color: #5d5275; }
+.isk.on { color: #fff; } .isk.on small { color: var(--ec, #fff); }
+.isk.on .gem { background: color-mix(in srgb, var(--ec) 28%, #1d1430); border-color: var(--ec); box-shadow: 0 0 0 2px #0a0612; } .isk.on .gem i { color: #fff; }
+.isk.on small { color: #d8cfe8; }
+.imeta { display: grid; gap: 1px; font-size: 14.5px; } .imeta .il span:first-child { color: #c9bfdc; }
+.icard .iblock { border-top: 0; padding: 0; gap: 1px; }
+.icard .il .idn { color: #e4dcf2; text-align: left; } .icard .il > span:last-child { text-align: right; white-space: nowrap; }
+.icard .imajor { margin-top: 8px; padding: 6px 8px; border: 0; border-radius: 3px; background: #1d1430; color: #55ffff; font-size: 14px; }
+.icard .ifoot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; margin-top: 8px; padding-top: 8px; border-top: 2px solid #2f2445; }
+.islots { display: inline-flex; align-items: center; gap: 4px; } .islots i { width: 9px; height: 9px; transform: rotate(45deg); border: 2px solid #6e5a96; margin-right: 2px; }
+.icard .pricetag { margin-top: 10px; padding-top: 8px; border-top: 2px solid #2f2445; }
+
+/* layout: single-column grids must still let their columns shrink (1fr alone means "at least as wide as the content") */
+@media (max-width: 1050px) { .cols, .cols.wide-l, .cols2 { grid-template-columns: minmax(0, 1fr); } }
+.stack { grid-template-columns: minmax(0, 1fr); }
+.cols > *, .stack > *, .cols2 > * { min-width: 0; }
+.igrid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+/* item card rows: long names and values wrap instead of pushing out of the card */
+.icard .il { flex-wrap: wrap; column-gap: 10px; } .icard .il > span:first-child { min-width: 0; flex: 1 1 auto; } .icard .il > span:last-child { margin-left: auto; }
+/* phone widths: wide tables scroll inside their panel, rows wrap, forms stack */
+.tcard > div { min-width: 0; }
+@media (max-width: 700px) {
+  .win table.tbl { display: block; overflow-x: auto; max-width: 100%; }
+  .pair { flex-wrap: wrap; } .pair > * { min-width: 0; }
+  .fields3 { grid-template-columns: minmax(0, 1fr); } .fields3 label { white-space: normal; }
+  .sprow { grid-template-columns: minmax(0, 1fr) 58px 58px 38px 38px; gap: 6px; font-size: 14px; } .sprow input { width: 100%; } .sprow > :nth-child(2) small { display: block; }
+}
+.kv > div > * { min-width: 0; overflow-wrap: anywhere; } .kv > div > span { flex: none; max-width: 45%; }
+@media (max-width: 700px) { .kv.wide { grid-template-columns: minmax(0, 1fr); } }
+.rtnum .rtfav { margin-left: auto; align-self: center; }
