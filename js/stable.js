@@ -66,7 +66,7 @@
         W.win('Stable Summary', stats),
         W.win('Backup & Share',
           el('div', { class: 'btns' },
-            el('button', { onclick: (e) => { const link = location.href.split('#')[0] + '#mounts/stable?share=' + pack(S.mounts); io.value = link; io.select(); W.copyText(link, e.target); } }, 'Copy share link'),
+            el('button', { onclick: (e) => W.copyShort(location.href.split('#')[0] + '#mounts/stable?share=' + pack(S.mounts), e.target, io) }, 'Copy share link'),
             el('button', { onclick: () => { io.value = JSON.stringify({ mounts: S.mounts }); io.select(); } }, 'Export JSON'),
             el('button', { onclick: () => {
               try { const d = JSON.parse(io.value); if (!Array.isArray(d.mounts)) throw 0; d.mounts.forEach(x => W.clampMount(x)); S.mounts = S.mounts.concat(d.mounts.map(x => ({ ...x, id: 'm' + Math.random().toString(36).slice(2, 9) }))); commit(); }

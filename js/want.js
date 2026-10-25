@@ -96,7 +96,7 @@
         el('div', { class: 'cap left', style: { marginTop: 0 } }, lines.length > 1 ? `Chat messages (${lines.length}, each under ${LIMIT} characters)` : 'Chat message'),
         ...lines.map(l => { const row = el('div', { class: 'chatline' }, el('code', {}, l), el('button', { class: 'mini', onclick: () => copy(l, row.lastChild) }, 'Copy')); return row; }),
         el('div', { class: 'cap left' }, 'Shareable page'),
-        el('div', { class: 'chatline' }, el('code', {}, link()), el('button', { class: 'mini', onclick: (e) => copy(link(), e.target) }, 'Copy')),
+        el('div', { class: 'chatline' }, el('code', {}, link()), el('button', { class: 'mini', onclick: (e) => W.copyShort(link(), e.target, e.target.previousSibling) }, 'Copy')),
         el('p', { class: 'hint' }, 'Paste the chat message in guild chat. The link opens this same poster with every number filled in, handy for Discord.')));
     }
     draw();

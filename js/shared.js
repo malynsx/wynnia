@@ -223,4 +223,24 @@
     try { navigator.clipboard.writeText(text).catch(() => {}); } catch (e) { /* manual copy */ }
     if (btn) { const t = btn.textContent; btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = t; }, 1200); }
   };
+
+  /* Short share links: the relay stores the long link and returns a 7-character id (#s/Ab3dE9x).
+     Falls back to the long link if the relay can't store it. */
+  const shortCache = {};
+  W.shortLink = (url) => {
+    const [base, hash] = url.split('#');
+    return shortCache[url] || (shortCache[url] = fetch(W.API_RELAY + '/s', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: '#' + hash })
+      .then(r => r.ok ? r.json() : Promise.reject()).then(j => `${base}#s/${j.id}`).catch(() => { delete shortCache[url]; return url; }));
+  };
+  W.resolveShort = (id) => fetch(`${W.API_RELAY}/s/${id}`).then(r => r.ok ? r.json() : Promise.reject(new Error('This short link doesn’t exist (or has expired).')))
+    .then(j => j.link);
+  /* Copy button for a share link: shortens it first, shows the result in `input` if given. */
+  W.copyShort = (url, btn, input) => {
+    const t = btn.textContent; btn.textContent = 'Shortening…'; btn.disabled = true;
+    W.shortLink(url).then(short => {
+      if (input) { if ('value' in input) { input.value = short; input.select(); } else input.textContent = short; }
+      btn.disabled = false; btn.textContent = t;
+      W.copyText(short, btn);
+    });
+  };
 })(window.W);

@@ -752,3 +752,15 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 @media (prefers-reduced-motion: reduce) { .badge:hover { transform: none; } .badge.t5::after { animation: none; display: none; } }
 /* logo: keep the tagline ribbon clear of the wordmark */
 .wordmark h1 { line-height: 1.05; } .wordmark p { margin-top: 12px; }
+
+/* page and tab switching: a short slide from the side of the tab you picked, and a little pop on the new tab */
+.page.enter { animation: pagein .22s ease-out both; }
+.page.enter.from-r { animation-name: pagein-r; } .page.enter.from-l { animation-name: pagein-l; }
+@keyframes pagein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes pagein-r { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+@keyframes pagein-l { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
+.tab, .sub { transition: background-color .15s, color .15s, border-color .15s, transform .1s, box-shadow .1s; }
+.tab:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--navy); }
+.tab.pop, .sub.pop { animation: tabpop .25s ease-out; }
+@keyframes tabpop { 0% { transform: translateY(2px) scale(.96); } 60% { transform: translateY(-1px) scale(1.02); } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .page.enter, .tab.pop, .sub.pop { animation: none; } .tab:active { transform: none; } }

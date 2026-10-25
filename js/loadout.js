@@ -103,8 +103,8 @@
             el('label', {}, 'Rank AP loan', W.sel([[0, 'None'], [2, 'VIP+ (+2)'], [4, 'HERO+ (+4)']], LB.loan, (v) => { LB.loan = +v; store(); draw(); }))),
           !piece('w') ? el('div', { class: 'fields3' }, el('label', {}, 'Class', W.sel([['', 'Pick a weapon or class'], ['archer', 'Archer'], ['warrior', 'Warrior'], ['mage', 'Mage'], ['assassin', 'Assassin'], ['shaman', 'Shaman']], LB.cls || '', (v) => { LB.cls = v || null; store(); draw(); }))) : null,
           el('div', { class: 'cap left' }, 'Share this build'),
-          el('div', { class: 'search' }, box, el('button', { onclick: (e) => { box.select(); W.copyText(link, e.target); } }, 'Copy link')),
-          el('p', { class: 'hint' }, `${link.split('?b=')[1].length} characters. The link keeps every item, exact roll, powder, tome, skill point and ability.`),
+          el('div', { class: 'search' }, box, el('button', { onclick: (e) => W.copyShort(link, e.target, box) }, 'Copy link')),
+          el('p', { class: 'hint' }, 'Copy link makes a short link (like …/#s/Ab3dE9x) that keeps every item, exact roll, powder, tome, skill point and ability.'),
           buildValue(),
           el('div', { class: 'btns' }, el('a', { class: 'btnlink', href: '#items/recommend' + (LB.u ? '?u=' + encodeURIComponent(LB.u) : '') }, 'Recommended build'),
             el('button', { class: 'danger', onclick: () => { if (confirm('Clear the whole build?')) { LB = blank(); owner = null; store(); draw(); } } }, 'Clear build')));

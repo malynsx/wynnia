@@ -1,3 +1,9 @@
 name = "wynntools-api"
 main = "worker.js"
 compatibility_date = "2026-10-01"
+
+# Short share links. Create a KV namespace (Workers & Pages > KV) and bind it to the worker as LINKS.
+# With wrangler, fill in its id here:
+# [[kv_namespaces]]
+# binding = "LINKS"
+# id = "<your namespace id>"
