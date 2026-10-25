@@ -1,0 +1,1 @@
+{"name":"Spore Shortsword","type":"dagger","category":"weapon","rarity":"rare","level":15,"icon":"https://malynsx.github.io/wynntools/img/items/dagger.air1.webp","classRequirement":"assassin","base":{"baseDamage":[16,20]},"identifications":{"exploding":[3,13],"poison":[2,10]},"attackSpeed":"superFast","averageDps":77,"slug":"spore-shortsword"}

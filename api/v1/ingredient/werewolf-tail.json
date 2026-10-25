@@ -1,0 +1,1 @@
+{"name":"Werewolf Tail","stars":0,"level":72,"professions":["tailoring","alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/351_0.png","identifications":{"rawDefence":[-3,-1],"walkSpeed":[2,3]},"itemOnlyIds":{"durabilityModifier":-42000},"consumableOnlyIds":{"duration":-78},"slug":"werewolf-tail"}

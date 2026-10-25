@@ -1,0 +1,1 @@
+{"name":"Leaf Boots","type":"boots","category":"armour","rarity":"rare","level":9,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_leather.webp","base":{"baseEarthDefence":5,"baseHealth":34},"identifications":{"healthRegenRaw":[1,4],"rawStrength":2},"powderSlots":1,"slug":"leaf-boots"}

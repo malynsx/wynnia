@@ -1,0 +1,1 @@
+{"name":"Sentient Leukocyte","stars":3,"level":104,"professions":["tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/351_15.png","identifications":{"healingEfficiency":[6,7],"reflection":[5,6],"thorns":[5,6],"walkSpeed":[-4,-3]},"itemOnlyIds":{"defenceRequirement":18,"durabilityModifier":-151000,"intelligenceRequirement":18},"slug":"sentient-leukocyte"}

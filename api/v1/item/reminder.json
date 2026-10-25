@@ -1,0 +1,1 @@
+{"name":"Reminder","type":"ring","category":"accessory","rarity":"unique","level":96,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicPearl.webp","skillRequirements":{"intelligence":30},"identifications":{"manaRegen":[1,5],"rawIntelligence":6,"rawMaxMana":[5,21]},"slug":"reminder"}

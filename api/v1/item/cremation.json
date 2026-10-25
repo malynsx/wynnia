@@ -1,0 +1,1 @@
+{"name":"Cremation","type":"ring","category":"accessory","rarity":"legendary","level":50,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire2.webp","skillRequirements":{"defence":15},"base":{"baseFireDefence":15},"identifications":{"rawAgility":-4,"rawFireDamage":[9,39],"rawFireSpellDamage":[6,26],"walkSpeed":[1,5]},"slug":"cremation"}

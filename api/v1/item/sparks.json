@@ -1,0 +1,1 @@
+{"name":"Sparks","type":"ring","category":"accessory","rarity":"unique","level":92,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire2.webp","skillRequirements":{"defence":40},"base":{"baseFireDefence":45,"baseHealth":500,"baseWaterDefence":-45},"identifications":{"fireDamage":10,"mainAttackDamage":15,"rawAttackSpeed":-2},"slug":"sparks"}

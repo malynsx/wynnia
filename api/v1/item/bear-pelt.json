@@ -1,0 +1,1 @@
+{"name":"Bear Pelt","type":"chestplate","category":"armour","rarity":"rare","level":13,"icon":"https://malynsx.github.io/wynntools/img/items/chestplate.pale_leather.webp","base":{"baseHealth":57},"identifications":{"rawHealth":[3,13],"rawMainAttackDamage":[5,22],"rawStrength":4,"spellDamage":[-8,-4],"walkSpeed":[-4,-2]},"slug":"bear-pelt"}

@@ -1,0 +1,1 @@
+{"name":"Howler","type":"helmet","category":"armour","rarity":"unique","level":70,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.iron.webp","skillRequirements":{"agility":20},"base":{"baseAirDefence":60,"baseHealth":1250},"identifications":{"airDamage":15,"knockback":20,"rawAgility":5,"rawAirDamage":135,"spellDamage":15},"powderSlots":3,"slug":"howler"}

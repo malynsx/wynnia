@@ -1,0 +1,1 @@
+{"name":"Acid Magma","stars":0,"level":91,"professions":["tailoring","alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/378_0.png","identifications":{"poison":[480,500],"waterDefence":[-10,-8]},"itemOnlyIds":{"defenceRequirement":8,"durabilityModifier":-49000},"consumableOnlyIds":{"duration":-90},"slug":"acid-magma"}

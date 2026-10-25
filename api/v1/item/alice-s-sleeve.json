@@ -1,0 +1,1 @@
+{"name":"Alice's Sleeve","type":"bracelet","category":"accessory","rarity":"rare","level":14,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.basicGold.webp","base":{"baseHealth":20},"identifications":{"healthRegenRaw":[1,5],"mainAttackDamage":[-8,-4],"rawDefence":4},"slug":"alice-s-sleeve"}

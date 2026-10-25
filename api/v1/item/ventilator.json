@@ -1,0 +1,1 @@
+{"name":"Ventilator","type":"boots","category":"armour","rarity":"unique","level":25,"icon":"https://malynsx.github.io/wynntools/img/items/boots.gold.webp","skillRequirements":{"agility":15},"base":{"baseAirDefence":6,"baseFireDefence":-6,"baseHealth":100},"identifications":{"rawAgility":3,"rawAirDamage":[6,26],"walkSpeed":[4,16]},"powderSlots":1,"slug":"ventilator"}

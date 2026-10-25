@@ -1,0 +1,1 @@
+{"name":"Glittering Heath","type":"bracelet","category":"accessory","rarity":"rare","level":36,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.fire1.webp","skillRequirements":{"defence":12},"base":{"baseFireDefence":10,"baseHealth":50},"identifications":{"lifeSteal":[5,20],"mainAttackRange":[2,10],"rawDefence":3,"reflection":[3,14]},"slug":"glittering-heath"}

@@ -1,0 +1,1 @@
+{"name":"Kickers","type":"boots","category":"armour","rarity":"unique","level":10,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_leather.webp","base":{"baseHealth":34},"identifications":{"knockback":[2,10],"mainAttackDamage":[2,10]},"slug":"kickers"}

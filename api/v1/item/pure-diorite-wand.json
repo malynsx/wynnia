@@ -1,0 +1,1 @@
+{"name":"Pure Diorite Wand","type":"wand","category":"weapon","rarity":"normal","level":69,"icon":"https://malynsx.github.io/wynntools/img/items/wand.basicWood.webp","classRequirement":"mage","base":{"baseDamage":[99,119]},"powderSlots":2,"attackSpeed":"slow","averageDps":164,"slug":"pure-diorite-wand"}

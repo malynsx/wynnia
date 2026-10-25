@@ -1,0 +1,1 @@
+{"name":"Orc Skin","stars":0,"level":63,"professions":["tailoring","armouring"],"icon":"https://malynsx.github.io/wynntools/img/ing/334_0.png","identifications":{"fireDefence":[3,6],"rawStrength":[1,3]},"itemOnlyIds":{"defenceRequirement":5,"durabilityModifier":-40000,"strengthRequirement":5},"slug":"orc-skin"}

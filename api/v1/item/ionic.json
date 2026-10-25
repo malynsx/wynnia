@@ -1,0 +1,1 @@
+{"name":"Ionic","type":"bracelet","category":"accessory","rarity":"unique","level":32,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.thunder1.webp","skillRequirements":{"dexterity":15},"base":{"baseHealth":-30,"baseThunderDefence":4},"identifications":{"manaSteal":[1,5],"thunderDamage":[2,8]},"slug":"ionic"}

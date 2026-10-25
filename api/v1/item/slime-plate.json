@@ -1,0 +1,1 @@
+{"name":"Slime Plate","type":"chestplate","category":"armour","rarity":"rare","level":53,"icon":"https://malynsx.github.io/wynntools/img/items/chestplate.pale_chainmail.webp","skillRequirements":{"strength":20,"defence":35},"base":{"baseEarthDefence":30,"baseHealth":800},"identifications":{"poison":[30,130],"walkSpeed":[-8,-4]},"powderSlots":2,"slug":"slime-plate"}

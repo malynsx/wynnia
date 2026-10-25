@@ -1,0 +1,1 @@
+{"name":"Flawless Andesite Wand","type":"wand","category":"weapon","rarity":"normal","level":39,"icon":"https://malynsx.github.io/wynntools/img/items/wand.basicWood.webp","classRequirement":"mage","base":{"baseDamage":[35,45]},"powderSlots":1,"attackSpeed":"slow","averageDps":60,"slug":"flawless-andesite-wand"}

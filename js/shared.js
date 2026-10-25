@@ -45,7 +45,10 @@
     let r;
     try { r = await fetch(W.API_RELAY.replace(/\/$/, '') + '/v3/' + path); }
     catch (e) { throw new Error('Could not reach the lookup service. Check your connection and try again.'); }
-    const j = await r.json().catch(() => ({}));
+    const raw = await r.text();
+    let j; try { j = JSON.parse(raw); } catch (e) { j = null; }
+    if (r.status === 404 && j === null) throw new Error('The lookup relay doesn’t allow this request yet. Update the Cloudflare worker with the latest proxy/worker.js.');
+    j = j || {};
     if (r.status === 404) throw new Error('Nothing was found with that name.');
     if (r.status === 429) throw new Error('The Wynncraft API is busy right now (rate limit). Try again in a minute.');
     if (r.status === 300) return { multiple: j };
@@ -186,7 +189,7 @@
 
   W.cap = cap; W.words = words;
   W.copyText = (text, btn) => {
-    try { navigator.clipboard.writeText(text); } catch (e) { /* manual copy */ }
+    try { navigator.clipboard.writeText(text).catch(() => {}); } catch (e) { /* manual copy */ }
     if (btn) { const t = btn.textContent; btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = t; }, 1200); }
   };
 })(window.W);

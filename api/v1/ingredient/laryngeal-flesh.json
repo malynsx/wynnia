@@ -1,0 +1,1 @@
+{"name":"Laryngeal Flesh","stars":1,"level":22,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/376_0.png","identifications":{"mainAttackDamage":[10,12],"rawSpellDamage":[-16,-14]},"itemOnlyIds":{"strengthRequirement":5},"consumableOnlyIds":{"duration":-69},"slug":"laryngeal-flesh"}

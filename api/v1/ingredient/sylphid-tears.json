@@ -1,0 +1,1 @@
+{"name":"Sylphid Tears","stars":1,"level":98,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/410_0.png","identifications":{"airDamage":[8,16],"airDefence":[10,18]},"itemOnlyIds":{"agilityRequirement":15},"consumableOnlyIds":{"duration":-130},"slug":"sylphid-tears"}

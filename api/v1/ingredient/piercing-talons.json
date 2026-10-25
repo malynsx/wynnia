@@ -1,0 +1,1 @@
+{"name":"Piercing Talons","stars":2,"level":85,"professions":["jeweling","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/410_0.png","identifications":{"rawDexterity":[1,1],"rawMainAttackDamage":[35,40]},"itemOnlyIds":{"dexterityRequirement":16,"durabilityModifier":-70000},"slug":"piercing-talons"}

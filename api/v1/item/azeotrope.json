@@ -1,0 +1,1 @@
+{"name":"Azeotrope","type":"ring","category":"accessory","rarity":"legendary","level":102,"icon":"https://malynsx.github.io/wynntools/img/items/ring.water2.webp","skillRequirements":{"intelligence":65},"base":{"baseHealth":-400,"baseWaterDefence":60},"identifications":{"raw2ndSpellCost":[-1,-6],"rawMainAttackDamage":[-117,-63],"spellDamage":[2,10]},"slug":"azeotrope"}

@@ -1,0 +1,1 @@
+{"name":"Cat Food","stars":2,"level":28,"professions":["cooking","alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/350_0.png","identifications":{"combatExperience":[-10,-8],"manaRegen":[3,3]},"consumableOnlyIds":{"duration":-310},"slug":"cat-food"}

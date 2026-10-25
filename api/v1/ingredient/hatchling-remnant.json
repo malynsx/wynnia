@@ -1,0 +1,1 @@
+{"name":"Hatchling Remnant","stars":1,"level":75,"professions":["armouring","scribing"],"icon":"https://malynsx.github.io/wynntools/img/ing/362_0.png","identifications":{"airDamage":[4,5],"lifeSteal":[45,60]},"itemOnlyIds":{"agilityRequirement":12,"durabilityModifier":-61000},"consumableOnlyIds":{"duration":-115},"slug":"hatchling-remnant"}

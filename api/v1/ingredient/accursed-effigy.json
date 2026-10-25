@@ -1,0 +1,1 @@
+{"name":"Accursed Effigy","stars":2,"level":76,"professions":["armouring","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/449_0.png","identifications":{"fireDamage":[8,11],"manaSteal":[3,4],"walkSpeed":[-8,-5]},"itemOnlyIds":{"defenceRequirement":15,"durabilityModifier":-87000},"slug":"accursed-effigy"}

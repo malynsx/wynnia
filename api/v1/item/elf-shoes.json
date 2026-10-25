@@ -1,0 +1,1 @@
+{"name":"Elf Shoes","type":"boots","category":"armour","rarity":"rare","level":50,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_chainmail.webp","skillRequirements":{"defence":10,"agility":25},"base":{"baseAirDefence":30,"baseFireDefence":20,"baseHealth":685},"identifications":{"healthRegen":15,"lootBonus":9,"walkSpeed":6},"powderSlots":2,"slug":"elf-shoes"}

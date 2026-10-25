@@ -1,0 +1,1 @@
+{"name":"Ice Mask","type":"helmet","category":"armour","rarity":"rare","level":28,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","base":{"baseAirDefence":12,"baseFireDefence":-8,"baseHealth":130},"identifications":{"airDamage":10,"manaSteal":5,"rawMainAttackDamage":50,"reflection":12},"slug":"ice-mask"}

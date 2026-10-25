@@ -120,6 +120,43 @@
     });
   };
 
+  /* Material Calculator: crafts wanted -> materials, crafting XP and the level it gets you to. */
+  const mc = { prof: 'armouring', type: '', lvl: 0, count: 10, cur: 1, pct: 0 };
+  W.pages['professions/materials'] = function (root) {
+    W.withData(root, ['recipes', 'profxp'], (recipes, xp) => {
+      const draw = () => {
+        const types = [...new Set(recipes.filter(r => r.s === mc.prof).map(r => r.t))];
+        if (!types.includes(mc.type)) mc.type = types[0];
+        const brackets = recipes.filter(r => r.s === mc.prof && r.t === mc.type);
+        if (!brackets[mc.lvl]) mc.lvl = 0;
+        const r = brackets[mc.lvl];
+        const gained = (r.xp || 0) * mc.count;
+        let lvl = mc.cur, left = (xp[lvl - 1] || 0) * (1 - mc.pct / 100), pool = gained;
+        while (lvl <= xp.length && pool >= left) { pool -= left; lvl++; left = xp[lvl - 1] || Infinity; }
+        const pctAfter = xp[lvl - 1] ? Math.floor(100 - (left - pool) / xp[lvl - 1] * 100) : 0;
+        root.replaceChildren(el('div', { class: 'cols' },
+          W.win('Material Calculator',
+            profPicker(['alchemism', 'armouring', 'cooking', 'jeweling', 'scribing', 'tailoring', 'weaponsmithing', 'woodworking'], mc.prof, (p) => { mc.prof = p; draw(); }),
+            el('div', { class: 'fields3' },
+              el('label', {}, 'Item', W.sel(types.map(t => [t, W.cap(t)]), mc.type, (v) => { mc.type = v; draw(); })),
+              el('label', {}, 'Level range', W.sel(brackets.map((b, i) => [i, `${b.l[0]}–${b.l[1]}`]), mc.lvl, (v) => { mc.lvl = +v; draw(); })),
+              el('label', {}, 'How many', W.numIn(mc.count, (v) => { mc.count = Math.max(1, v); draw(); }, 1, 100000))),
+            el('div', { class: 'fields3' },
+              el('label', {}, `Your ${W.cap(mc.prof)} level`, W.numIn(mc.cur, (v) => { mc.cur = Math.max(1, v); draw(); }, 1, 132)),
+              el('label', {}, 'Progress %', W.numIn(mc.pct, (v) => { mc.pct = Math.min(99, Math.max(0, v)); draw(); }, 0, 99)))),
+          W.win('You need',
+            el('div', { class: 'ahead' }, (r.m || []).map(([n, item]) => el('div', { class: 'arow' }, el('div', { class: 'aico' }, W.art.wiki(mc.prof)),
+              el('div', {}, el('b', {}, `${(n * mc.count).toLocaleString()} × ${item}`), el('small', {}, `${n} per craft`))))),
+            el('div', { class: 'bigstats' },
+              el('div', {}, el('b', {}, gained.toLocaleString()), el('span', {}, 'Crafting XP')),
+              el('div', {}, el('b', {}, 'Lv. ' + Math.min(lvl, xp.length + 1)), el('span', {}, `after (${Math.max(0, pctAfter)}%)`)),
+              el('div', {}, el('b', {}, (r.xp || 0).toLocaleString()), el('span', {}, 'XP per craft'))),
+            el('p', { class: 'hint' }, 'Plus up to six ingredients per craft. Materials come from the matching gathering professions; check Grinding Spots for where to get them. XP is the recipe’s base XP; higher-tier ingredients give a little more.'))));
+      };
+      draw();
+    });
+  };
+
   W.pages['professions/gathering'] = function (root) {
     W.withData(root, ['materials'], (mats) => {
       const draw = () => {

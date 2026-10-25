@@ -1,0 +1,1 @@
+{"name":"Tenebrous Plasma","stars":2,"level":65,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/252_15.png","identifications":{"mainAttackDamage":[-20,-12],"spellDamage":[10,16],"walkSpeed":[6,10]},"consumableOnlyIds":{"duration":-150},"slug":"tenebrous-plasma"}

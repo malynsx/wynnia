@@ -1,0 +1,1 @@
+{"name":"Portal Emanation","stars":2,"level":29,"professions":["weaponsmithing","woodworking","tailoring","armouring"],"icon":"https://malynsx.github.io/wynntools/img/ing/378_0.png","identifications":{"manaRegen":[5,6],"spellDamage":[-8,-6]},"itemOnlyIds":{"durabilityModifier":-54000,"intelligenceRequirement":15},"slug":"portal-emanation"}

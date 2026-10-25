@@ -1,0 +1,1 @@
+{"name":"Javelin","type":"spear","category":"weapon","rarity":"rare","level":5,"icon":"https://malynsx.github.io/wynntools/img/items/spear.basicWood.webp","classRequirement":"warrior","base":{"baseDamage":[12,18]},"identifications":{"rawDexterity":4,"rawMainAttackDamage":[2,10]},"attackSpeed":"normal","averageDps":31,"slug":"javelin"}

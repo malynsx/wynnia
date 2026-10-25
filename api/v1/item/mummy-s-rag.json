@@ -1,0 +1,1 @@
+{"name":"Mummy's Rag","type":"chestplate","category":"armour","rarity":"legendary","level":38,"icon":"https://malynsx.github.io/wynntools/img/items/chestplate.pale_gold.webp","base":{"baseAirDefence":20,"baseEarthDefence":20,"baseHealth":400},"identifications":{"rawAttackSpeed":1,"reflection":[2,7],"thorns":[2,7],"walkSpeed":[-26,-14]},"slug":"mummy-s-rag"}

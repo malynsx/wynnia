@@ -1,0 +1,1 @@
+{"name":"Snowflake","type":"necklace","category":"accessory","rarity":"rare","level":75,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.water2.webp","skillRequirements":{"intelligence":50},"base":{"baseAirDefence":20,"baseWaterDefence":20},"identifications":{"healthRegenRaw":-90,"manaRegen":6,"manaSteal":6},"slug":"snowflake"}

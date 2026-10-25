@@ -1,0 +1,1 @@
+{"name":"Foul Fairy Dust","stars":3,"level":43,"professions":["weaponsmithing","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/372_0.png","identifications":{"manaRegen":[-8,-7],"spellDamage":[12,16]},"itemOnlyIds":{"durabilityModifier":-96000,"intelligenceRequirement":30},"slug":"foul-fairy-dust"}

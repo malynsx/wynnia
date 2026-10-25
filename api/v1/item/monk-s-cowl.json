@@ -1,0 +1,1 @@
+{"name":"Monk's Cowl","type":"helmet","category":"armour","rarity":"rare","level":12,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.pale_leather.webp","base":{"baseFireDefence":2,"baseHealth":52,"baseWaterDefence":2},"identifications":{"combatExperience":[2,8],"healthRegenRaw":[2,8],"manaRegen":[2,8]},"powderSlots":1,"slug":"monk-s-cowl"}

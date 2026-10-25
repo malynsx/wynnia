@@ -1,0 +1,1 @@
+{"name":"Slime Boots","type":"boots","category":"armour","rarity":"rare","level":51,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_chainmail.webp","skillRequirements":{"strength":15,"defence":35},"base":{"baseHealth":715},"identifications":{"rawAgility":-4,"rawDefence":5,"rawStrength":7,"walkSpeed":[-8,-4]},"powderSlots":2,"slug":"slime-boots"}

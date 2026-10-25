@@ -1,0 +1,1 @@
+{"name":"Contrast","type":"necklace","category":"accessory","rarity":"legendary","level":100,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.basicGold.webp","base":{"baseHealth":525},"identifications":{"healthRegenRaw":200,"lifeSteal":200,"manaRegen":8,"poison":550,"walkSpeed":12},"restriction":"untradable","slug":"contrast"}

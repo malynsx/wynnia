@@ -1,0 +1,1 @@
+{"name":"Bat Heart","stars":3,"level":37,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/376_0.png","identifications":{"mainAttackDamage":[-20,-20],"spellDamage":[-20,-20],"walkSpeed":[24,28]},"consumableOnlyIds":{"charges":-1,"duration":90},"slug":"bat-heart"}

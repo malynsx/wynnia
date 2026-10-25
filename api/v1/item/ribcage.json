@@ -1,0 +1,1 @@
+{"name":"Ribcage","type":"chestplate","category":"armour","rarity":"rare","level":12,"icon":"https://malynsx.github.io/wynntools/img/items/chestplate.pale_leather.webp","base":{"baseEarthDefence":5,"baseHealth":58},"identifications":{"healthRegenRaw":6,"mainAttackDamage":12},"powderSlots":1,"restriction":"untradable","slug":"ribcage"}

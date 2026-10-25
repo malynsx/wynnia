@@ -1,0 +1,1 @@
+{"name":"Portable Buoys","type":"boots","category":"armour","rarity":"unique","level":25,"icon":"https://malynsx.github.io/wynntools/img/items/boots.gold.webp","skillRequirements":{"agility":5},"base":{"baseHealth":130,"baseWaterDefence":7},"identifications":{"2ndSpellCost":-25,"reflection":10,"walkSpeed":4,"waterDefence":20},"powderSlots":1,"slug":"portable-buoys"}

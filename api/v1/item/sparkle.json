@@ -1,0 +1,1 @@
+{"name":"Sparkle","type":"ring","category":"accessory","rarity":"unique","level":16,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire1.webp","skillRequirements":{"defence":4},"base":{"baseFireDefence":3,"baseHealth":10},"identifications":{"healthRegenRaw":1,"manaRegen":[1,4]},"slug":"sparkle"}

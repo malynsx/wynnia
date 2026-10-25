@@ -1,0 +1,1 @@
+{"name":"Myrrh","type":"ring","category":"accessory","rarity":"rare","level":65,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicPearl.webp","skillRequirements":{"intelligence":50},"base":{"baseHealth":-100,"baseWaterDefence":10},"identifications":{"manaRegen":6,"spellDamage":7},"slug":"myrrh"}

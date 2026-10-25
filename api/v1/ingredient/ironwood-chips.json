@@ -1,0 +1,1 @@
+{"name":"Ironwood Chips","stars":2,"level":70,"professions":["armouring","tailoring","weaponsmithing","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/362_0.png","identifications":{"healthRegenRaw":[112,126],"mainAttackDamage":[26,30],"rawAttackSpeed":[-1,-1]},"itemOnlyIds":{"durabilityModifier":-87000,"strengthRequirement":24},"slug":"ironwood-chips"}

@@ -1,0 +1,1 @@
+{"name":"Electrode","type":"ring","category":"accessory","rarity":"rare","level":40,"icon":"https://malynsx.github.io/wynntools/img/items/ring.thunder1.webp","skillRequirements":{"dexterity":15},"base":{"baseHealth":-40,"baseThunderDefence":8},"identifications":{"lifeSteal":[4,18],"manaSteal":[1,5],"rawDexterity":2},"slug":"electrode"}

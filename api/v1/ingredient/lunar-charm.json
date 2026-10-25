@@ -1,0 +1,1 @@
+{"name":"Lunar Charm","stars":3,"level":38,"professions":["scribing","alchemism","jeweling"],"icon":"https://malynsx.github.io/wynntools/img/ing/259_18.png","itemOnlyIds":{"durabilityModifier":-87000},"consumableOnlyIds":{"duration":-170},"positionModifiers":{"notTouching":25,"touching":25},"slug":"lunar-charm"}

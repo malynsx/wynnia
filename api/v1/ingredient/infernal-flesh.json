@@ -1,0 +1,1 @@
+{"name":"Infernal Flesh","stars":2,"level":94,"professions":["cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/363_0.png","identifications":{"fireDamage":[6,8],"fireDefence":[8,10],"rawHealth":[400,500]},"consumableOnlyIds":{"duration":-550},"slug":"infernal-flesh"}

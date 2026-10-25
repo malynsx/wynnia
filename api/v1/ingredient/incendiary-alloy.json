@@ -1,0 +1,1 @@
+{"name":"Incendiary Alloy","stars":3,"level":106,"professions":["armouring"],"icon":null,"identifications":{"fireDamage":[8,10],"rawDefence":[-5,-4],"rawFireMainAttackDamage":[120,150]},"itemOnlyIds":{"defenceRequirement":30,"durabilityModifier":-145000},"slug":"incendiary-alloy"}

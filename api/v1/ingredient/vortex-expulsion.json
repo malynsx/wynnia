@@ -1,0 +1,1 @@
+{"name":"Vortex Expulsion","stars":2,"level":100,"professions":["armouring","tailoring","scribing"],"icon":"https://malynsx.github.io/wynntools/img/ing/263_1.png","identifications":{"exploding":[14,17],"reflection":[19,23]},"itemOnlyIds":{"agilityRequirement":-17,"durabilityModifier":-104000},"consumableOnlyIds":{"charges":1,"duration":-190},"slug":"vortex-expulsion"}

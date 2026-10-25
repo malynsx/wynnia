@@ -1,0 +1,1 @@
+{"name":"Pass Band","type":"bracelet","category":"accessory","rarity":"unique","level":90,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.earth2.webp","skillRequirements":{"strength":25},"base":{"baseEarthDefence":25,"baseHealth":300},"identifications":{"healthRegenRaw":[27,118],"poison":[150,650],"reflection":[3,13],"thorns":[3,13]},"slug":"pass-band"}

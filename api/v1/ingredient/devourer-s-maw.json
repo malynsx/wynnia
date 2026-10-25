@@ -1,0 +1,1 @@
+{"name":"Devourer's Maw","stars":3,"level":68,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/skin_74843ea5fe093315.png","identifications":{"lifeSteal":[100,120],"manaRegen":[-4,-2],"manaSteal":[-3,-2]},"consumableOnlyIds":{"duration":-230},"slug":"devourer-s-maw"}

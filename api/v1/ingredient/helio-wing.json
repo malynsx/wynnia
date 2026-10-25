@@ -1,0 +1,1 @@
+{"name":"Helio Wing","stars":2,"level":83,"professions":["armouring","weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/379_0.png","identifications":{"airDamage":[7,9],"rawAgility":[1,3],"rawDexterity":[2,2]},"itemOnlyIds":{"agilityRequirement":12,"dexterityRequirement":7,"durabilityModifier":-90000},"slug":"helio-wing"}

@@ -1,0 +1,1 @@
+{"name":"Meltok","type":"wand","category":"weapon","rarity":"rare","level":8,"icon":"https://malynsx.github.io/wynntools/img/items/wand.basicGold.webp","classRequirement":"mage","base":{"baseDamage":[3,7],"baseFireDamage":[3,5]},"identifications":{"combatExperience":[2,8],"healthRegenRaw":[2,8],"rawDefence":4},"powderSlots":1,"attackSpeed":"fast","averageDps":22,"slug":"meltok"}

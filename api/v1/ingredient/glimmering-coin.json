@@ -1,0 +1,1 @@
+{"name":"Glimmering Coin","stars":3,"level":26,"professions":["armouring","tailoring","woodworking","weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/175_0.png","identifications":{"healthRegenRaw":[-35,-28],"lootBonus":[6,8],"walkSpeed":[3,5]},"itemOnlyIds":{"durabilityModifier":-79000},"slug":"glimmering-coin"}

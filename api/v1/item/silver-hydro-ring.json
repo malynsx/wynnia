@@ -1,0 +1,1 @@
+{"name":"Silver Hydro Ring","type":"ring","category":"accessory","rarity":"legendary","level":95,"icon":"https://malynsx.github.io/wynntools/img/items/ring.water1.webp","skillRequirements":{"intelligence":50},"base":{"baseWaterDefence":40},"identifications":{"manaSteal":4,"rawIntelligence":3,"waterDamage":5,"waterDefence":5},"restriction":"untradable","slug":"silver-hydro-ring"}

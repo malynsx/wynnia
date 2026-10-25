@@ -1,0 +1,1 @@
+{"name":"Sledge","type":"spear","category":"weapon","rarity":"unique","level":9,"icon":"https://malynsx.github.io/wynntools/img/items/spear.earth1.webp","classRequirement":"warrior","base":{"baseDamage":[25,37]},"identifications":{"rawMainAttackDamage":[6,26],"rawStrength":7,"walkSpeed":[-13,-7]},"powderSlots":1,"attackSpeed":"verySlow","averageDps":26,"slug":"sledge"}

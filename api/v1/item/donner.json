@@ -1,0 +1,1 @@
+{"name":"Donner","type":"ring","category":"accessory","rarity":"unique","level":65,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire2.webp","skillRequirements":{"dexterity":20,"defence":15},"base":{"baseFireDefence":15,"baseThunderDefence":15,"baseWaterDefence":-25},"identifications":{"fireDamage":9,"lifeSteal":55,"rawDexterity":5},"slug":"donner"}

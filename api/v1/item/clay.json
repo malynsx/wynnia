@@ -1,0 +1,1 @@
+{"name":"Clay","type":"ring","category":"accessory","rarity":"rare","level":73,"icon":"https://malynsx.github.io/wynntools/img/items/ring.earth2.webp","base":{"baseEarthDefence":50},"identifications":{"knockback":[4,16],"mainAttackDamage":[3,12]},"slug":"clay"}

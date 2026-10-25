@@ -1,0 +1,1 @@
+{"name":"Bovemist Amulet","type":"necklace","category":"accessory","rarity":"unique","level":18,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.basicCross.webp","skillRequirements":{"intelligence":8},"base":{"baseThunderDefence":5,"baseWaterDefence":5},"identifications":{"healthRegenRaw":[1,5],"rawIntelligence":3},"slug":"bovemist-amulet"}

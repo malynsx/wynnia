@@ -1,0 +1,1 @@
+{"name":"Fiery Torc","type":"necklace","category":"accessory","rarity":"unique","level":69,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.fire2.webp","skillRequirements":{"defence":25},"base":{"baseFireDefence":40,"baseHealth":400,"baseWaterDefence":-40},"identifications":{"fireDamage":[2,9],"healthRegenRaw":[14,60],"rawDefence":4},"slug":"fiery-torc"}

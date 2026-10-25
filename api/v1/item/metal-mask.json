@@ -1,0 +1,1 @@
+{"name":"Metal Mask","type":"helmet","category":"armour","rarity":"unique","level":27,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","base":{"baseFireDefence":10,"baseHealth":185},"identifications":{"healthRegenRaw":18,"knockback":15,"rawDefence":8},"powderSlots":1,"slug":"metal-mask"}

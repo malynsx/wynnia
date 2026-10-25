@@ -1,0 +1,1 @@
+{"name":"Fire Pearl","type":"necklace","category":"accessory","rarity":"rare","level":81,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.fire2.webp","skillRequirements":{"defence":50},"base":{"baseFireDefence":50,"baseHealth":500,"baseWaterDefence":-40},"identifications":{"exploding":6,"fireDamage":10,"healthRegenRaw":120,"waterDamage":-10},"slug":"fire-pearl"}

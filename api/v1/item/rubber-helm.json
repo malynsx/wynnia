@@ -1,0 +1,1 @@
+{"name":"Rubber Helm","type":"helmet","category":"armour","rarity":"unique","level":29,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","base":{"baseHealth":200},"identifications":{"rawAgility":-3,"rawDexterity":-3,"reflection":[3,13],"thorns":[3,13]},"powderSlots":1,"slug":"rubber-helm"}

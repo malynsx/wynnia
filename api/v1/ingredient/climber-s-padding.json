@@ -1,0 +1,1 @@
+{"name":"Climber's Padding","stars":0,"level":60,"professions":["armouring","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/171_0.png","identifications":{"rawHealth":[40,65],"sprintRegen":[6,7]},"itemOnlyIds":{"agilityRequirement":6,"durabilityModifier":-35000},"slug":"climber-s-padding"}

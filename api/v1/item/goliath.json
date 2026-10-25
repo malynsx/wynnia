@@ -1,0 +1,1 @@
+{"name":"Goliath","type":"boots","category":"armour","rarity":"unique","level":19,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_leather.webp","skillRequirements":{"defence":12},"base":{"baseFireDefence":4,"baseHealth":100},"identifications":{"healthRegenRaw":[2,10]},"slug":"goliath"}

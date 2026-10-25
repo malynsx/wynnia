@@ -1,0 +1,1 @@
+{"name":"Montefiore","type":"chestplate","category":"armour","rarity":"rare","level":64,"icon":"https://malynsx.github.io/wynntools/img/items/chestplate.iron.webp","base":{"baseHealth":1340},"identifications":{"healthRegen":[3,13],"healthRegenRaw":[34,146],"manaSteal":[-5,-3]},"powderSlots":2,"slug":"montefiore"}

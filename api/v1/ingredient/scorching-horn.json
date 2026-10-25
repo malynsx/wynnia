@@ -1,0 +1,1 @@
+{"name":"Scorching Horn","stars":3,"level":59,"professions":["armouring"],"icon":"https://malynsx.github.io/wynntools/img/ing/318_0.png","identifications":{"fireDamage":[5,6],"manaRegen":[7,8]},"itemOnlyIds":{"defenceRequirement":15,"durabilityModifier":-110000,"intelligenceRequirement":15},"slug":"scorching-horn"}

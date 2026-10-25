@@ -1,0 +1,1 @@
+{"name":"Sunblight Boots","type":"boots","category":"armour","rarity":"rare","level":76,"icon":"https://malynsx.github.io/wynntools/img/items/boots.iron.webp","base":{"baseAirDefence":-90,"baseEarthDefence":100,"baseHealth":1650,"baseThunderDefence":-90,"baseWaterDefence":80},"restriction":"quest_item","slug":"sunblight-boots"}

@@ -1,0 +1,1 @@
+{"name":"Rat Skull","type":"helmet","category":"armour","rarity":"unique","level":10,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.pale_leather.webp","base":{"baseAirDefence":3,"baseHealth":40},"identifications":{"poison":[1,4],"walkSpeed":[2,10]},"powderSlots":1,"slug":"rat-skull"}

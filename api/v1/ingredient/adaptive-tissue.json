@@ -1,0 +1,1 @@
+{"name":"Adaptive Tissue","stars":2,"level":78,"professions":["weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/432_0.png","identifications":{"healthRegenRaw":[70,85],"rawStrength":[5,8]},"itemOnlyIds":{"durabilityModifier":-89000,"strengthRequirement":11},"slug":"adaptive-tissue"}

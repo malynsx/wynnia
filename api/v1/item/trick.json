@@ -1,0 +1,1 @@
+{"name":"Trick","type":"ring","category":"accessory","rarity":"rare","level":50,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicIron.webp","base":{"baseHealth":50},"identifications":{"exploding":[3,13],"lootBonus":[-13,-7]},"restriction":"untradable","slug":"trick"}

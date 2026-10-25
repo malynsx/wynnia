@@ -1,0 +1,1 @@
+{"name":"Snowtread Boots","type":"boots","category":"armour","rarity":"rare","level":33,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_leather.webp","base":{"baseHealth":300},"identifications":{"combatExperience":[5,20],"lootBonus":[5,20]},"majorIds":["Snowy Steps"],"powderSlots":1,"slug":"snowtread-boots"}

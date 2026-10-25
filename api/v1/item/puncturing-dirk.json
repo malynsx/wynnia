@@ -1,0 +1,1 @@
+{"name":"Puncturing Dirk","type":"dagger","category":"weapon","rarity":"unique","level":9,"icon":"https://malynsx.github.io/wynntools/img/items/dagger.basicWood.webp","classRequirement":"assassin","base":{"baseDamage":[10,12]},"identifications":{"lifeSteal":6,"rawDamage":10},"powderSlots":1,"attackSpeed":"veryFast","averageDps":34,"slug":"puncturing-dirk"}

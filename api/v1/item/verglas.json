@@ -1,0 +1,1 @@
+{"name":"Verglas","type":"necklace","category":"accessory","rarity":"rare","level":82,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.air2.webp","skillRequirements":{"intelligence":35,"agility":35},"identifications":{"airDamage":[2,8],"healthRegenRaw":[-118,-64],"manaSteal":[1,5],"rawIntelligence":5,"spellDamage":[2,8],"walkSpeed":[-13,-7]},"slug":"verglas"}

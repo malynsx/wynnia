@@ -1,0 +1,1 @@
+{"name":"Gouttes","type":"ring","category":"accessory","rarity":"unique","level":38,"icon":"https://malynsx.github.io/wynntools/img/items/ring.water1.webp","skillRequirements":{"intelligence":20},"base":{"baseThunderDefence":-4,"baseWaterDefence":8},"identifications":{"rawIntelligence":4,"spellDamage":[2,8]},"slug":"gouttes"}

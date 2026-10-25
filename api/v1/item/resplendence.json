@@ -1,0 +1,1 @@
+{"name":"Resplendence","type":"necklace","category":"accessory","rarity":"legendary","level":93,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.thunder2.webp","skillRequirements":{"dexterity":55},"base":{"baseHealth":425},"identifications":{"elementalDefence":[2,8],"lifeSteal":[42,182],"thunderDamage":[3,12],"waterDamage":[-16,-8]},"slug":"resplendence"}

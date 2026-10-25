@@ -1,0 +1,1 @@
+{"name":"Belligerence","type":"boots","category":"armour","rarity":"unique","level":91,"icon":"https://malynsx.github.io/wynntools/img/items/boots.diamond.webp","base":{"baseHealth":2350},"identifications":{"healthRegenRaw":[-273,-147],"lifeSteal":[60,260],"mainAttackDamage":[12,52],"rawDexterity":8,"rawStrength":8,"spellDamage":[-32,-17]},"powderSlots":2,"slug":"belligerence"}

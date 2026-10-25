@@ -1,0 +1,1 @@
+{"name":"Fuming Lava Rock","stars":1,"level":23,"professions":["weaponsmithing","armouring","jeweling"],"icon":"https://malynsx.github.io/wynntools/img/ing/263_1.png","identifications":{"exploding":[3,4],"fireDamage":[3,4]},"itemOnlyIds":{"defenceRequirement":15,"durabilityModifier":-35000},"slug":"fuming-lava-rock"}

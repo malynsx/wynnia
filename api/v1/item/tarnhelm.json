@@ -1,0 +1,1 @@
+{"name":"Tarnhelm","type":"helmet","category":"armour","rarity":"rare","level":33,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","base":{"baseEarthDefence":20,"baseHealth":240,"baseWaterDefence":-20},"identifications":{"earthDamage":[5,20],"mainAttackDamage":[3,13],"poison":[10,43],"rawStrength":9,"thorns":[4,16]},"powderSlots":2,"slug":"tarnhelm"}

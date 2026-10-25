@@ -1,0 +1,1 @@
+{"name":"Skien Boots","type":"boots","category":"armour","rarity":"rare","level":53,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_chainmail.webp","base":{"baseHealth":775},"identifications":{"mainAttackDamage":[3,13],"rawStrength":5,"spellDamage":[-16,-8],"walkSpeed":[2,7]},"powderSlots":2,"slug":"skien-boots"}

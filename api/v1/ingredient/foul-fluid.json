@@ -1,0 +1,1 @@
+{"name":"Foul Fluid","stars":1,"level":71,"professions":["woodworking","weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/341_0.png","identifications":{"healthRegenRaw":[-50,-34],"poison":[260,275]},"itemOnlyIds":{"durabilityModifier":-38000},"slug":"foul-fluid"}

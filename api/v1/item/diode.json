@@ -1,0 +1,1 @@
+{"name":"Diode","type":"chestplate","category":"armour","rarity":"rare","level":24,"icon":"https://malynsx.github.io/wynntools/img/items/chestplate.gold.webp","skillRequirements":{"dexterity":10},"base":{"baseHealth":140},"identifications":{"lifeSteal":[4,18],"rawDexterity":5,"reflection":[2,8],"thunderDamage":[4,16]},"powderSlots":2,"slug":"diode"}

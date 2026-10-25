@@ -1,0 +1,1 @@
+{"name":"Cultist Ashes","stars":1,"level":15,"professions":["armouring","tailoring","weaponsmithing","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/289_0.png","identifications":{"healthRegenRaw":[-7,-4],"lifeSteal":[8,10]},"itemOnlyIds":{"durabilityModifier":-22000},"slug":"cultist-ashes"}

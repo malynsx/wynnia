@@ -1,0 +1,1 @@
+{"name":"Power Creep","type":"necklace","category":"accessory","rarity":"unique","level":81,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.earth2.webp","skillRequirements":{"strength":60},"identifications":{"earthDamage":[2,10],"mainAttackDamage":[3,13],"mainAttackRange":[3,13],"spellDamage":[-16,-8]},"slug":"power-creep"}

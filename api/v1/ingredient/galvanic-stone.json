@@ -1,0 +1,1 @@
+{"name":"Galvanic Stone","stars":3,"level":54,"professions":["weaponsmithing","woodworking","armouring","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/213_0.png","identifications":{"earthDamage":[8,8],"fireDamage":[8,10]},"itemOnlyIds":{"defenceRequirement":12,"durabilityModifier":-105000,"strengthRequirement":12},"slug":"galvanic-stone"}

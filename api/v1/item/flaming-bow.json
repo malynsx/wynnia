@@ -1,0 +1,1 @@
+{"name":"Flaming Bow","type":"bow","category":"weapon","rarity":"unique","level":9,"icon":"https://malynsx.github.io/wynntools/img/items/bow.fire1.webp","classRequirement":"archer","base":{"baseDamage":[10,18],"baseFireDamage":[6,8]},"identifications":{"rawDefence":3,"rawHealth":[5,21]},"powderSlots":1,"attackSpeed":"slow","averageDps":32,"slug":"flaming-bow"}

@@ -1,0 +1,1 @@
+{"name":"Plane of Nonexistence","stars":3,"level":105,"professions":["scribing"],"icon":"https://malynsx.github.io/wynntools/img/ing/160_15.png","identifications":{"airDamage":[15,18],"earthDamage":[15,18],"fireDamage":[15,18],"thunderDamage":[15,18],"waterDamage":[15,18]},"consumableOnlyIds":{"duration":-325},"slug":"plane-of-nonexistence"}

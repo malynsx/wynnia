@@ -1,0 +1,1 @@
+{"name":"Creepvine Cluster","stars":2,"level":55,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/106_0.png","identifications":{"gatherXpBonus":[4,4],"rawStrength":[5,7],"walkSpeed":[-5,-3]},"consumableOnlyIds":{"duration":-140},"slug":"creepvine-cluster"}

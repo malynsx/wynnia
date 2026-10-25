@@ -1,0 +1,1 @@
+{"name":"Enhanced Physics Microchip","stars":2,"level":90,"professions":["armouring","woodworking","weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/356_0.png","identifications":{"airDamage":[9,15],"reflection":[18,22]},"itemOnlyIds":{"agilityRequirement":30,"durabilityModifier":-98000},"slug":"enhanced-physics-microchip"}

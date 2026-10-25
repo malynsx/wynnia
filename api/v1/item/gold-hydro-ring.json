@@ -1,0 +1,1 @@
+{"name":"Gold Hydro Ring","type":"ring","category":"accessory","rarity":"legendary","level":95,"icon":"https://malynsx.github.io/wynntools/img/items/ring.water2.webp","skillRequirements":{"intelligence":75},"base":{"baseWaterDefence":55},"identifications":{"manaRegen":6,"rawIntelligence":4,"waterDamage":7,"waterDefence":7},"restriction":"untradable","slug":"gold-hydro-ring"}

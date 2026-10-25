@@ -1,0 +1,1 @@
+{"name":"Opium","type":"helmet","category":"armour","rarity":"rare","level":63,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.iron.webp","skillRequirements":{"defence":30},"base":{"baseHealth":1350},"identifications":{"combatExperience":10,"fireDamage":20,"lifeSteal":140,"poison":360,"walkSpeed":-10},"powderSlots":2,"slug":"opium"}

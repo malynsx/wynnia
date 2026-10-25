@@ -1,0 +1,1 @@
+{"name":"Jike","type":"helmet","category":"armour","rarity":"unique","level":16,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.pale_leather.webp","base":{"baseHealth":60},"identifications":{"lootBonus":[2,8],"rawMainAttackDamage":[6,26],"walkSpeed":[2,8]},"slug":"jike"}

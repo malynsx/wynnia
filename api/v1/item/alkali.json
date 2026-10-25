@@ -1,0 +1,1 @@
+{"name":"Alkali","type":"necklace","category":"accessory","rarity":"fabled","level":87,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.multi2.webp","skillRequirements":{"defence":55},"base":{"baseHealth":550},"identifications":{"healthRegenRaw":[53,228],"walkSpeed":[-6,-3],"waterDefence":[7,30]},"majorIds":["Insoluble"],"slug":"alkali"}

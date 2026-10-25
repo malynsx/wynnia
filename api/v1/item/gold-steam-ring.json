@@ -1,0 +1,1 @@
+{"name":"Gold Steam Ring","type":"ring","category":"accessory","rarity":"legendary","level":95,"icon":"https://malynsx.github.io/wynntools/img/items/ring.air2.webp","skillRequirements":{"agility":75},"base":{"baseAirDefence":35,"baseHealth":-180},"identifications":{"airDamage":14,"airDefence":5,"rawAgility":3,"walkSpeed":9},"restriction":"untradable","slug":"gold-steam-ring"}

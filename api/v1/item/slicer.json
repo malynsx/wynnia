@@ -1,0 +1,1 @@
+{"name":"Slicer","type":"dagger","category":"weapon","rarity":"unique","level":1,"icon":"https://malynsx.github.io/wynntools/img/items/dagger.basicGold.webp","classRequirement":"assassin","base":{"baseDamage":[7,9]},"identifications":{"mainAttackDamage":[2,10],"rawStrength":1},"powderSlots":1,"attackSpeed":"normal","averageDps":16,"slug":"slicer"}

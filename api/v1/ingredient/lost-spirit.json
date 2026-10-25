@@ -1,0 +1,1 @@
+{"name":"Lost Spirit","stars":2,"level":87,"professions":["scribing","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/381_0.png","identifications":{"rawSpellDamage":[0,75],"spellDamage":[0,8]},"itemOnlyIds":{"durabilityModifier":-100000},"consumableOnlyIds":{"duration":-200},"slug":"lost-spirit"}

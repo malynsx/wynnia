@@ -1,0 +1,1 @@
+{"name":"Iron String","type":"bow","category":"weapon","rarity":"legendary","level":5,"icon":"https://malynsx.github.io/wynntools/img/items/bow.basicGold.webp","classRequirement":"archer","base":{"baseDamage":[37,50]},"identifications":{"mainAttackDamage":[2,10],"rawAgility":-2,"rawStrength":5,"spellDamage":[-4,-2]},"attackSpeed":"verySlow","averageDps":36,"slug":"iron-string"}

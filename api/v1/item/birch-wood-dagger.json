@@ -1,0 +1,1 @@
+{"name":"Birch Wood Dagger","type":"dagger","category":"weapon","rarity":"normal","level":6,"icon":"https://malynsx.github.io/wynntools/img/items/dagger.basicWood.webp","classRequirement":"assassin","base":{"baseDamage":[5,10]},"powderSlots":1,"attackSpeed":"fast","averageDps":19,"slug":"birch-wood-dagger"}

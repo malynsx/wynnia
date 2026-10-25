@@ -1,0 +1,1 @@
+{"name":"Dormancy","type":"ring","category":"accessory","rarity":"legendary","level":119,"icon":"https://malynsx.github.io/wynntools/img/items/ring.water2.webp","skillRequirements":{"intelligence":60},"base":{"baseHealth":650,"baseWaterDefence":90},"identifications":{"healingEfficiency":[2,10],"rawAttackSpeed":-1,"rawIntelligence":4,"reflection":[4,18]},"slug":"dormancy"}

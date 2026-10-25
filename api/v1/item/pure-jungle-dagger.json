@@ -1,0 +1,1 @@
+{"name":"Pure Jungle Dagger","type":"dagger","category":"weapon","rarity":"normal","level":72,"icon":"https://malynsx.github.io/wynntools/img/items/dagger.basicWood.webp","classRequirement":"assassin","base":{"baseDamage":[100,120]},"powderSlots":2,"attackSpeed":"fast","averageDps":275,"slug":"pure-jungle-dagger"}

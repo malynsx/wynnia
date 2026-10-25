@@ -1,0 +1,1 @@
+{"name":"Blitzen","type":"ring","category":"accessory","rarity":"rare","level":75,"icon":"https://malynsx.github.io/wynntools/img/items/ring.water2.webp","skillRequirements":{"dexterity":30,"intelligence":10},"base":{"baseHealth":-140,"baseWaterDefence":10},"identifications":{"manaSteal":6,"waterDamage":12},"slug":"blitzen"}

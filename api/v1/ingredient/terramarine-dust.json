@@ -1,0 +1,1 @@
+{"name":"Terramarine Dust","stars":1,"level":62,"professions":["woodworking","scribing"],"icon":"https://malynsx.github.io/wynntools/img/ing/351_4.png","identifications":{"earthDamage":[5,7],"waterDamage":[5,7]},"itemOnlyIds":{"durabilityModifier":-55000,"intelligenceRequirement":6,"strengthRequirement":6},"consumableOnlyIds":{"duration":-100},"slug":"terramarine-dust"}

@@ -1,0 +1,1 @@
+{"name":"Advancement","type":"helmet","category":"armour","rarity":"legendary","level":29,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","base":{"baseHealth":255},"identifications":{"combatExperience":10,"manaSteal":10},"powderSlots":2,"restriction":"untradable","slug":"advancement"}

@@ -1,0 +1,1 @@
+{"name":"Ashes","type":"necklace","category":"accessory","rarity":"unique","level":94,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.fire2.webp","skillRequirements":{"defence":50},"base":{"baseHealth":800,"baseWaterDefence":-50},"identifications":{"airDefence":12,"rawDefence":4,"walkSpeed":12,"waterDefence":-10},"slug":"ashes"}

@@ -1,0 +1,1 @@
+{"name":"Alumia","type":"helmet","category":"armour","rarity":"rare","level":24,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","skillRequirements":{"dexterity":8},"base":{"baseEarthDefence":-5,"baseHealth":150,"baseThunderDefence":10},"identifications":{"earthDamage":[-13,-7],"manaSteal":[1,5],"reflection":[2,10],"thunderDamage":[4,16]},"slug":"alumia"}

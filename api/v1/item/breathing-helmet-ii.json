@@ -1,0 +1,1 @@
+{"name":"Breathing Helmet II","type":"helmet","category":"armour","rarity":"unique","level":40,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.pale_gold.webp","base":{"baseHealth":300,"baseThunderDefence":-40,"baseWaterDefence":40},"identifications":{"reflection":20,"walkSpeed":5,"waterDamage":15},"restriction":"untradable","slug":"breathing-helmet-ii"}

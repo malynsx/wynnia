@@ -1,0 +1,1 @@
+{"name":"Depressing Shears","type":"dagger","category":"weapon","rarity":"normal","level":1,"icon":"https://malynsx.github.io/wynntools/img/items/dagger.basicWood.webp","classRequirement":"assassin","base":{"baseDamage":[0,1]},"attackSpeed":"fast","averageDps":1,"slug":"depressing-shears"}

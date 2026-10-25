@@ -1,0 +1,1 @@
+{"name":"Purification Bead","type":"necklace","category":"accessory","rarity":"rare","level":55,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.basicIron.webp","skillRequirements":{"defence":20},"identifications":{"healthRegen":[1,5],"healthRegenRaw":[15,64],"rawDefence":5},"restriction":"untradable","slug":"purification-bead"}

@@ -1,0 +1,1 @@
+{"name":"Oxidation","type":"leggings","category":"armour","rarity":"unique","level":27,"icon":"https://malynsx.github.io/wynntools/img/items/leggings.gold.webp","skillRequirements":{"agility":10},"base":{"baseHealth":120},"identifications":{"airDamage":[4,16],"combatExperience":[2,10],"healthRegen":[-13,-7],"poison":[5,20],"walkSpeed":[4,16]},"powderSlots":1,"slug":"oxidation"}

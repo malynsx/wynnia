@@ -6,7 +6,7 @@
 
   W.pages['guilds/lookup'] = function (root, q) {
     if (q && q.get('g') && (!GL.data || GL.data.name !== q.get('g')) && !GL.busy) { GL.name = q.get('g'); setTimeout(go, 0); }
-    const draw = () => root.replaceChildren(el('div', { class: 'stack' }, form(), info(), members()));
+    const draw = () => root.replaceChildren(el('div', { class: 'stack' }, form(), info(), extras(), members()));
     async function go() {
       if (!GL.name) return;
       GL.busy = true; GL.err = null; draw();
@@ -49,6 +49,18 @@
             tile('Wars', d.wars != null ? d.wars.toLocaleString() : null),
             tile('Total XP given', W.short(all.reduce((a, m) => a + (m.contributed || 0), 0))),
             seasons[0] ? tile(`Season ${seasons[0][0]} rating`, seasons[0][1].rating != null ? seasons[0][1].rating.toLocaleString() : null) : null)));
+    }
+    function extras() {
+      const d = GL.data; if (!d || !d.members || GL.busy) return null;
+      const all = RANKS.flatMap(r => Object.entries(d.members[r] || {}).map(([name, m]) => ({ name: m.username || name, rank: r, ...m })));
+      const top = [...all].sort((a, b) => (b.contributed || 0) - (a.contributed || 0)).slice(0, 10), max = (top[0] && top[0].contributed) || 1;
+      const fresh = all.filter(m => m.joined).sort((a, b) => new Date(b.joined) - new Date(a.joined)).slice(0, 8);
+      return el('div', { class: 'cols' },
+        W.win('Top contributors', el('div', { class: 'blist' }, top.map((m, i) => el('div', { class: 'brow2 contrib' },
+          el('a', { href: '#players/lookup?u=' + encodeURIComponent(m.name) }, `${i + 1}. ${m.name}`),
+          el('div', { class: 'cbar' }, el('i', { class: 'gold', style: { width: (m.contributed || 0) / max * 100 + '%' } }), el('b', {}, W.short(m.contributed || 0) + ' XP')))))),
+        W.win('Newest members', el('div', { class: 'ahead' }, fresh.map(m => el('a', { class: 'arow', href: '#players/lookup?u=' + encodeURIComponent(m.name), style: { color: '#fff', textDecoration: 'none' } },
+          m.uuid ? W.head(m.uuid, 40) : null, el('div', {}, el('b', {}, m.name), el('small', {}, `${W.cap(m.rank)} · joined ${W.ago(m.joined)}`)))))));
     }
     function members() {
       const d = GL.data; if (!d || !d.members || GL.busy) return null;

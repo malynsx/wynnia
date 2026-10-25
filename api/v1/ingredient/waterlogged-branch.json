@@ -1,0 +1,1 @@
+{"name":"Waterlogged Branch","stars":0,"level":20,"professions":["woodworking","weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/32_0.png","identifications":{"mainAttackDamage":[2,5],"spellDamage":[-5,-3]},"itemOnlyIds":{"durabilityModifier":-24000},"slug":"waterlogged-branch"}

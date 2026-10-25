@@ -1,0 +1,1 @@
+{"name":"Creepvine","type":"ring","category":"accessory","rarity":"unique","level":69,"icon":"https://malynsx.github.io/wynntools/img/items/ring.earth2.webp","skillRequirements":{"strength":25},"base":{"baseFireDefence":-15},"identifications":{"earthDamage":13,"poison":120,"rawStrength":3,"walkSpeed":-8},"slug":"creepvine"}

@@ -1,0 +1,1 @@
+{"name":"Vis","type":"helmet","category":"armour","rarity":"rare","level":71,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.iron.webp","skillRequirements":{"intelligence":35},"base":{"baseHealth":1350,"baseWaterDefence":75},"identifications":{"manaRegen":12,"rawIntelligence":5,"rawMaxMana":30,"thunderDefence":-10,"waterDamage":10},"powderSlots":2,"slug":"vis"}

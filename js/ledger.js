@@ -17,7 +17,23 @@
         el('div', { class: 'btns' },
           el('button', { onclick: () => { if (draft.a && draft.b && draft.c) { L.push({ ...draft }); W.save(); draw(); } } }, 'Add to ledger'),
           el('button', { onclick: () => { const a = W.mountById(S.feeder.a), b = W.mountById(S.feeder.b); if (a && b) { draft.a = W.sumLim(a); draft.b = W.sumLim(b); draw(); } } }, 'Fill parents from Feeder')),
-        el('p', { class: 'hint' }, 'Use total limits, not max: the wiki says foals inherit from limits.'));
+        el('p', { class: 'hint' }, 'Use total limits, not max: the wiki says foals inherit from limits.'),
+        el('div', { class: 'cap left' }, 'Or paste from Wynntils'),
+        pasteBox());
+    }
+    /* Paste parent A, parent B and the foal (in that order) and the numbers fill themselves in. */
+    function pasteBox() {
+      const ta = el('textarea', { rows: 3, placeholder: 'Paste parent A, parent B, then the foal…' });
+      const msg = el('p', { class: 'hint' }, 'Share both parents before breeding and the foal afterwards with Wynntils, then paste the three strings here in that order.');
+      ta.addEventListener('input', () => {
+        const ok = WynntilsDecode.decodeText(ta.value).filter(r => r.ok).map(r => WynntilsDecode.toAppMount(r.mount));
+        const sum = (m) => Object.values(m.s).reduce((a, v) => a + v[1], 0), pot = (m) => Object.values(m.s).reduce((a, v) => a + v[2], 0);
+        if (ok.length >= 3) {
+          draft.a = sum(ok[0]); draft.b = sum(ok[1]); draft.c = ok[2].potential || pot(ok[2]);
+          draw();
+        } else msg.textContent = `Found ${ok.length} of 3 mounts so far.`;
+      });
+      return el('div', {}, ta, msg);
     }
     function fit() {
       const d = L.map(delta), n = d.length;

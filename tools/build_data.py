@@ -240,6 +240,7 @@ def build_recipes(recipes):
     out = []
     for r in recipes.values():
         o = {'s': r.get('skill'), 't': r.get('type'), 'l': [r['level']['minimum'], r['level']['maximum']], 'xp': r.get('xp', 0)}
+        o['m'] = [[m['amount'], m['item']] for m in r.get('materials', [])]
         for src, dst in (('durability', 'd'), ('healthOrDamage', 'h'), ('duration', 'du'), ('basicDuration', 'bd')):
             if r.get(src):
                 o[dst] = [r[src]['minimum'], r[src]['maximum']]
@@ -345,6 +346,56 @@ def build_profxp():
     return [int(r[1].replace(',', '')) for r in rows]   # index i = XP to go from level i+1 to i+2
 
 
+API_FIELDS = {'n': 'name', 't': 'type', 'g': 'category', 'r': 'rarity', 'l': 'level', 'ic': 'icon', 'c': 'classRequirement', 'q': 'skillRequirements',
+              'b': 'base', 'i': 'identifications', 'm': 'majorIds', 'ps': 'powderSlots', 'as': 'attackSpeed', 'dps': 'averageDps', 'rs': 'restriction',
+              'tr': 'stars', 'sk': 'professions', 'io': 'itemOnlyIds', 'co': 'consumableOnlyIds', 'pm': 'positionModifiers', 'p': 'profession'}
+
+
+def slug(name):
+    return re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-')
+
+
+def build_api():
+    """Static, CORS-enabled JSON API on GitHub Pages: api/v1/*.json, plus one file per item and ingredient."""
+    out = os.path.join(ROOT, 'api', 'v1')
+    os.makedirs(os.path.join(out, 'item'), exist_ok=True)
+    os.makedirs(os.path.join(out, 'ingredient'), exist_ok=True)
+
+    def readable(o):
+        r = {API_FIELDS.get(k, k): v for k, v in o.items()}
+        if r.get('icon'):
+            r['icon'] = ('https://malynsx.github.io/wynntools/img/items/' if 'stars' not in r else 'https://malynsx.github.io/wynntools/img/ing/') + r['icon']
+        return r
+
+    def write(path, obj):
+        with open(os.path.join(out, path), 'w', encoding='utf8') as f:
+            json.dump(obj, f, ensure_ascii=False, separators=(',', ':'))
+
+    data = lambda n: json.load(open(os.path.join(DATA, n), encoding='utf8'))
+    items, ings = [readable(x) for x in data('items.json')], [readable(x) for x in data('ingredients.json')]
+    for it in items:
+        it['slug'] = slug(it['name'])
+        write(f"item/{it['slug']}.json", it)
+    for g in ings:
+        g['slug'] = slug(g['name'])
+        write(f"ingredient/{g['slug']}.json", g)
+    write('items.json', items)
+    write('ingredients.json', ings)
+    write('materials.json', [readable(x) for x in data('materials.json')])
+    write('recipes.json', data('recipes.json'))
+    write('quests.json', data('quests.json'))
+    write('spots.json', data('spots.json'))
+    write('olinus-spots.json', data('olinus.json'))
+    write('territories.json', data('territories.json') if os.path.exists(os.path.join(DATA, 'territories.json')) else [])
+    write('profession-xp.json', data('profxp.json'))
+    write('index.json', {
+        'name': 'Wynntools API', 'version': 1, 'updated': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M UTC'),
+        'docs': 'https://malynsx.github.io/wynntools/#home/api',
+        'endpoints': ['items.json', 'item/{slug}.json', 'ingredients.json', 'ingredient/{slug}.json', 'materials.json', 'recipes.json',
+                      'quests.json', 'spots.json', 'olinus-spots.json', 'territories.json', 'profession-xp.json'],
+    })
+
+
 def main():
     os.makedirs(DATA, exist_ok=True)
     base = 'https://cdn.wynntils.com/static/'
@@ -362,6 +413,8 @@ def main():
     save('materials.json', build_materials(mats, icons))
     save('recipes.json', build_recipes(get_json(base + 'Reference/recipes.json')))
     save('spots.json', build_spots(base))
+    save('idkeys.json', {v: k for k, v in get_json(base + 'Reference/id_keys.json').items()})
+    build_api()
     try:
         banner_textures()
     except Exception as e:

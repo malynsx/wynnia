@@ -1,0 +1,1 @@
+{"name":"Oak Wood Spear","type":"spear","category":"weapon","rarity":"normal","level":1,"icon":"https://malynsx.github.io/wynntools/img/items/spear.basicWood.webp","classRequirement":"warrior","base":{"baseDamage":[3,6]},"powderSlots":1,"attackSpeed":"slow","averageDps":7,"restriction":"untradable","slug":"oak-wood-spear"}

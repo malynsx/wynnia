@@ -1,0 +1,1 @@
+{"name":"Iridescent Elytra","stars":3,"level":68,"professions":["tailoring","cooking","jeweling"],"icon":"https://malynsx.github.io/wynntools/img/ing/409_0.png","identifications":{"airDefence":[6,10],"earthDamage":[-9,-7],"walkSpeed":[6,8]},"itemOnlyIds":{"agilityRequirement":20,"durabilityModifier":-122000},"consumableOnlyIds":{"duration":-690},"slug":"iridescent-elytra"}

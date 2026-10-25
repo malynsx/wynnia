@@ -1,0 +1,1 @@
+{"name":"Thermal Replication","stars":3,"level":65,"professions":["weaponsmithing","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/87_0.png","identifications":{"fireDamage":[11,14],"rawHealth":[-360,-330]},"itemOnlyIds":{"defenceRequirement":16,"durabilityModifier":-100000},"positionModifiers":{"notTouching":15,"touching":15},"slug":"thermal-replication"}

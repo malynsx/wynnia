@@ -1,0 +1,1 @@
+{"name":"Defective Circuits","stars":2,"level":85,"professions":["tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/356_0.png","identifications":{"gatherXpBonus":[3,4],"rawDexterity":[3,4],"rawSpellDamage":[30,35]},"itemOnlyIds":{"dexterityRequirement":14,"durabilityModifier":-94000},"slug":"defective-circuits"}

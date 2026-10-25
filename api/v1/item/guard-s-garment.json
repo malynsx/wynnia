@@ -1,0 +1,1 @@
+{"name":"Guard's Garment","type":"chestplate","category":"armour","rarity":"legendary","level":5,"icon":"https://malynsx.github.io/wynntools/img/items/chestplate.pale_leather.webp","base":{"baseEarthDefence":5,"baseFireDefence":5,"baseHealth":25},"identifications":{"combatExperience":[4,18],"rawDefence":3,"rawMainAttackDamage":[5,20],"rawStrength":3},"slug":"guard-s-garment"}

@@ -1,0 +1,1 @@
+{"name":"Expelled Shrapnel","stars":0,"level":105,"professions":["weaponsmithing","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/318_0.png","identifications":{"rawHealth":[-275,-250],"rawMainAttackDamage":[35,40]},"itemOnlyIds":{"agilityRequirement":8,"dexterityRequirement":8,"durabilityModifier":-54000,"strengthRequirement":8},"slug":"expelled-shrapnel"}

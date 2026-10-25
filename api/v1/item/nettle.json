@@ -1,0 +1,1 @@
+{"name":"Nettle","type":"necklace","category":"accessory","rarity":"unique","level":25,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.earth1.webp","skillRequirements":{"strength":5},"identifications":{"healthRegen":[-5,-3],"poison":[2,9],"rawEarthDamage":[2,8]},"slug":"nettle"}

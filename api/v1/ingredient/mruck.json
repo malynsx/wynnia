@@ -1,0 +1,1 @@
+{"name":"Mruck","stars":0,"level":112,"professions":["weaponsmithing","woodworking","armouring","tailoring","alchemism","cooking"],"icon":null,"identifications":{"earthDamage":[3,4],"walkSpeed":[-2,-1]},"itemOnlyIds":{"durabilityModifier":-78000},"consumableOnlyIds":{"duration":-120},"slug":"mruck"}

@@ -1,0 +1,1 @@
+{"name":"Upside Down Bowl","type":"helmet","category":"armour","rarity":"unique","level":12,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.pale_leather.webp","base":{"baseAirDefence":-5,"baseEarthDefence":5,"baseHealth":45},"identifications":{"lootBonus":[2,8],"mainAttackDamage":[2,8],"rawStrength":3},"powderSlots":1,"slug":"upside-down-bowl"}

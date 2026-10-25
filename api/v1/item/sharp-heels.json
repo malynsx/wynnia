@@ -1,0 +1,1 @@
+{"name":"Sharp Heels","type":"boots","category":"armour","rarity":"unique","level":29,"icon":"https://malynsx.github.io/wynntools/img/items/boots.gold.webp","skillRequirements":{"dexterity":15},"base":{"baseEarthDefence":-5,"baseHealth":130},"identifications":{"mainAttackDamage":[2,9],"rawDexterity":5,"rawMainAttackDamage":[9,38]},"slug":"sharp-heels"}

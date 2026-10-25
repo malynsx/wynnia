@@ -1,0 +1,1 @@
+{"name":"Warsong","type":"ring","category":"accessory","rarity":"legendary","level":33,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicGem.webp","skillRequirements":{"strength":10,"dexterity":10},"base":{"baseHealth":50},"identifications":{"mainAttackDamage":[2,8],"manaRegen":[-5,-3],"rawDexterity":2,"rawStrength":2,"spellDamage":[2,8]},"slug":"warsong"}

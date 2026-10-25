@@ -1,0 +1,1 @@
+{"name":"Smooth Silt","stars":1,"level":18,"professions":["armouring","alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/289_0.png","identifications":{"rawHealth":[15,25],"waterDefence":[3,5]},"itemOnlyIds":{"defenceRequirement":3,"durabilityModifier":-31000},"consumableOnlyIds":{"duration":-66},"slug":"smooth-silt"}

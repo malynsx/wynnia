@@ -1,0 +1,1 @@
+{"name":"The Out","type":"relik","category":"weapon","rarity":"unique","level":5,"icon":"https://malynsx.github.io/wynntools/img/items/relik.basicGold.webp","classRequirement":"shaman","base":{"baseDamage":[12,16]},"identifications":{"combatExperience":[2,8],"rawHealth":[2,8],"walkSpeed":[2,8]},"powderSlots":1,"attackSpeed":"normal","averageDps":29,"slug":"the-out"}

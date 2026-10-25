@@ -1,0 +1,1 @@
+{"name":"Coolant","type":"ring","category":"accessory","rarity":"rare","level":86,"icon":"https://malynsx.github.io/wynntools/img/items/ring.water2.webp","skillRequirements":{"intelligence":25,"defence":25},"base":{"baseFireDefence":25,"baseWaterDefence":25},"identifications":{"fireDefence":8,"healthRegenRaw":140,"manaRegen":6,"waterDamage":5,"waterDefence":6},"slug":"coolant"}

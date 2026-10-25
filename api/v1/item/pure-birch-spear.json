@@ -1,0 +1,1 @@
+{"name":"Pure Birch Spear","type":"spear","category":"weapon","rarity":"normal","level":61,"icon":"https://malynsx.github.io/wynntools/img/items/spear.basicWood.webp","classRequirement":"warrior","base":{"baseDamage":[102,131]},"powderSlots":2,"attackSpeed":"slow","averageDps":175,"slug":"pure-birch-spear"}

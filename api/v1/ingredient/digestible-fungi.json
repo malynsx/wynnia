@@ -1,0 +1,1 @@
+{"name":"Digestible Fungi","stars":2,"level":12,"professions":["cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/39_0.png","identifications":{"gatherXpBonus":[1,1],"healthRegen":[-3,-2],"poison":[2,2]},"consumableOnlyIds":{"duration":-260},"slug":"digestible-fungi"}

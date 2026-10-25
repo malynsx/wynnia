@@ -1,0 +1,1 @@
+{"name":"Warming Solace","type":"ring","category":"accessory","rarity":"unique","level":112,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire2.webp","skillRequirements":{"defence":50},"base":{"baseFireDefence":40,"baseHealth":600},"identifications":{"1stSpellCost":[-2,-8],"healthRegenRaw":[48,209],"manaRegen":[1,5],"waterDefence":[-13,-7]},"slug":"warming-solace"}

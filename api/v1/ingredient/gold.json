@@ -1,0 +1,1 @@
+{"name":"Gold","stars":0,"level":82,"professions":["armouring","weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/265_0.png","identifications":{"lootBonus":[3,5],"walkSpeed":[-4,-2]},"itemOnlyIds":{"durabilityModifier":-45000},"slug":"gold"}

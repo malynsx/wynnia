@@ -1,0 +1,1 @@
+{"name":"Silversplint","type":"bracelet","category":"accessory","rarity":"rare","level":89,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.basicIron.webp","skillRequirements":{"agility":35},"base":{"baseAirDefence":30,"baseHealth":300},"identifications":{"airDefence":9,"healthRegenRaw":130,"lootBonus":13,"rawAgility":3,"reflection":11},"slug":"silversplint"}

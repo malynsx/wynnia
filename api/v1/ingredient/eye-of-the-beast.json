@@ -1,0 +1,1 @@
+{"name":"Eye of The Beast","stars":3,"level":50,"professions":["jeweling"],"icon":"https://malynsx.github.io/wynntools/img/ing/381_0.png","identifications":{"manaRegen":[4,4],"spellDamage":[-4,-4]},"itemOnlyIds":{"durabilityModifier":-150000},"positionModifiers":{"above":-100,"under":-100},"slug":"eye-of-the-beast"}

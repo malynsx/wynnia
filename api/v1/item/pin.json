@@ -1,0 +1,1 @@
+{"name":"Pin","type":"dagger","category":"weapon","rarity":"rare","level":6,"icon":"https://malynsx.github.io/wynntools/img/items/dagger.basicWood.webp","classRequirement":"assassin","base":{"baseDamage":[28,28]},"identifications":{"combatExperience":[2,9],"knockback":[4,18],"rawDexterity":4},"attackSpeed":"slow","averageDps":42,"slug":"pin"}

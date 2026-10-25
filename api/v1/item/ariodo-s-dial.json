@@ -1,0 +1,1 @@
+{"name":"Ariodo's Dial","type":"bracelet","category":"accessory","rarity":"rare","level":63,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.thunder2.webp","skillRequirements":{"dexterity":10,"intelligence":5},"base":{"baseWaterDefence":-40},"identifications":{"rawIntelligence":3,"spellDamage":[2,8],"thunderDamage":[2,8]},"slug":"ariodo-s-dial"}

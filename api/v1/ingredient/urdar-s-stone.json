@@ -1,0 +1,1 @@
+{"name":"Urdar's Stone","stars":3,"level":100,"professions":["woodworking","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/skin_74843ea5fe093315.png","identifications":{"earthDamage":[15,16],"fireDefence":[-24,-20]},"itemOnlyIds":{"durabilityModifier":-140000,"strengthRequirement":25},"slug":"urdar-s-stone"}

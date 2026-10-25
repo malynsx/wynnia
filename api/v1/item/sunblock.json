@@ -1,0 +1,1 @@
+{"name":"Sunblock","type":"helmet","category":"armour","rarity":"unique","level":24,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","skillRequirements":{"defence":5},"base":{"baseFireDefence":10,"baseHealth":125,"baseWaterDefence":-5},"identifications":{"fireDefence":[2,8],"healthRegenRaw":[4,18],"reflection":[2,8]},"powderSlots":1,"slug":"sunblock"}

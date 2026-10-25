@@ -1,0 +1,1 @@
+{"name":"Stone-Hewn Relik","type":"relik","category":"weapon","rarity":"normal","level":2,"icon":"https://malynsx.github.io/wynntools/img/items/relik.basicWood.webp","classRequirement":"shaman","base":{"baseDamage":[9,13]},"powderSlots":1,"attackSpeed":"slow","averageDps":16,"slug":"stone-hewn-relik"}

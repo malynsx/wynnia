@@ -1,0 +1,1 @@
+{"name":"Glowing Tree Sap","stars":3,"level":14,"professions":["jeweling"],"icon":"https://malynsx.github.io/wynntools/img/ing/239_0.png","identifications":{"gatherXpBonus":[1,1],"rawSpellDamage":[5,5],"thunderDamage":[3,4]},"itemOnlyIds":{"dexterityRequirement":5,"durabilityModifier":-66000},"slug":"glowing-tree-sap"}

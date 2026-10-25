@@ -1,0 +1,1 @@
+{"name":"Cauterizer","type":"bow","category":"weapon","rarity":"rare","level":10,"icon":"https://malynsx.github.io/wynntools/img/items/bow.fire1.webp","classRequirement":"archer","base":{"baseDamage":[7,13],"baseFireDamage":[12,16]},"identifications":{"healthRegenRaw":[1,5],"rawDefence":3,"rawMainAttackDamage":[3,13]},"attackSpeed":"fast","averageDps":60,"slug":"cauterizer"}

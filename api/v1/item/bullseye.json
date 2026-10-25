@@ -1,0 +1,1 @@
+{"name":"Bullseye","type":"spear","category":"weapon","rarity":"rare","level":1,"icon":"https://malynsx.github.io/wynntools/img/items/spear.basicGold.webp","classRequirement":"warrior","base":{"baseDamage":[0,36]},"identifications":{"combatExperience":[2,8],"manaSteal":[1,5]},"powderSlots":1,"attackSpeed":"verySlow","averageDps":15,"slug":"bullseye"}

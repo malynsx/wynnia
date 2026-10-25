@@ -49,7 +49,33 @@
           ROWS.map(([label, path]) => row(label, g(A, path), g(B, path))),
           row('Characters', Object.keys(A.characters || {}).length, Object.keys(B.characters || {}).length),
           row('Highest character level', best(A), best(B)))),
-        el('p', { class: 'hint' }, 'The larger number in each row is outlined. Some stats are hidden if a player has made them private.'));
+        el('p', { class: 'hint' }, 'The larger number in each row is outlined. Some stats are hidden if a player has made them private.'),
+        chars(A, B));
+    }
+    /* Character vs character */
+    function chars(A, B) {
+      const list = (P) => Object.entries(P.characters || {}).sort((a, b) => (b[1].level || 0) - (a[1].level || 0));
+      const la = list(A), lb = list(B);
+      if (!la.length || !lb.length) return null;
+      if (!CMP.ca || !A.characters[CMP.ca]) CMP.ca = la[0][0];
+      if (!CMP.cb || !B.characters[CMP.cb]) CMP.cb = lb[0][0];
+      const ca = A.characters[CMP.ca], cb = B.characters[CMP.cb];
+      const label = (c) => `${c.nickname || cls(c)} · Lv. ${c.level}`;
+      const R = [['Combat level', 'level'], ['Total level', 'totalLevel'], ['Playtime (hours)', 'playtime'], ['Content done', 'contentCompletion'], ['Mobs killed', 'mobsKilled'],
+        ['Deaths', 'deaths'], ['Chests found', 'chestsFound'], ['Discoveries', 'discoveries'], ['Dungeons', 'dungeons.total'], ['Raids', 'raids.total'], ['Quests', 'quests.length'], ['Wars', 'wars']];
+      const profs = Object.keys(Object.assign({}, ca.professions, cb.professions)).sort();
+      const row = (label, va, vb, lowerBetter) => {
+        const na = +va || 0, nb = +vb || 0, aw = lowerBetter ? na < nb : na > nb, bw = lowerBetter ? nb < na : nb > na;
+        return el('tr', {}, el('td', { class: aw ? 'top' : '' }, va == null ? '—' : Number(va).toLocaleString()), el('td', { class: 'mid' }, label), el('td', { class: bw ? 'top' : '' }, vb == null ? '—' : Number(vb).toLocaleString()));
+      };
+      return el('div', { style: { marginTop: '22px' } },
+        el('div', { class: 'cap left' }, 'Character vs character'),
+        el('div', { class: 'vshead' },
+          el('label', { class: 'fields3' }, W.sel(la.map(([id, c]) => [id, label(c)]), CMP.ca, (v) => { CMP.ca = v; draw(); })),
+          el('label', { class: 'fields3' }, W.sel(lb.map(([id, c]) => [id, label(c)]), CMP.cb, (v) => { CMP.cb = v; draw(); }))),
+        el('table', { class: 'tbl vstable' }, el('tbody', {},
+          R.map(([l, path]) => row(l, g(ca, path), g(cb, path), l === 'Deaths')),
+          profs.map(p => row(W.cap(p), (ca.professions[p] || {}).level, (cb.professions[p] || {}).level)))));
     }
     draw();
   };

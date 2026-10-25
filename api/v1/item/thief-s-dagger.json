@@ -1,0 +1,1 @@
+{"name":"Thief's Dagger","type":"dagger","category":"weapon","rarity":"unique","level":8,"icon":"https://malynsx.github.io/wynntools/img/items/dagger.basicGold.webp","classRequirement":"assassin","base":{"baseDamage":[6,12]},"identifications":{"manaSteal":[1,5],"rawDexterity":3,"stealing":[1,5]},"powderSlots":1,"attackSpeed":"veryFast","averageDps":28,"slug":"thief-s-dagger"}

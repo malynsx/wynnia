@@ -1,0 +1,1 @@
+{"name":"Tainted Ruby","type":"ring","category":"accessory","rarity":"rare","level":37,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire1.webp","skillRequirements":{"defence":5},"base":{"baseHealth":40},"identifications":{"combatExperience":[2,7],"healthRegenRaw":[6,27],"poison":[3,13]},"slug":"tainted-ruby"}

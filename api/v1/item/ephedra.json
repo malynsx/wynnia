@@ -1,0 +1,1 @@
+{"name":"Ephedra","type":"ring","category":"accessory","rarity":"unique","level":106,"icon":"https://malynsx.github.io/wynntools/img/items/ring.air2.webp","skillRequirements":{"agility":50},"base":{"baseAirDefence":40},"identifications":{"combatExperience":8,"raw2ndSpellCost":-3,"rawAirDamage":70,"sprintRegen":10,"walkSpeed":8},"slug":"ephedra"}

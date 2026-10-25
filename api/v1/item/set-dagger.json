@@ -1,0 +1,1 @@
+{"name":"Set Dagger","type":"dagger","category":"weapon","rarity":"rare","level":1,"icon":"https://malynsx.github.io/wynntools/img/items/dagger.basicWood.webp","classRequirement":"assassin","base":{"baseDamage":[0,1]},"attackSpeed":"slow","averageDps":1,"slug":"set-dagger"}

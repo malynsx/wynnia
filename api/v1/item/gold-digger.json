@@ -1,0 +1,1 @@
+{"name":"Gold Digger","type":"leggings","category":"armour","rarity":"rare","level":28,"icon":"https://malynsx.github.io/wynntools/img/items/leggings.gold.webp","base":{"baseHealth":145},"identifications":{"combatExperience":10,"damage":-5,"lootBonus":30,"walkSpeed":5},"powderSlots":1,"restriction":"untradable","slug":"gold-digger"}

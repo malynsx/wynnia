@@ -1,0 +1,1 @@
+{"name":"Collier Tunic","type":"chestplate","category":"armour","rarity":"unique","level":14,"icon":"https://malynsx.github.io/wynntools/img/items/chestplate.pale_leather.webp","base":{"baseFireDefence":7,"baseHealth":60,"baseWaterDefence":-5},"identifications":{"healthRegenRaw":[1,5],"rawDefence":3},"powderSlots":1,"slug":"collier-tunic"}

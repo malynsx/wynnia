@@ -1,0 +1,1 @@
+{"name":"Wormwood","type":"boots","category":"armour","rarity":"unique","level":17,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_leather.webp","skillRequirements":{"strength":5,"intelligence":5},"base":{"baseEarthDefence":4,"baseHealth":70,"baseWaterDefence":4},"identifications":{"manaRegen":[1,5],"poison":[2,7]},"slug":"wormwood"}

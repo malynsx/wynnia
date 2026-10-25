@@ -1,0 +1,1 @@
+{"name":"Melting Permafrost","type":"ring","category":"accessory","rarity":"unique","level":118,"icon":"https://malynsx.github.io/wynntools/img/items/ring.water2.webp","skillRequirements":{"intelligence":45,"agility":45},"base":{"baseFireDefence":-55},"identifications":{"3rdSpellCost":[-3,-14],"spellDamage":[-8,-4],"walkSpeed":[-8,-4]},"slug":"melting-permafrost"}

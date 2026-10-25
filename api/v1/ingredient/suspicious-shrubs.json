@@ -1,0 +1,1 @@
+{"name":"Suspicious Shrubs","stars":3,"level":83,"professions":["cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/6_1.png","identifications":{"gatherXpBonus":[2,3],"mainAttackDamage":[7,10],"poison":[200,250]},"consumableOnlyIds":{"duration":-750},"slug":"suspicious-shrubs"}

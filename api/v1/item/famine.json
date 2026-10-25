@@ -1,0 +1,1 @@
+{"name":"Famine","type":"ring","category":"accessory","rarity":"unique","level":75,"icon":"https://malynsx.github.io/wynntools/img/items/ring.air2.webp","skillRequirements":{"agility":35},"base":{"baseEarthDefence":-20},"identifications":{"healthRegenRaw":-20,"lifeSteal":70,"rawStrength":-2,"walkSpeed":12},"slug":"famine"}

@@ -15,7 +15,8 @@
   const setCompare = (l) => { try { localStorage.setItem(CMP_KEY, JSON.stringify(l.slice(-4))); } catch (e) { /* storage blocked */ } };
   const idMax = (v) => Array.isArray(v) ? v[1] : v;
 
-  W.pages['items/search'] = function (root) {
+  W.pages['items/search'] = function (root, q) {
+    if (q && q.get('q')) { f.q = q.get('q'); f.shown = 48; f.type = ''; f.tier = ''; f.cls = ''; f.id = ''; f.min = 1; f.max = 130; }
     W.withData(root, ['items'], (items) => {
       const allIds = [...new Set(items.flatMap(it => Object.keys(it.i || {})))]
         .map(k => [k, W.idInfo(k).name + (W.idInfo(k).unit === '%' ? ' %' : '')]).sort((a, b) => a[1].localeCompare(b[1]));

@@ -1,0 +1,1 @@
+{"name":"Black Cap","type":"helmet","category":"armour","rarity":"rare","level":33,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.pale_gold.webp","skillRequirements":{"dexterity":10},"base":{"baseHealth":195,"baseThunderDefence":7},"identifications":{"rawDexterity":4,"rawMainAttackDamage":[8,34]},"powderSlots":1,"slug":"black-cap"}

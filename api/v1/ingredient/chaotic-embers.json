@@ -1,0 +1,1 @@
+{"name":"Chaotic Embers","stars":2,"level":30,"professions":["tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/385_0.png","identifications":{"fireDamage":[9,10],"fireDefence":[-10,-9]},"itemOnlyIds":{"defenceRequirement":8,"durabilityModifier":-55000},"slug":"chaotic-embers"}

@@ -1,0 +1,1 @@
+{"name":"Green Foot","stars":1,"level":103,"professions":["tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/111_0.png","identifications":{"rawDefence":[4,5],"rawHealth":[350,400],"walkSpeed":[-8,-6]},"itemOnlyIds":{"agilityRequirement":-10,"defenceRequirement":15,"durabilityModifier":-75000},"slug":"green-foot"}

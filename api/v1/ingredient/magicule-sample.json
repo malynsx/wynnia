@@ -1,0 +1,1 @@
+{"name":"Magicule Sample","stars":1,"level":75,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/368_0.png","identifications":{"gatherXpBonus":[4,4],"manaSteal":[4,4],"spellDamage":[-7,-5]},"consumableOnlyIds":{"duration":-115},"slug":"magicule-sample"}

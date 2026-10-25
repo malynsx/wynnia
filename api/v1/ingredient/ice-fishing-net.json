@@ -1,0 +1,1 @@
+{"name":"Ice Fishing Net","stars":1,"level":41,"professions":["armouring","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/30_0.png","identifications":{"rawHealth":[25,40],"rawMainAttackDamage":[10,10],"rawSpellDamage":[10,10]},"itemOnlyIds":{"durabilityModifier":-50000},"slug":"ice-fishing-net"}

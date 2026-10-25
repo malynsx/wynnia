@@ -1,0 +1,1 @@
+{"name":"Anno","type":"ring","category":"accessory","rarity":"rare","level":39,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire1.webp","skillRequirements":{"dexterity":10,"defence":10},"base":{"baseHealth":40},"identifications":{"healthRegenRaw":[4,18],"lifeSteal":[5,20]},"slug":"anno"}

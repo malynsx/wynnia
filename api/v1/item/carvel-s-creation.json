@@ -1,0 +1,1 @@
+{"name":"Carvel's Creation","type":"boots","category":"armour","rarity":"rare","level":14,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_leather.webp","base":{"baseAirDefence":7,"baseHealth":51,"baseWaterDefence":7},"identifications":{"combatExperience":[2,8],"lootBonus":[2,8],"manaRegen":[2,8],"walkSpeed":[3,12]},"powderSlots":2,"slug":"carvel-s-creation"}

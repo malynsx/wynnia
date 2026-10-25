@@ -1,0 +1,1 @@
+{"name":"Brise","type":"helmet","category":"armour","rarity":"unique","level":27,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","skillRequirements":{"intelligence":12},"base":{"baseHealth":170},"identifications":{"manaRegen":6,"rawIntelligence":5,"rawMaxMana":20,"spellDamage":10},"powderSlots":1,"restriction":"untradable","slug":"brise"}

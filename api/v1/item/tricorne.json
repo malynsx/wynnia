@@ -1,0 +1,1 @@
+{"name":"Tricorne","type":"helmet","category":"armour","rarity":"unique","level":24,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","skillRequirements":{"agility":5},"base":{"baseHealth":115},"identifications":{"lootBonus":12,"rawAgility":1,"sprintRegen":15,"walkSpeed":12},"powderSlots":1,"slug":"tricorne"}

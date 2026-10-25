@@ -1,0 +1,1 @@
+{"name":"Fire Relic Helmet","type":"helmet","category":"armour","rarity":"rare","level":30,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.pale_gold.webp","skillRequirements":{"defence":21},"base":{"baseFireDefence":10,"baseHealth":245},"identifications":{"fireDamage":[2,10],"fireDefence":[3,13],"rawDefence":5},"powderSlots":2,"slug":"fire-relic-helmet"}

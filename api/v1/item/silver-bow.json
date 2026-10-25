@@ -1,0 +1,1 @@
+{"name":"Silver Bow","type":"bow","category":"weapon","rarity":"unique","level":20,"icon":"https://malynsx.github.io/wynntools/img/items/bow.water1.webp","classRequirement":"archer","base":{"baseDamage":[22,40]},"identifications":{"combatExperience":[3,12],"lootBonus":[5,22],"stealing":[1,4]},"powderSlots":1,"attackSpeed":"normal","averageDps":64,"slug":"silver-bow"}

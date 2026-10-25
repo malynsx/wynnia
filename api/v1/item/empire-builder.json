@@ -1,0 +1,1 @@
+{"name":"Empire Builder","type":"wand","category":"weapon","rarity":"legendary","level":79,"icon":"https://malynsx.github.io/wynntools/img/items/wand.multi3.webp","classRequirement":"mage","base":{"baseDamage":[50,65]},"powderSlots":8,"attackSpeed":"fast","averageDps":144,"slug":"empire-builder"}

@@ -1,0 +1,1 @@
+{"name":"Slick Carapace","type":"chestplate","category":"armour","rarity":"unique","level":30,"icon":"https://malynsx.github.io/wynntools/img/items/chestplate.gold.webp","skillRequirements":{"intelligence":17},"base":{"baseHealth":175,"baseWaterDefence":25},"identifications":{"4thSpellCost":[-2,-8],"rawMaxMana":[7,30],"reflection":[3,14]},"powderSlots":1,"slug":"slick-carapace"}

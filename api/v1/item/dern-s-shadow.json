@@ -1,0 +1,1 @@
+{"name":"Dern's Shadow","type":"spear","category":"weapon","rarity":"rare","level":10,"icon":"https://malynsx.github.io/wynntools/img/items/spear.basicGold.webp","classRequirement":"warrior","base":{"baseDamage":[10,17]},"identifications":{"manaRegen":[2,8],"poison":[2,9]},"powderSlots":1,"attackSpeed":"fast","averageDps":34,"slug":"dern-s-shadow"}

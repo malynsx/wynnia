@@ -1,0 +1,1 @@
+{"name":"Silken Slippers","type":"boots","category":"armour","rarity":"rare","level":10,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_leather.webp","base":{"baseAirDefence":5,"baseFireDefence":-5,"baseHealth":45},"identifications":{"airDamage":[3,13],"combatExperience":[5,20],"rawAgility":3,"walkSpeed":[3,13]},"powderSlots":1,"slug":"silken-slippers"}

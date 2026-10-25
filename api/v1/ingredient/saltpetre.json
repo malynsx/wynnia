@@ -1,0 +1,1 @@
+{"name":"Saltpetre","stars":0,"level":112,"professions":["alchemism","weaponsmithing","woodworking"],"icon":null,"identifications":{"knockback":[1,1],"waterDefence":[-3,-2]},"itemOnlyIds":{"durabilityModifier":-56000},"consumableOnlyIds":{"duration":-103},"slug":"saltpetre"}

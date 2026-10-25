@@ -1,0 +1,1 @@
+{"name":"Herbal Extract","stars":2,"level":14,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/362_0.png","identifications":{"gatherSpeed":[3,4],"mainAttackDamage":[-4,-2],"rawHealth":[35,45]},"consumableOnlyIds":{"duration":-90},"slug":"herbal-extract"}

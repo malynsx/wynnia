@@ -1,0 +1,1 @@
+{"name":"Garnet Ring","type":"ring","category":"accessory","rarity":"unique","level":67,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire2.webp","skillRequirements":{"defence":20},"base":{"baseFireDefence":20,"baseHealth":200},"identifications":{"fireDefence":[2,8],"healthRegenRaw":[16,68],"rawDefence":4},"slug":"garnet-ring"}

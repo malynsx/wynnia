@@ -1,0 +1,1 @@
+{"name":"Relic of the Past","stars":2,"level":15,"professions":["tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/405_0.png","identifications":{"healthRegen":[3,3],"rawDefence":[3,3]},"itemOnlyIds":{"defenceRequirement":4,"durabilityModifier":-45000},"slug":"relic-of-the-past"}

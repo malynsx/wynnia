@@ -1,0 +1,1 @@
+{"name":"Lost Periapt","type":"necklace","category":"accessory","rarity":"unique","level":115,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.basicPearl.webp","skillRequirements":{"defence":40,"agility":40},"base":{"baseHealth":1000,"baseWaterDefence":-55},"identifications":{"healthRegen":[-10,-6],"lifeSteal":[53,230],"stealing":[2,8]},"slug":"lost-periapt"}

@@ -1,0 +1,1 @@
+{"name":"Bovine Killer","type":"helmet","category":"armour","rarity":"legendary","level":12,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.pale_leather.webp","base":{"baseAirDefence":-5,"baseEarthDefence":5,"baseHealth":65},"identifications":{"mainAttackDamage":[5,20],"rawAgility":-4,"rawStrength":10},"powderSlots":2,"slug":"bovine-killer"}

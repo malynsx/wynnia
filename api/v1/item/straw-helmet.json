@@ -1,0 +1,1 @@
+{"name":"Straw Helmet","type":"helmet","category":"armour","rarity":"unique","level":20,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","base":{"baseFireDefence":-5,"baseHealth":95,"baseWaterDefence":-5},"identifications":{"combatExperience":[3,12],"thorns":[3,12],"walkSpeed":[2,10]},"powderSlots":1,"slug":"straw-helmet"}

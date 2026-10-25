@@ -13,14 +13,31 @@
     return g;
   };
 
-  W.pages.stable = function (root) {
+  /* Share links pack each mount as [type, body, mane, name, 24 numbers]. */
+  const pack = (ms) => btoa(unescape(encodeURIComponent(JSON.stringify(ms.map(m => [m.type, m.c1, m.c2, m.name, ...W.STATKEYS.flatMap(k => m.s[k])]))))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const unpack = (str) => JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g, '+').replace(/_/g, '/'))))).map(([type, c1, c2, name, ...v]) => {
+    const m = W.newMount(type, { c1, c2, name }); W.STATKEYS.forEach((k, i) => { m.s[k] = v.slice(i * 3, i * 3 + 3); }); return W.clampMount(m);
+  });
+
+  W.pages.stable = function (root, q) {
     const S = W.state;
+    let shared = null;
+    if (q && q.get('share')) { try { shared = unpack(q.get('share')); } catch (e) { shared = []; } }
     const draw = () => {
       if (S.selected && !W.mountById(S.selected)) S.selected = null;
       const m = W.mountById(S.selected);
-      root.replaceChildren(enclosure(), el('div', { class: 'cols', style: { marginTop: '26px' } }, right(m), side()));
+      root.replaceChildren(shared ? sharedBox() : '', enclosure(), el('div', { class: 'cols', style: { marginTop: '26px' } }, right(m), side()));
     };
     const commit = () => { W.save(); draw(); };
+
+    function sharedBox() {
+      if (!shared.length) return W.win('Shared stable', el('div', { class: 'warn' }, 'That share link is broken or empty.'));
+      return el('div', { style: { marginBottom: '26px' } }, W.win(`Someone shared ${shared.length} mount${shared.length > 1 ? 's' : ''} with you`,
+        el('div', { class: 'grid enclosure' }, shared.map(m => W.mountSlot(m))),
+        el('div', { class: 'btns' },
+          el('button', { onclick: () => { S.mounts.push(...shared.map(m => ({ ...m, id: 'm' + Math.random().toString(36).slice(2, 9) }))); shared = null; history.replaceState(null, '', '#mounts/stable'); commit(); } }, 'Add them to my stable'),
+          el('button', { onclick: () => { shared = null; history.replaceState(null, '', '#mounts/stable'); draw(); } }, 'Dismiss'))));
+    }
 
     function enclosure() {
       const n = Math.max(18, Math.ceil((S.mounts.length + 1) / 9) * 9);
@@ -49,7 +66,8 @@
         W.win('Stable Summary', stats),
         W.win('Backup & Share',
           el('div', { class: 'btns' },
-            el('button', { onclick: () => { io.value = JSON.stringify({ mounts: S.mounts }); io.select(); } }, 'Export'),
+            el('button', { onclick: (e) => { const link = location.href.split('#')[0] + '#mounts/stable?share=' + pack(S.mounts); io.value = link; io.select(); W.copyText(link, e.target); } }, 'Copy share link'),
+            el('button', { onclick: () => { io.value = JSON.stringify({ mounts: S.mounts }); io.select(); } }, 'Export JSON'),
             el('button', { onclick: () => {
               try { const d = JSON.parse(io.value); if (!Array.isArray(d.mounts)) throw 0; d.mounts.forEach(x => W.clampMount(x)); S.mounts = S.mounts.concat(d.mounts.map(x => ({ ...x, id: 'm' + Math.random().toString(36).slice(2, 9) }))); commit(); }
               catch (e) { io.value = 'That is not valid stable JSON.'; }

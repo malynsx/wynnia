@@ -1,0 +1,1 @@
+{"name":"Thick Mud","stars":0,"level":21,"professions":["alchemism","jeweling"],"icon":"https://malynsx.github.io/wynntools/img/ing/351_3.png","identifications":{"rawStrength":[1,1],"walkSpeed":[-3,-2]},"itemOnlyIds":{"durabilityModifier":-24000},"consumableOnlyIds":{"duration":-48},"slug":"thick-mud"}

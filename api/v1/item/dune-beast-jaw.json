@@ -1,0 +1,1 @@
+{"name":"Dune Beast Jaw","type":"helmet","category":"armour","rarity":"rare","level":36,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","skillRequirements":{"strength":15},"base":{"baseHealth":400},"identifications":{"mainAttackDamage":20,"rawStrength":10,"thorns":8,"walkSpeed":8},"powderSlots":1,"restriction":"untradable","slug":"dune-beast-jaw"}

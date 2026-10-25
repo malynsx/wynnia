@@ -1,0 +1,1 @@
+{"name":"War Spear","type":"spear","category":"weapon","rarity":"unique","level":8,"icon":"https://malynsx.github.io/wynntools/img/items/spear.basicGold.webp","classRequirement":"warrior","base":{"baseDamage":[16,20]},"identifications":{"damage":6,"mainAttackRange":16,"rawHealth":-10,"rawStrength":2},"powderSlots":1,"attackSpeed":"slow","averageDps":27,"slug":"war-spear"}

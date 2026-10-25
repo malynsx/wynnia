@@ -1,0 +1,1 @@
+{"name":"Decomposing Snapdragon","stars":2,"level":113,"professions":["tailoring","scribing"],"icon":null,"identifications":{"earthDamage":[8,10],"lifeSteal":[100,120],"waterDamage":[8,10]},"itemOnlyIds":{"durabilityModifier":-114000,"intelligenceRequirement":16,"strengthRequirement":16},"consumableOnlyIds":{"duration":-180},"slug":"decomposing-snapdragon"}

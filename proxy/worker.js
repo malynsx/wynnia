@@ -1,9 +1,9 @@
 /* Wynntools API relay (Cloudflare Worker).
    The Wynncraft API does not send CORS headers, so browsers block it on other sites.
-   This worker forwards player and guild requests only, adds CORS for the Wynntools site,
-   and caches each answer for two minutes to stay well under Wynncraft's rate limit. */
+   This worker forwards player, guild, ability-tree and leaderboard requests only, adds CORS for
+   the Wynntools site, and caches each answer for two minutes to stay well under Wynncraft's rate limit. */
 const ALLOWED = ['https://malynsx.github.io', 'http://localhost:8765', 'http://localhost:8766'];
-const PATHS = /^\/v3\/(player|guild)\/[^/]+(\/[^/]+)?$/;
+const PATHS = /^\/v3\/(player|guild|ability|leaderboards)(\/[^/]+){0,4}$/;
 
 export default {
   async fetch(request, env, ctx) {

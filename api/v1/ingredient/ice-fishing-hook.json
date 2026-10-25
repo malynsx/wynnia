@@ -1,0 +1,1 @@
+{"name":"Ice Fishing Hook","stars":1,"level":41,"professions":["weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/318_0.png","identifications":{"rawHealth":[-100,-80],"rawMainAttackDamage":[16,20],"rawSpellDamage":[16,20]},"itemOnlyIds":{"durabilityModifier":-50000},"slug":"ice-fishing-hook"}

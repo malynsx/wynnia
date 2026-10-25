@@ -1,0 +1,1 @@
+{"name":"Desert Sepulcher","type":"ring","category":"accessory","rarity":"legendary","level":35,"icon":"https://malynsx.github.io/wynntools/img/items/ring.water1.webp","skillRequirements":{"intelligence":25},"base":{"baseHealth":-30},"identifications":{"lifeSteal":[-23,-13],"raw1stSpellCost":-1,"raw2ndSpellCost":-1,"rawIntelligence":3},"slug":"desert-sepulcher"}

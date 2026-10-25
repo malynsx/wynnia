@@ -1,0 +1,1 @@
+{"name":"Diaconate","type":"necklace","category":"accessory","rarity":"legendary","level":15,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.basicCross.webp","base":{"baseFireDefence":5,"baseHealth":20,"baseWaterDefence":3},"identifications":{"healthRegenRaw":[3,13],"rawMainAttackDamage":[-10,-6],"waterDefence":[2,10]},"slug":"diaconate"}

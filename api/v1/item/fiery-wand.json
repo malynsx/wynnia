@@ -1,0 +1,1 @@
+{"name":"Fiery Wand","type":"wand","category":"weapon","rarity":"normal","level":10,"icon":"https://malynsx.github.io/wynntools/img/items/wand.fire1.webp","classRequirement":"mage","base":{"baseFireDamage":[1,3]},"attackSpeed":"normal","averageDps":4,"restriction":"quest_item","slug":"fiery-wand"}

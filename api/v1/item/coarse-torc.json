@@ -1,0 +1,1 @@
+{"name":"Coarse Torc","type":"necklace","category":"accessory","rarity":"unique","level":43,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.earth1.webp","skillRequirements":{"strength":15},"base":{"baseAirDefence":-20,"baseEarthDefence":20,"baseHealth":55},"identifications":{"earthDamage":[2,9],"poison":[5,21],"rawStrength":3},"slug":"coarse-torc"}

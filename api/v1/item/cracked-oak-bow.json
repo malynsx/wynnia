@@ -1,0 +1,1 @@
+{"name":"Cracked Oak Bow","type":"bow","category":"weapon","rarity":"normal","level":1,"icon":"https://malynsx.github.io/wynntools/img/items/bow.basicWood.webp","classRequirement":"archer","base":{"baseDamage":[1,2]},"powderSlots":1,"attackSpeed":"normal","averageDps":3,"restriction":"untradable","slug":"cracked-oak-bow"}

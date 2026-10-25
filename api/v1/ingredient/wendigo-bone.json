@@ -1,0 +1,1 @@
+{"name":"Wendigo Bone","stars":2,"level":44,"professions":["alchemism","weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/352_0.png","identifications":{"healthRegenRaw":[-25,-21],"lifeSteal":[30,35]},"itemOnlyIds":{"durabilityModifier":-65000},"consumableOnlyIds":{"duration":-120},"slug":"wendigo-bone"}

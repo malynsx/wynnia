@@ -127,7 +127,7 @@
         ta,
         el('div', { class: 'btns' },
           el('button', { onclick: () => { P.text = ta.value; draw(); } }, 'Show mounts'),
-          el('button', { onclick: () => { P.text = ta.value; out.value = link(); out.select(); try { navigator.clipboard.writeText(out.value); } catch (e) { /* manual copy */ } } }, 'Make link'),
+          el('button', { onclick: () => { P.text = ta.value; out.value = link(); out.select(); try { navigator.clipboard.writeText(out.value).catch(() => {}); } catch (e) { /* manual copy */ } } }, 'Make link'),
           el('button', { class: 'danger', onclick: () => { P.text = ''; draw(); } }, 'Clear')),
         out,
         results.some(r => !r.ok) && el('div', { class: 'warn' }, results.filter(r => !r.ok).map(r => r.error).join(' ')),

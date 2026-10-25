@@ -1,0 +1,1 @@
+{"name":"Outlaw Pants","type":"leggings","category":"armour","rarity":"rare","level":37,"icon":"https://malynsx.github.io/wynntools/img/items/leggings.pale_gold.webp","skillRequirements":{"agility":35},"base":{"baseHealth":345,"baseThunderDefence":-20},"identifications":{"lifeSteal":[11,46],"mainAttackDamage":[2,10],"stealing":[1,5]},"powderSlots":1,"slug":"outlaw-pants"}

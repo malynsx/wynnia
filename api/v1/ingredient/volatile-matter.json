@@ -1,0 +1,1 @@
+{"name":"Volatile Matter","stars":3,"level":20,"professions":["alchemism","woodworking","weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/410_0.png","identifications":{"exploding":[8,13],"rawDefence":[-4,-3],"rawMainAttackDamage":[14,22]},"itemOnlyIds":{"durabilityModifier":-70000},"consumableOnlyIds":{"duration":-140},"slug":"volatile-matter"}

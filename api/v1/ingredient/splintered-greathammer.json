@@ -1,0 +1,1 @@
+{"name":"Splintered Greathammer","stars":3,"level":87,"professions":["weaponsmithing","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/67_0.png","identifications":{"earthDamage":[8,10],"manaRegen":[-8,-6],"rawStrength":[5,7]},"itemOnlyIds":{"durabilityModifier":-129000,"strengthRequirement":25},"slug":"splintered-greathammer"}

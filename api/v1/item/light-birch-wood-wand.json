@@ -1,0 +1,1 @@
+{"name":"Light Birch Wood Wand","type":"wand","category":"weapon","rarity":"normal","level":11,"icon":"https://malynsx.github.io/wynntools/img/items/wand.basicWood.webp","classRequirement":"mage","base":{"baseDamage":[5,7]},"powderSlots":1,"attackSpeed":"fast","averageDps":15,"slug":"light-birch-wood-wand"}

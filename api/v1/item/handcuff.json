@@ -1,0 +1,1 @@
+{"name":"Handcuff","type":"bracelet","category":"accessory","rarity":"unique","level":33,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.basicIron.webp","skillRequirements":{"strength":5,"defence":5},"identifications":{"mainAttackDamage":[2,10],"rawDefence":3,"rawDexterity":-1,"rawStrength":3,"walkSpeed":[-5,-3]},"slug":"handcuff"}

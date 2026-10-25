@@ -1,0 +1,1 @@
+{"name":"Haphazard Serum","stars":2,"level":99,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/373_0.png","identifications":{"airDamage":[4,18],"earthDamage":[-14,-8],"healingEfficiency":[3,4]},"consumableOnlyIds":{"duration":-180},"slug":"haphazard-serum"}

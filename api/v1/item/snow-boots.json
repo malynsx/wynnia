@@ -1,0 +1,1 @@
+{"name":"Snow Boots","type":"boots","category":"armour","rarity":"rare","level":41,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_chainmail.webp","skillRequirements":{"intelligence":15},"base":{"baseHealth":435,"baseWaterDefence":15},"identifications":{"healthRegen":[-9,-5],"manaRegen":[2,8],"waterDefence":[3,13]},"powderSlots":2,"slug":"snow-boots"}

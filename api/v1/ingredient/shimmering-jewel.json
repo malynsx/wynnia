@@ -1,0 +1,1 @@
+{"name":"Shimmering Jewel","stars":2,"level":40,"professions":["woodworking","alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/406_0.png","identifications":{"reflection":[5,8],"spellDamage":[6,10]},"itemOnlyIds":{"durabilityModifier":-63000,"intelligenceRequirement":12},"consumableOnlyIds":{"duration":-120},"slug":"shimmering-jewel"}

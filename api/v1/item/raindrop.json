@@ -1,0 +1,1 @@
+{"name":"Raindrop","type":"ring","category":"accessory","rarity":"unique","level":69,"icon":"https://malynsx.github.io/wynntools/img/items/ring.water2.webp","skillRequirements":{"intelligence":25},"base":{"baseHealth":-135,"baseWaterDefence":20},"identifications":{"damage":[-3,-1],"manaRegen":[2,8],"rawIntelligence":5},"slug":"raindrop"}

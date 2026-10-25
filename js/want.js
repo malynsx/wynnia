@@ -40,7 +40,7 @@
     return lines;
   }
   const copy = (text, btn) => {
-    try { navigator.clipboard.writeText(text); } catch (e) { /* manual copy */ }
+    try { navigator.clipboard.writeText(text).catch(() => {}); } catch (e) { /* manual copy */ }
     if (btn) { const t = btn.textContent; btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = t; }, 1200); }
   };
 

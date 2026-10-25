@@ -1,0 +1,1 @@
+{"name":"Vitium","type":"necklace","category":"accessory","rarity":"rare","level":32,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.basicIron.webp","base":{"baseAirDefence":-5,"baseHealth":-20},"identifications":{"exploding":[3,12],"lifeSteal":[4,16],"poison":[5,20]},"slug":"vitium"}

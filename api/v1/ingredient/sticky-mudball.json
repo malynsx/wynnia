@@ -1,0 +1,1 @@
+{"name":"Sticky Mudball","stars":2,"level":21,"professions":["woodworking","cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/378_0.png","identifications":{"mainAttackDamage":[5,8],"walkSpeed":[-4,-2]},"itemOnlyIds":{"durabilityModifier":-49000,"strengthRequirement":3},"consumableOnlyIds":{"duration":-290},"slug":"sticky-mudball"}

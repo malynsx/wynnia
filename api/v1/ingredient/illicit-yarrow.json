@@ -1,0 +1,1 @@
+{"name":"Illicit Yarrow","stars":1,"level":33,"professions":["armouring","alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/38_1.png","identifications":{"rawIntelligence":[1,2],"rawSpellDamage":[10,12]},"itemOnlyIds":{"durabilityModifier":-40000},"consumableOnlyIds":{"duration":-70},"slug":"illicit-yarrow"}

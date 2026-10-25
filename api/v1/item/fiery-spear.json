@@ -1,0 +1,1 @@
+{"name":"Fiery Spear","type":"spear","category":"weapon","rarity":"normal","level":10,"icon":"https://malynsx.github.io/wynntools/img/items/spear.fire1.webp","classRequirement":"warrior","base":{"baseFireDamage":[1,3]},"attackSpeed":"normal","averageDps":4,"restriction":"quest_item","slug":"fiery-spear"}

@@ -1,0 +1,1 @@
+{"name":"Atheist","type":"leggings","category":"armour","rarity":"unique","level":19,"icon":"https://malynsx.github.io/wynntools/img/items/leggings.pale_leather.webp","skillRequirements":{"strength":5},"base":{"baseEarthDefence":15,"baseHealth":110},"identifications":{"earthDamage":[2,10],"earthDefence":[2,10],"knockback":[2,10],"rawStrength":7},"powderSlots":1,"slug":"atheist"}

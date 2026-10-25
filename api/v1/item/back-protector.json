@@ -1,0 +1,1 @@
+{"name":"Back Protector","type":"leggings","category":"armour","rarity":"unique","level":24,"icon":"https://malynsx.github.io/wynntools/img/items/leggings.gold.webp","skillRequirements":{"defence":10},"base":{"baseHealth":130},"identifications":{"healthRegenRaw":[3,14],"knockback":[3,13],"mainAttackDamage":[3,13],"rawDefence":5},"powderSlots":2,"slug":"back-protector"}

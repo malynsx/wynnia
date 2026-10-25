@@ -1,0 +1,1 @@
+{"name":"Desert Winds","type":"ring","category":"accessory","rarity":"legendary","level":33,"icon":"https://malynsx.github.io/wynntools/img/items/ring.air1.webp","skillRequirements":{"agility":25},"base":{"baseAirDefence":5},"identifications":{"earthDefence":[-16,-8],"rawAgility":3,"rawAirDamage":[6,25],"walkSpeed":[3,12]},"slug":"desert-winds"}

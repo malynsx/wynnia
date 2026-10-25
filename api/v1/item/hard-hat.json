@@ -1,0 +1,1 @@
+{"name":"Hard Hat","type":"helmet","category":"armour","rarity":"unique","level":31,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","skillRequirements":{"defence":10},"base":{"baseHealth":200},"identifications":{"healthRegenRaw":[5,22],"rawDefence":7,"rawHealth":[15,65],"reflection":[3,13]},"slug":"hard-hat"}

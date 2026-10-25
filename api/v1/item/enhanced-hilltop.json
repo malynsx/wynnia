@@ -1,0 +1,1 @@
+{"name":"Enhanced Hilltop","type":"helmet","category":"armour","rarity":"unique","level":33,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","base":{"baseAirDefence":-10,"baseEarthDefence":18,"baseHealth":350},"identifications":{"earthDefence":8,"mainAttackDamage":10,"rawMainAttackDamage":37,"walkSpeed":-7},"powderSlots":1,"slug":"enhanced-hilltop"}

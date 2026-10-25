@@ -1,0 +1,1 @@
+{"name":"Daredevil","type":"necklace","category":"accessory","rarity":"fabled","level":92,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.air2.webp","skillRequirements":{"agility":45},"base":{"baseAirDefence":50,"baseHealth":-333},"identifications":{"fireDefence":[-19,-10],"raw2ndSpellCost":[8,4],"walkSpeed":[3,13]},"majorIds":["Lunge"],"slug":"daredevil"}

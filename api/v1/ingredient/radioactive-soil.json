@@ -1,0 +1,1 @@
+{"name":"Radioactive Soil","stars":3,"level":111,"professions":["tailoring","woodworking","alchemism"],"icon":null,"identifications":{"damage":[11,13],"healthRegenRaw":[-98,-84],"poison":[1200,1300]},"itemOnlyIds":{"durabilityModifier":-169000,"strengthRequirement":30},"consumableOnlyIds":{"duration":-200},"slug":"radioactive-soil"}

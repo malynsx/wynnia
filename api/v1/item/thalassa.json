@@ -1,0 +1,1 @@
+{"name":"Thalassa","type":"necklace","category":"accessory","rarity":"unique","level":65,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.water2.webp","skillRequirements":{"intelligence":40},"base":{"baseWaterDefence":15},"identifications":{"manaRegen":[-5,-3],"manaSteal":[-3,-1],"waterDamage":[5,21]},"slug":"thalassa"}

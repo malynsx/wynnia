@@ -1,0 +1,1 @@
+{"name":"Messenger","type":"ring","category":"accessory","rarity":"legendary","level":118,"icon":"https://malynsx.github.io/wynntools/img/items/ring.air2.webp","skillRequirements":{"agility":60},"base":{"baseAirDefence":90,"baseHealth":-325},"identifications":{"rawAgility":4,"sprint":[4,18],"sprintRegen":[4,18],"walkSpeed":[4,18]},"slug":"messenger"}

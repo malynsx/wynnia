@@ -1,0 +1,1 @@
+{"name":"Rotten","type":"chestplate","category":"armour","rarity":"rare","level":37,"icon":"https://malynsx.github.io/wynntools/img/items/chestplate.gold.webp","base":{"baseEarthDefence":25,"baseFireDefence":-15,"baseHealth":280},"identifications":{"poison":[23,98],"thorns":[3,13]},"powderSlots":1,"slug":"rotten"}

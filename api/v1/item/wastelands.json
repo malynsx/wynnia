@@ -1,0 +1,1 @@
+{"name":"Wastelands","type":"ring","category":"accessory","rarity":"unique","level":44,"icon":"https://malynsx.github.io/wynntools/img/items/ring.earth1.webp","skillRequirements":{"strength":20},"identifications":{"mainAttackDamage":[2,10],"mainAttackRange":[2,10],"poison":[5,23],"rawStrength":3,"walkSpeed":[-4,-2]},"slug":"wastelands"}

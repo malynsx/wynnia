@@ -1,0 +1,1 @@
+{"name":"Worn Coin","stars":1,"level":26,"professions":["armouring","tailoring","woodworking","weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/402_0.png","identifications":{"lootBonus":[2,4],"walkSpeed":[-5,-3]},"itemOnlyIds":{"durabilityModifier":-37000},"slug":"worn-coin"}

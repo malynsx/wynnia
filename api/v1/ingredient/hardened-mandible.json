@@ -1,0 +1,1 @@
+{"name":"Hardened Mandible","stars":1,"level":91,"professions":["weaponsmithing","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/369_0.png","identifications":{"airDefence":[-10,-7],"waterDefence":[-10,-7]},"itemOnlyIds":{"defenceRequirement":-10,"durabilityModifier":-70000,"strengthRequirement":-10},"slug":"hardened-mandible"}

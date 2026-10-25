@@ -1,0 +1,1 @@
+{"name":"Burn","type":"ring","category":"accessory","rarity":"unique","level":73,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire2.webp","skillRequirements":{"defence":20},"base":{"baseFireDefence":10,"baseWaterDefence":-30},"identifications":{"exploding":[3,13],"fireDamage":[3,13],"rawFireMainAttackDamage":[16,70]},"slug":"burn"}

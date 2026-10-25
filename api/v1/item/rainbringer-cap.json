@@ -1,0 +1,1 @@
+{"name":"Rainbringer Cap","type":"helmet","category":"armour","rarity":"unique","level":35,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","skillRequirements":{"intelligence":22},"base":{"baseHealth":230,"baseWaterDefence":15},"identifications":{"3rdSpellCost":[-2,-10],"manaSteal":[2,9],"waterSpellDamage":[3,14]},"powderSlots":2,"slug":"rainbringer-cap"}

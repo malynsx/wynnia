@@ -1,0 +1,1 @@
+{"name":"Oak Wood Relik","type":"relik","category":"weapon","rarity":"normal","level":1,"icon":"https://malynsx.github.io/wynntools/img/items/relik.basicWood.webp","classRequirement":"shaman","base":{"baseDamage":[5,7]},"powderSlots":1,"attackSpeed":"normal","averageDps":12,"restriction":"untradable","slug":"oak-wood-relik"}

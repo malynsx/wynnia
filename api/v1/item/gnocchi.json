@@ -1,0 +1,1 @@
+{"name":"Gnocchi","type":"helmet","category":"armour","rarity":"rare","level":17,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.pale_leather.webp","base":{"baseHealth":74},"identifications":{"combatExperience":[2,10],"mainAttackDamage":[-6,-3],"manaRegen":[2,8],"spellDamage":[2,10]},"powderSlots":2,"slug":"gnocchi"}

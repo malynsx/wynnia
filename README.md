@@ -1,30 +1,32 @@
 # Wynntools
 
-Handy tools for Wynncraft, made by Malyns. A static site: open `index.html` or serve the folder.
+Handy tools for Wynncraft, made by Malyns. A static site: open `index.html` or serve the folder. Live at https://malynsx.github.io/wynntools/
 
-- **Mounts**: stable manager with Wynntils import, breeding predictions, pair finder, lineage planner, feed planner, training, timers, market maths, "wanted" posters, breed ledger and almanac (formerly Paddock).
-- **Items**: search every item by type, rarity, class, level and identification; compare up to four side by side.
-- **Crafting**: ingredient combiner with placement effectiveness, and an ingredient browser.
-- **Professions**: XP calculator and a gathering material list.
-- **Players**: lookup with mount access, head-to-head compare, quest checklist.
-- **Guilds**: lookup with members and ranks, territory snapshot.
+- **Mounts**: stable with Wynntils import and share links, breeding predictions, pair finder, lineage planner, feed planner, training, timers, market maths, "wanted" posters, breed ledger (paste a breed from Wynntils) and almanac.
+- **Items**: search and compare every item; loadout builder with Wynntils paste (exact rolls and powders), skill point check and share links.
+- **Crafting**: ingredient combiner, ingredient finder, ingredient browser.
+- **Professions**: XP calculator, grinding spots (Olinus10's picks plus node clusters), material calculator, gathering list.
+- **Players**: lookup with character breakdowns and ability trees, compare (accounts and characters), watchlist, leaderboards, quest checklist.
+- **Guilds**: lookup with banner, members, top contributors and newest members; territory snapshot.
+- **Quick search** in the header (press `/`), five themes, works on phones.
+
+## Wynntools API
+
+Static, CORS-open JSON at `https://malynsx.github.io/wynntools/api/v1/` (items, ingredients, materials, recipes, quests, spots, Olinus10's spots, territories, profession XP). Docs on the site under Home › API.
 
 ## Data
 
-`tools/build_data.py` writes the trimmed game data in `data/` and downloads missing icons into `img/`. A GitHub Action runs it every week. Run it by hand with:
+`tools/build_data.py` writes the trimmed game data in `data/`, the public API in `api/v1/` and downloads missing icons into `img/`. A GitHub Action runs it every week. By hand:
 
 ```bash
 pip install pillow
 python tools/build_data.py
 ```
 
-Sources: Wynntils static data, the Wynncraft item guide, the Wynncraft Wiki and the Wynncraft API. Ingredient icons are the Minecraft items they appear as (PrismarineJS minecraft-assets).
+Sources: Wynntils static data, the Wynncraft item guide, the Wynncraft Wiki, the Wynncraft API, Olinus10's leveling guides (`data/olinus.json`, edited by hand). Ingredient icons are the Minecraft items they appear as (PrismarineJS minecraft-assets).
 
 ## Live player and guild lookups
 
-The Wynncraft API sends no CORS headers, so browsers refuse to let other websites read it. `proxy/worker.js` is a small Cloudflare Worker that forwards only player and guild requests, adds CORS for this site and caches each answer for two minutes. To switch lookups on:
-
-1. In the Cloudflare dashboard, go to Workers & Pages → Create → Worker, paste `proxy/worker.js` and deploy (or run `npx wrangler deploy` inside `proxy/`).
-2. Put the worker's address (for example `https://wynntools-api.<you>.workers.dev`) into `W.API_RELAY` in `js/shared.js`.
+The Wynncraft API sends no CORS headers, so browsers refuse to let other websites read it. `proxy/worker.js` is a small Cloudflare Worker that forwards player, guild, ability-tree and leaderboard requests, adds CORS for this site and caches each answer for two minutes. Deploy it in the Cloudflare dashboard (Workers & Pages → your worker → Edit code → paste → Deploy) and set its address in `W.API_RELAY` in `js/shared.js`.
 
 Fan-made; not affiliated with Wynncraft or Mojang.

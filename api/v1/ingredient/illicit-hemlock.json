@@ -1,0 +1,1 @@
+{"name":"Illicit Hemlock","stars":1,"level":33,"professions":["tailoring","alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/175_3.png","identifications":{"lifeSteal":[14,18],"poison":[12,13]},"itemOnlyIds":{"durabilityModifier":-40000},"consumableOnlyIds":{"duration":-70},"slug":"illicit-hemlock"}

@@ -1,0 +1,1 @@
+{"name":"Carapace Fragment","stars":1,"level":23,"professions":["armouring","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/265_0.png","identifications":{"rawMainAttackDamage":[8,10],"walkSpeed":[4,6]},"itemOnlyIds":{"agilityRequirement":12,"durabilityModifier":-35000},"slug":"carapace-fragment"}

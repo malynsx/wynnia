@@ -1,0 +1,1 @@
+{"name":"Stone Plating","stars":1,"level":82,"professions":["armouring","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/402_0.png","identifications":{"rawHealth":[480,550],"walkSpeed":[-10,-6]},"itemOnlyIds":{"durabilityModifier":-35000},"slug":"stone-plating"}

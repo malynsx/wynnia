@@ -1,0 +1,1 @@
+{"name":"Naval Stone","stars":3,"level":63,"professions":["jeweling"],"icon":"https://malynsx.github.io/wynntools/img/ing/169_0.png","identifications":{"mainAttackDamage":[-6,-5],"spellDamage":[4,5]},"itemOnlyIds":{"durabilityModifier":-87000,"intelligenceRequirement":25},"slug":"naval-stone"}

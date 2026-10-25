@@ -1,0 +1,1 @@
+{"name":"Vapor","type":"ring","category":"accessory","rarity":"rare","level":45,"icon":"https://malynsx.github.io/wynntools/img/items/ring.water1.webp","skillRequirements":{"intelligence":15},"base":{"baseFireDefence":10},"identifications":{"fireDamage":10,"rawMaxMana":15,"waterDamage":-10},"restriction":"untradable","slug":"vapor"}

@@ -1,0 +1,1 @@
+{"name":"Spiky Vine","stars":1,"level":113,"professions":["armouring","tailoring","woodworking","weaponsmithing"],"icon":null,"identifications":{"rawStrength":[5,6],"thorns":[14,16]},"itemOnlyIds":{"durabilityModifier":-112000,"strengthRequirement":8},"consumableOnlyIds":{"duration":-240},"slug":"spiky-vine"}

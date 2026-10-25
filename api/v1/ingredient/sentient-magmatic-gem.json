@@ -1,0 +1,1 @@
+{"name":"Sentient Magmatic Gem","stars":3,"level":35,"professions":["jeweling"],"icon":"https://malynsx.github.io/wynntools/img/ing/95_14.png","identifications":{"fireDamage":[3,4]},"itemOnlyIds":{"defenceRequirement":15,"durabilityModifier":-104000},"positionModifiers":{"touching":25},"slug":"sentient-magmatic-gem"}

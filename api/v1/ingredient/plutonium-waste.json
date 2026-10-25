@@ -1,0 +1,1 @@
+{"name":"Plutonium Waste","stars":2,"level":103,"professions":["jeweling"],"icon":"https://malynsx.github.io/wynntools/img/ing/295_0.png","identifications":{"poison":[280,300],"walkSpeed":[-6,-4]},"itemOnlyIds":{"durabilityModifier":-106000,"strengthRequirement":10},"slug":"plutonium-waste"}

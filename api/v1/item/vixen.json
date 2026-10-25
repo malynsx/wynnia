@@ -1,0 +1,1 @@
+{"name":"Vixen","type":"necklace","category":"accessory","rarity":"rare","level":60,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.fire2.webp","skillRequirements":{"defence":50},"base":{"baseFireDefence":20},"identifications":{"airDefence":9,"earthDefence":8,"healthRegenRaw":70,"lifeSteal":70,"thunderDefence":7},"slug":"vixen"}

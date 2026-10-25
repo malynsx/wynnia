@@ -1,0 +1,1 @@
+{"name":"Dart Sling","type":"bow","category":"weapon","rarity":"rare","level":8,"icon":"https://malynsx.github.io/wynntools/img/items/bow.basicGold.webp","classRequirement":"archer","base":{"baseDamage":[8,33]},"identifications":{"manaSteal":[1,5],"rawDexterity":4,"spellDamage":[2,8]},"attackSpeed":"normal","averageDps":42,"slug":"dart-sling"}

@@ -1,0 +1,1 @@
+{"name":"Flerisi Bark","stars":2,"level":92,"professions":["armouring","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/25_0.png","identifications":{"rawEarthSpellDamage":[40,45],"rawStrength":[3,4],"walkSpeed":[-5,-3]},"itemOnlyIds":{"durabilityModifier":-102000,"strengthRequirement":18},"slug":"flerisi-bark"}

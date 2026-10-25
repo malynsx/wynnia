@@ -1,0 +1,1 @@
+{"name":"Oyster","type":"necklace","category":"accessory","rarity":"rare","level":45,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.basicPearl.webp","skillRequirements":{"intelligence":15},"base":{"baseWaterDefence":15},"identifications":{"lootBonus":[2,8],"rawIntelligence":3,"rawMaxMana":[4,16],"rawWaterDamage":[5,23],"waterDefence":[2,8]},"slug":"oyster"}

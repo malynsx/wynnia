@@ -1,0 +1,1 @@
+{"name":"Blight","type":"wand","category":"weapon","rarity":"rare","level":55,"icon":"https://malynsx.github.io/wynntools/img/items/wand.earth2.webp","classRequirement":"mage","base":{"baseDamage":[10,20],"baseEarthDamage":[10,20]},"identifications":{"earthDefence":[10,43],"poison":[210,910],"thorns":[5,20]},"powderSlots":2,"attackSpeed":"slow","averageDps":45,"slug":"blight"}

@@ -1,0 +1,1 @@
+{"name":"Tattered Magic Cloth","stars":2,"level":55,"professions":["tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/171_14.png","identifications":{"fireSpellDamage":[6,7],"manaRegen":[3,4]},"itemOnlyIds":{"defenceRequirement":14,"durabilityModifier":-69000},"slug":"tattered-magic-cloth"}

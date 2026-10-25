@@ -2,14 +2,14 @@
   const { el } = W;
   const mountIcon = () => W.art.ui('flute');
   W.SECTIONS = [
-    { k: 'home', name: 'Home', icon: () => W.art.wiki('emeraldicon'), pages: [['home', 'Home']] },
+    { k: 'home', name: 'Home', icon: () => W.art.wiki('emeraldicon'), pages: [['home', 'Home'], ['api', 'API']] },
     { k: 'mounts', name: 'Mounts', icon: mountIcon, pages: [
       ['stable', 'Stable'], ['feeder', 'Feeder'], ['pairs', 'Pair Finder'], ['lineage', 'Lineage'], ['cookbook', 'Cookbook'],
       ['training', 'Training'], ['timers', 'Timers'], ['market', 'Market'], ['want', 'Wanted'], ['ledger', 'Ledger'], ['almanac', 'Almanac']] },
-    { k: 'items', name: 'Items', icon: () => W.art.wiki('weaponsmithing'), pages: [['search', 'Search'], ['compare', 'Compare']] },
-    { k: 'crafting', name: 'Crafting', icon: () => W.art.wiki('alchemism'), pages: [['combiner', 'Ingredient Combiner'], ['ingredients', 'Ingredients']] },
-    { k: 'professions', name: 'Professions', icon: () => W.art.wiki('mining'), pages: [['xp', 'XP Calculator'], ['spots', 'Grinding Spots'], ['gathering', 'Gathering']] },
-    { k: 'players', name: 'Players', icon: () => W.art.wiki('warrior'), pages: [['lookup', 'Lookup'], ['compare', 'Compare'], ['quests', 'Quest Checklist']] },
+    { k: 'items', name: 'Items', icon: () => W.art.wiki('weaponsmithing'), pages: [['search', 'Search'], ['compare', 'Compare'], ['loadout', 'Loadout Builder']] },
+    { k: 'crafting', name: 'Crafting', icon: () => W.art.wiki('alchemism'), pages: [['combiner', 'Ingredient Combiner'], ['finder', 'Ingredient Finder'], ['ingredients', 'Ingredients']] },
+    { k: 'professions', name: 'Professions', icon: () => W.art.wiki('mining'), pages: [['xp', 'XP Calculator'], ['spots', 'Grinding Spots'], ['materials', 'Material Calculator'], ['gathering', 'Gathering']] },
+    { k: 'players', name: 'Players', icon: () => W.art.wiki('warrior'), pages: [['lookup', 'Lookup'], ['compare', 'Compare'], ['watchlist', 'Watchlist'], ['leaderboards', 'Leaderboards'], ['quests', 'Quest Checklist']] },
     { k: 'guilds', name: 'Guilds', icon: () => W.art.wiki('guild-banner-tier-3'), pages: [['lookup', 'Lookup'], ['territories', 'Territories']] },
   ];
   /* Old Paddock links (#stable, #want?…, #player?…) keep working. */
@@ -39,17 +39,18 @@
     sub.replaceChildren(...(sec.pages.length > 1 ? sec.pages.map(([k, label]) =>
       el('a', { href: `#${sec.k}/${k}`, class: 'sub' + (k === pk ? ' on' : '') }, label)) : []));
     sub.hidden = sec.pages.length < 2;
-    const main = document.getElementById('main');
-    main.replaceChildren();
+    /* Each visit gets a fresh container, so a slow page that finishes loading after you've moved on draws into nothing. */
+    const main = document.getElementById('main'), page = el('div', { class: 'page' });
+    main.replaceChildren(page);
     const fn = W.pages[`${sec.k}/${pk}`] || W.pages[pk];
-    fn(main, q);
+    fn(page, q);
     const label = sec.pages.find(p => p[0] === pk)[1];
     document.title = sec.k === 'home' ? 'Wynntools' : `${label} · ${sec.name} · Wynntools`;
     window.scrollTo(0, 0);
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    W.load(); W.art.favicon(); W.themes.init();
+    W.load(); W.art.favicon(); W.themes.init(); W.initSearch();
     window.addEventListener('hashchange', route);
     route();
   });

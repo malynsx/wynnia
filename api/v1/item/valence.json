@@ -1,0 +1,1 @@
+{"name":"Valence","type":"ring","category":"accessory","rarity":"legendary","level":93,"icon":"https://malynsx.github.io/wynntools/img/items/ring.thunder2.webp","skillRequirements":{"dexterity":55},"base":{"baseThunderDefence":70},"identifications":{"2ndSpellCost":[-9,-40],"rawMaxMana":[-9,-5],"thunderDefence":[3,13],"walkSpeed":[3,13]},"slug":"valence"}

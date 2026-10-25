@@ -1,0 +1,1 @@
+{"name":"Jera","type":"leggings","category":"armour","rarity":"rare","level":55,"icon":"https://malynsx.github.io/wynntools/img/items/leggings.chainmail.webp","base":{"baseAirDefence":-50,"baseEarthDefence":-50,"baseFireDefence":-50,"baseHealth":500,"baseThunderDefence":-50,"baseWaterDefence":-50},"identifications":{"combatExperience":[3,13],"lootBonus":[12,52]},"slug":"jera"}

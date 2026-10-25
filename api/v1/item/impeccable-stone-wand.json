@@ -1,0 +1,1 @@
+{"name":"Impeccable Stone Wand","type":"wand","category":"weapon","rarity":"normal","level":80,"icon":"https://malynsx.github.io/wynntools/img/items/wand.basicWood.webp","classRequirement":"mage","base":{"baseDamage":[110,139]},"powderSlots":3,"attackSpeed":"slow","averageDps":187,"slug":"impeccable-stone-wand"}

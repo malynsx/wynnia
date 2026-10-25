@@ -1,0 +1,1 @@
+{"name":"Sage","type":"wand","category":"weapon","rarity":"legendary","level":47,"icon":"https://malynsx.github.io/wynntools/img/items/wand.multi2.webp","classRequirement":"mage","base":{"baseDamage":[54,76]},"identifications":{"airDamage":[5,20],"combatExperience":[8,33],"lootBonus":[3,13],"manaRegen":[4,16]},"powderSlots":1,"attackSpeed":"fast","averageDps":162,"slug":"sage"}

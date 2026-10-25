@@ -1,0 +1,1 @@
+{"name":"Andesite-Hewn Bow","type":"bow","category":"weapon","rarity":"normal","level":8,"icon":"https://malynsx.github.io/wynntools/img/items/bow.basicWood.webp","classRequirement":"archer","base":{"baseDamage":[25,32]},"powderSlots":1,"attackSpeed":"verySlow","averageDps":24,"slug":"andesite-hewn-bow"}

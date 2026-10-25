@@ -1,0 +1,1 @@
+{"name":"Constrict Collar","type":"necklace","category":"accessory","rarity":"rare","level":45,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.basicIron.webp","base":{"baseHealth":100},"identifications":{"combatExperience":[5,20],"healthRegenRaw":[-22,-12],"rawDefence":7,"rawHealth":[29,125]},"restriction":"untradable","slug":"constrict-collar"}

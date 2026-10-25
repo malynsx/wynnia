@@ -126,8 +126,41 @@
       ...Object.entries({ ...(g.io || {}), ...(g.co || {}) }).map(([k, v]) => el('div', { class: 'tt-g' }, `${IO_NAME[k] || W.words(k)}: ${k === 'durabilityModifier' ? (v / 1000 > 0 ? '+' : '') + v / 1000 : (v > 0 ? '+' : '') + v}`)));
   }
 
+  /* Ingredient Finder: best ingredients for one identification, plus the strongest effectiveness boosters. */
+  const ff = { prof: 'armouring', id: '', lvl: 130 };
+  W.pages['crafting/finder'] = function (root) {
+    W.withData(root, ['ingredients'], (ings) => {
+      const draw = () => {
+        const pool = ings.filter(g => g.sk.includes(ff.prof) && g.l <= ff.lvl);
+        const ids = [...new Set(pool.flatMap(g => Object.keys(g.i || {})))].map(k => [k, W.idInfo(k).name + (W.idInfo(k).unit === '%' ? ' %' : '')]).sort((a, b) => a[1].localeCompare(b[1]));
+        if (!ff.id || !ids.some(x => x[0] === ff.id)) ff.id = (ids.find(x => x[0] === 'rawHealth') || ids[0] || [''])[0];
+        const inv = W.idInfo(ff.id).inverse, top = (v) => Array.isArray(v) ? (inv ? Math.min(...v) : Math.max(...v)) : v;
+        const best = pool.filter(g => g.i && g.i[ff.id] != null && (inv ? top(g.i[ff.id]) < 0 : top(g.i[ff.id]) > 0))
+          .sort((a, b) => inv ? top(a.i[ff.id]) - top(b.i[ff.id]) : top(b.i[ff.id]) - top(a.i[ff.id])).slice(0, 15);
+        const boost = pool.filter(g => g.pm).map(g => ({ g, sum: Object.values(g.pm).reduce((a, b) => a + Math.max(0, b), 0) }))
+          .filter(x => x.sum > 0).sort((a, b) => b.sum - a.sum).slice(0, 10);
+        const row = (g, extra) => el('div', { class: 'arow' }, el('div', { class: 'aico' }, W.art.ing(g.ic)),
+          el('div', {}, el('b', { style: { color: W.ING_STARS[g.tr] } }, g.n, ' ', el('span', { class: 'stars' }, '✫'.repeat(g.tr))), el('small', {}, `Lv. ${g.l} · `, extra)));
+        root.replaceChildren(el('div', { class: 'cols' },
+          W.win('Ingredient Finder',
+            el('div', { class: 'form row' },
+              el('label', {}, 'Profession', W.sel([['armouring', 'Armouring'], ['tailoring', 'Tailoring'], ['weaponsmithing', 'Weaponsmithing'], ['woodworking', 'Woodworking'], ['jeweling', 'Jeweling'], ['alchemism', 'Alchemism'], ['cooking', 'Cooking'], ['scribing', 'Scribing']], ff.prof, (v) => { ff.prof = v; draw(); })),
+              el('label', {}, 'I want more', W.sel(ids, ff.id, (v) => { ff.id = v; draw(); })),
+              el('label', {}, 'Max ingredient level', W.numIn(ff.lvl, (v) => { ff.lvl = Math.max(1, v); draw(); }, 1, 130))),
+            el('div', { class: 'cap left' }, `Best ${W.idInfo(ff.id).name} sources`),
+            best.length ? el('div', { class: 'ahead' }, best.map(g => row(g, el('span', { class: 'pos' }, W.fmtId(ff.id, g.i[ff.id]))))) : el('p', { class: 'empty' }, 'No ingredient gives that.'),
+            el('p', { class: 'hint' }, 'Ranked by best roll at 100% effectiveness. Put them next to a booster to push them higher.')),
+          W.win('Effectiveness boosters',
+            el('div', { class: 'ahead' }, boost.map(({ g }) => row(g, Object.entries(g.pm).map(([k, v]) => `${v > 0 ? '+' : ''}${v}% ${({ left: 'left', right: 'right', above: 'above', under: 'under', touching: 'touching', notTouching: 'not touching' })[k]}`).join(', ')))),
+            el('p', { class: 'hint' }, 'These raise the ingredients around them. Try combinations in the Ingredient Combiner.'))));
+      };
+      draw();
+    });
+  };
+
   const bf = { q: '', prof: '', tier: '', min: 1, max: 130, id: '', shown: 60 };
-  W.pages['crafting/ingredients'] = function (root) {
+  W.pages['crafting/ingredients'] = function (root, q) {
+    if (q && q.get('q')) { bf.q = q.get('q'); bf.prof = ''; bf.tier = ''; bf.id = ''; bf.min = 1; bf.max = 130; }
     W.withData(root, ['ingredients'], (ings) => {
       const allIds = [...new Set(ings.flatMap(g => Object.keys(g.i || {})))].map(k => [k, W.idInfo(k).name + (W.idInfo(k).unit === '%' ? ' %' : '')]).sort((a, b) => a[1].localeCompare(b[1]));
       const out = el('div', {});

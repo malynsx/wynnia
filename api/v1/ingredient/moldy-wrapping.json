@@ -1,0 +1,1 @@
+{"name":"Moldy Wrapping","stars":2,"level":39,"professions":["armouring","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/287_0.png","identifications":{"rawHealth":[-30,-20],"rawSpellDamage":[9,12],"thunderDamage":[4,6]},"itemOnlyIds":{"dexterityRequirement":9,"durabilityModifier":-51000},"slug":"moldy-wrapping"}

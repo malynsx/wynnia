@@ -1,0 +1,1 @@
+{"name":"Petiole","type":"ring","category":"accessory","rarity":"unique","level":108,"icon":"https://malynsx.github.io/wynntools/img/items/ring.earth2.webp","skillRequirements":{"strength":30,"intelligence":40},"base":{"baseEarthDefence":45,"baseHealth":500},"identifications":{"earthDefence":[3,13],"healingEfficiency":[2,10],"rawIntelligence":6},"slug":"petiole"}

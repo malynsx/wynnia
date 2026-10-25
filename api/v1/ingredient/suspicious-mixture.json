@@ -1,0 +1,1 @@
+{"name":"Suspicious Mixture","stars":1,"level":118,"professions":["alchemism","scribing"],"icon":null,"identifications":{"elementalDamage":[2,4],"rawHealth":[200,400],"reflection":[2,4],"thorns":[2,4]},"consumableOnlyIds":{"duration":-160},"slug":"suspicious-mixture"}

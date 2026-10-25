@@ -1,0 +1,1 @@
+{"name":"Stealskull","type":"helmet","category":"armour","rarity":"unique","level":68,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.iron.webp","base":{"baseHealth":960},"identifications":{"lifeSteal":[38,163],"manaSteal":[2,10],"stealing":[2,10]},"powderSlots":2,"slug":"stealskull"}

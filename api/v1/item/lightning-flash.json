@@ -1,0 +1,1 @@
+{"name":"Lightning Flash","type":"necklace","category":"accessory","rarity":"rare","level":82,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.thunder2.webp","base":{"baseThunderDefence":50},"identifications":{"earthDamage":-5,"rawDexterity":5,"spellDamage":10,"walkSpeed":12},"restriction":"untradable","slug":"lightning-flash"}

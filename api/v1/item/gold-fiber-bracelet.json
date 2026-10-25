@@ -1,0 +1,1 @@
+{"name":"Gold Fiber Bracelet","type":"bracelet","category":"accessory","rarity":"legendary","level":95,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.earth2.webp","skillRequirements":{"strength":75},"base":{"baseEarthDefence":50},"identifications":{"earthDamage":11,"mainAttackDamage":12,"rawStrength":4},"restriction":"untradable","slug":"gold-fiber-bracelet"}

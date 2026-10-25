@@ -1,0 +1,1 @@
+{"name":"Scorpion Tail","type":"leggings","category":"armour","rarity":"rare","level":36,"icon":"https://malynsx.github.io/wynntools/img/items/leggings.gold.webp","base":{"baseHealth":250},"identifications":{"poison":[23,98],"walkSpeed":[2,10]},"powderSlots":1,"restriction":"untradable","slug":"scorpion-tail"}

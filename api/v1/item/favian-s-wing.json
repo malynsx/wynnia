@@ -1,0 +1,1 @@
+{"name":"Favian's Wing","type":"bracelet","category":"accessory","rarity":"rare","level":36,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.air1.webp","skillRequirements":{"agility":20},"base":{"baseAirDefence":-10,"baseThunderDefence":-15},"identifications":{"airDamage":[2,8],"walkSpeed":[4,16]},"slug":"favian-s-wing"}

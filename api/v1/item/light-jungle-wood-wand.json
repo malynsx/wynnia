@@ -1,0 +1,1 @@
+{"name":"Light Jungle Wood Wand","type":"wand","category":"weapon","rarity":"normal","level":25,"icon":"https://malynsx.github.io/wynntools/img/items/wand.basicWood.webp","classRequirement":"mage","base":{"baseDamage":[12,15]},"powderSlots":1,"attackSpeed":"fast","averageDps":34,"slug":"light-jungle-wood-wand"}

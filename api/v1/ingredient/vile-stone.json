@@ -1,0 +1,1 @@
+{"name":"Vile Stone","stars":2,"level":102,"professions":["armouring","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/73_0.png","identifications":{"rawIntelligence":[-5,-3],"walkSpeed":[5,8]},"itemOnlyIds":{"agilityRequirement":15,"durabilityModifier":-105000,"intelligenceRequirement":-15},"slug":"vile-stone"}

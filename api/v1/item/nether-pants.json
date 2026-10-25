@@ -1,0 +1,1 @@
+{"name":"Nether Pants","type":"leggings","category":"armour","rarity":"rare","level":27,"icon":"https://malynsx.github.io/wynntools/img/items/leggings.pale_gold.webp","skillRequirements":{"defence":20},"base":{"baseFireDefence":10,"baseHealth":190,"baseWaterDefence":-6},"identifications":{"exploding":[2,8],"lootBonus":[2,9],"rawDefence":7},"powderSlots":1,"slug":"nether-pants"}

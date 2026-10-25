@@ -1,0 +1,1 @@
+{"name":"Act Break","type":"necklace","category":"accessory","rarity":"rare","level":57,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.water2.webp","skillRequirements":{"intelligence":35},"base":{"baseHealth":-150},"identifications":{"healingEfficiency":10,"healthRegen":-20,"spellDamage":10,"sprintRegen":-15},"restriction":"untradable","slug":"act-break"}

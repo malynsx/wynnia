@@ -1,0 +1,1 @@
+{"name":"Hillich","type":"spear","category":"weapon","rarity":"rare","level":45,"icon":"https://malynsx.github.io/wynntools/img/items/spear.multi2.webp","classRequirement":"warrior","base":{"baseDamage":[54,70]},"identifications":{"combatExperience":25,"healthRegenRaw":50,"manaRegen":8},"powderSlots":3,"attackSpeed":"normal","averageDps":127,"slug":"hillich"}

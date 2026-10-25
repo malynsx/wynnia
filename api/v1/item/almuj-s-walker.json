@@ -1,0 +1,1 @@
+{"name":"Almuj's Walker","type":"boots","category":"armour","rarity":"legendary","level":25,"icon":"https://malynsx.github.io/wynntools/img/items/boots.gold.webp","base":{"baseHealth":200},"identifications":{"lootBonus":[5,20],"rawAgility":7,"rawDexterity":7,"stealing":[2,10],"walkSpeed":[8,33]},"powderSlots":3,"slug":"almuj-s-walker"}

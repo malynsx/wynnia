@@ -1,0 +1,1 @@
+{"name":"Blackout","type":"bracelet","category":"accessory","rarity":"unique","level":22,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.basicIron.webp","skillRequirements":{"defence":5},"base":{"baseFireDefence":6,"baseHealth":20,"baseThunderDefence":-6},"identifications":{"rawDefence":3,"rawDexterity":-2,"rawFireDamage":[1,5]},"slug":"blackout"}

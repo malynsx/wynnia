@@ -1,0 +1,1 @@
+{"name":"Creeper Mask","type":"helmet","category":"armour","rarity":"unique","level":25,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","base":{"baseHealth":120},"identifications":{"exploding":12,"thorns":10},"restriction":"untradable","slug":"creeper-mask"}

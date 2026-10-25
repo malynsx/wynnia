@@ -1,0 +1,1 @@
+{"name":"Air Relic Helmet","type":"helmet","category":"armour","rarity":"rare","level":30,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.pale_gold.webp","skillRequirements":{"agility":21},"base":{"baseAirDefence":10,"baseHealth":205},"identifications":{"airDamage":[3,12],"airDefence":[3,12],"rawAgility":5},"powderSlots":2,"slug":"air-relic-helmet"}

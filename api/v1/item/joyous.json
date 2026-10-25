@@ -1,0 +1,1 @@
+{"name":"Joyous","type":"bow","category":"weapon","rarity":"unique","level":55,"icon":"https://malynsx.github.io/wynntools/img/items/bow.multi2.webp","classRequirement":"archer","base":{"baseDamage":[155,200]},"identifications":{"combatExperience":30,"lootBonus":10,"walkSpeed":10},"powderSlots":2,"attackSpeed":"slow","averageDps":266,"slug":"joyous"}

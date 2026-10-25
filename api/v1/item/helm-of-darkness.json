@@ -1,0 +1,1 @@
+{"name":"Helm of Darkness","type":"helmet","category":"armour","rarity":"rare","level":35,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","base":{"baseHealth":140,"baseThunderDefence":15},"identifications":{"1stSpellCost":[-2,-10],"reflection":[9,39],"spellDamage":[4,16],"thunderDamage":[3,13],"walkSpeed":[2,8]},"powderSlots":1,"slug":"helm-of-darkness"}

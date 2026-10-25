@@ -1,0 +1,1 @@
+{"name":"Mud Mask","type":"helmet","category":"armour","rarity":"unique","level":27,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","base":{"baseAirDefence":-10,"baseEarthDefence":8,"baseHealth":150,"baseWaterDefence":8},"identifications":{"damage":12,"poison":15,"rawMaxMana":20,"walkSpeed":-8},"slug":"mud-mask"}

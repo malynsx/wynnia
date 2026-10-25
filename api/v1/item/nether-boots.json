@@ -1,0 +1,1 @@
+{"name":"Nether Boots","type":"boots","category":"armour","rarity":"rare","level":28,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_gold.webp","skillRequirements":{"defence":25},"base":{"baseFireDefence":12,"baseHealth":200,"baseWaterDefence":-6},"identifications":{"exploding":[2,8],"fireDamage":[2,10],"lootBonus":[2,8]},"powderSlots":1,"slug":"nether-boots"}

@@ -1,0 +1,1 @@
+{"name":"Pure Oak Bow","type":"bow","category":"weapon","rarity":"normal","level":56,"icon":"https://malynsx.github.io/wynntools/img/items/bow.basicWood.webp","classRequirement":"archer","base":{"baseDamage":[135,159]},"powderSlots":2,"attackSpeed":"slow","averageDps":220,"slug":"pure-oak-bow"}

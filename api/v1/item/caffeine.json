@@ -1,0 +1,1 @@
+{"name":"Caffeine","type":"ring","category":"accessory","rarity":"unique","level":74,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicGold.webp","skillRequirements":{"agility":40},"base":{"baseHealth":-160},"identifications":{"healthRegenRaw":[-32,-17],"raw2ndSpellCost":[-1,-3],"rawAgility":3,"walkSpeed":[4,16]},"slug":"caffeine"}

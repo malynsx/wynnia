@@ -1,0 +1,1 @@
+{"name":"Sprinter","type":"leggings","category":"armour","rarity":"unique","level":12,"icon":"https://malynsx.github.io/wynntools/img/items/leggings.pale_leather.webp","base":{"baseAirDefence":3,"baseHealth":30},"identifications":{"sprint":[2,9],"walkSpeed":[3,14]},"slug":"sprinter"}

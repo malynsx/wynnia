@@ -1,0 +1,1 @@
+{"name":"Amulet of the Necromancer","type":"necklace","category":"accessory","rarity":"rare","level":18,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.multi1.webp","base":{"baseWaterDefence":-5},"identifications":{"lifeSteal":[2,10],"manaRegen":[-4,-2],"manaSteal":[1,5]},"slug":"amulet-of-the-necromancer"}

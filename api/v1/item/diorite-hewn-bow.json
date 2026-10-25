@@ -1,0 +1,1 @@
+{"name":"Diorite-Hewn Bow","type":"bow","category":"weapon","rarity":"normal","level":15,"icon":"https://malynsx.github.io/wynntools/img/items/bow.basicWood.webp","classRequirement":"archer","base":{"baseDamage":[42,55]},"powderSlots":1,"attackSpeed":"verySlow","averageDps":40,"slug":"diorite-hewn-bow"}

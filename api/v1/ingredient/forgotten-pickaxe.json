@@ -1,0 +1,1 @@
+{"name":"Forgotten Pickaxe","stars":1,"level":96,"professions":["weaponsmithing","armouring"],"icon":"https://malynsx.github.io/wynntools/img/ing/257_0.png","identifications":{"earthDamage":[6,7],"rawMainAttackDamage":[40,50]},"itemOnlyIds":{"durabilityModifier":-71000,"strengthRequirement":14},"slug":"forgotten-pickaxe"}

@@ -1,0 +1,1 @@
+{"name":"Santa's Coat","type":"chestplate","category":"armour","rarity":"rare","level":32,"icon":"https://malynsx.github.io/wynntools/img/items/chestplate.pale_gold.webp","base":{"baseHealth":260},"identifications":{"combatExperience":[5,20],"healthRegenRaw":[8,33],"lootBonus":[5,20],"rawHealth":[12,52]},"powderSlots":1,"slug":"santa-s-coat"}

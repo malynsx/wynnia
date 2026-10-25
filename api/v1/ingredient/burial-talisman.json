@@ -1,0 +1,1 @@
+{"name":"Burial Talisman","stars":2,"level":36,"professions":["jeweling"],"icon":"https://malynsx.github.io/wynntools/img/ing/259_18.png","identifications":{"airDefence":[-5,-4],"thunderDamage":[4,5],"waterDefence":[-5,-4]},"itemOnlyIds":{"dexterityRequirement":9,"durabilityModifier":-60000},"slug":"burial-talisman"}

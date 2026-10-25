@@ -1,0 +1,1 @@
+{"name":"Dark Ambience","type":"relik","category":"weapon","rarity":"rare","level":4,"icon":"https://malynsx.github.io/wynntools/img/items/relik.thunder1.webp","classRequirement":"shaman","base":{"baseDamage":[7,9],"baseThunderDamage":[3,3]},"identifications":{"lifeSteal":[2,8],"lootBonus":[2,9]},"attackSpeed":"veryFast","averageDps":34,"slug":"dark-ambience"}

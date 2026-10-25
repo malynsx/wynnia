@@ -1,0 +1,1 @@
+{"name":"Bug Parts","stars":0,"level":22,"professions":["weaponsmithing","alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/362_0.png","identifications":{"mainAttackDamage":[2,3],"thorns":[1,2]},"itemOnlyIds":{"durabilityModifier":-26000,"strengthRequirement":8},"consumableOnlyIds":{"duration":-48},"slug":"bug-parts"}

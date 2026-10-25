@@ -1,0 +1,1 @@
+{"name":"Mangled Soul","stars":2,"level":26,"professions":["scribing","armouring","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/377_0.png","identifications":{"thunderDamage":[5,8]},"itemOnlyIds":{"dexterityRequirement":10,"durabilityModifier":-52000},"consumableOnlyIds":{"duration":-100},"slug":"mangled-soul"}

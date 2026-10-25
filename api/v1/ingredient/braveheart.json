@@ -1,0 +1,1 @@
+{"name":"Braveheart","stars":3,"level":78,"professions":["armouring","cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/376_0.png","identifications":{"healthRegen":[4,6],"healthRegenRaw":[80,90]},"itemOnlyIds":{"defenceRequirement":20,"durabilityModifier":-120000},"consumableOnlyIds":{"duration":-740},"slug":"braveheart"}

@@ -1,0 +1,1 @@
+{"name":"Claw of Demise","stars":3,"level":100,"professions":["weaponsmithing","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/379_0.png","identifications":{"fireDamage":[23,26],"healthRegen":[-20,-15],"rawDefence":[-5,-3]},"itemOnlyIds":{"defenceRequirement":35,"durabilityModifier":-165000},"positionModifiers":{"notTouching":-65},"slug":"claw-of-demise"}

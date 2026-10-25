@@ -1,0 +1,1 @@
+{"name":"Hypoxia","type":"ring","category":"accessory","rarity":"legendary","level":102,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicGem.webp","base":{"baseAirDefence":-80},"identifications":{"damage":[2,10],"manaRegen":[-10,-6],"rawDexterity":3,"rawMaxMana":[3,13],"rawStrength":3,"sprint":[-19,-10]},"slug":"hypoxia"}

@@ -1,0 +1,1 @@
+{"name":"Pure Granite Spear","type":"spear","category":"weapon","rarity":"normal","level":74,"icon":"https://malynsx.github.io/wynntools/img/items/spear.basicWood.webp","classRequirement":"warrior","base":{"baseDamage":[260,295]},"powderSlots":2,"attackSpeed":"verySlow","averageDps":230,"slug":"pure-granite-spear"}

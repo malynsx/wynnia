@@ -1,0 +1,1 @@
+{"name":"Ancient Scout Shoes","type":"boots","category":"armour","rarity":"unique","level":10,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_leather.webp","base":{"baseHealth":30},"identifications":{"lootBonus":[2,7],"rawAgility":4,"walkSpeed":[2,9]},"slug":"ancient-scout-shoes"}

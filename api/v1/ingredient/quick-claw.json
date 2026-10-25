@@ -1,0 +1,1 @@
+{"name":"Quick Claw","stars":2,"level":118,"professions":["weaponsmithing","armouring"],"icon":null,"identifications":{"rawDexterity":[7,9],"rawStrength":[-9,-7],"walkSpeed":[6,8]},"itemOnlyIds":{"agilityRequirement":15,"dexterityRequirement":15,"durabilityModifier":-120000,"strengthRequirement":-15},"slug":"quick-claw"}

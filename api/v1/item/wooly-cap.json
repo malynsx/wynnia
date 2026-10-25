@@ -1,0 +1,1 @@
+{"name":"Wooly Cap","type":"helmet","category":"armour","rarity":"rare","level":45,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.chainmail.webp","base":{"baseAirDefence":30,"baseHealth":575,"baseWaterDefence":40},"identifications":{"airDefence":20,"healthRegenRaw":50,"rawDefence":10,"rawMaxMana":25,"waterDefence":15},"powderSlots":2,"slug":"wooly-cap"}

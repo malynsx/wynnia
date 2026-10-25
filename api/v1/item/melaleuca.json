@@ -1,0 +1,1 @@
+{"name":"Melaleuca","type":"necklace","category":"accessory","rarity":"unique","level":106,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.water2.webp","skillRequirements":{"intelligence":50},"base":{"baseWaterDefence":30},"identifications":{"combatExperience":10,"lootBonus":10,"raw1stSpellCost":-3,"rawIntelligence":3,"rawWaterDamage":70},"slug":"melaleuca"}

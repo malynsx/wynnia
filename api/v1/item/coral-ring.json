@@ -1,0 +1,1 @@
+{"name":"Coral Ring","type":"ring","category":"accessory","rarity":"rare","level":93,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicPearl.webp","base":{"baseHealth":800,"baseWaterDefence":50},"identifications":{"healthRegen":15,"manaRegen":10,"poison":-375,"rawDexterity":-4},"restriction":"untradable","slug":"coral-ring"}

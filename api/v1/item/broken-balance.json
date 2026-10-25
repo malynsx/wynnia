@@ -1,0 +1,1 @@
+{"name":"Broken Balance","type":"boots","category":"armour","rarity":"legendary","level":50,"icon":"https://malynsx.github.io/wynntools/img/items/boots.chainmail.webp","base":{"baseHealth":-500},"identifications":{"mainAttackDamage":[23,100],"rawAgility":-7,"rawDefence":-7,"rawDexterity":-7,"rawIntelligence":-7,"rawStrength":-7,"spellDamage":[23,100]},"slug":"broken-balance"}

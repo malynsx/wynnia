@@ -1,0 +1,1 @@
+{"name":"Serpent's Kiss","type":"wand","category":"weapon","rarity":"rare","level":11,"icon":"https://malynsx.github.io/wynntools/img/items/wand.thunder1.webp","classRequirement":"mage","base":{"baseDamage":[2,4]},"identifications":{"poison":10,"rawAgility":3,"walkSpeed":6},"attackSpeed":"veryFast","averageDps":9,"restriction":"untradable","slug":"serpent-s-kiss"}

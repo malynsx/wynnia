@@ -1,0 +1,1 @@
+{"name":"Hustle Core","type":"ring","category":"accessory","rarity":"rare","level":84,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicIron.webp","skillRequirements":{"strength":30},"base":{"baseEarthDefence":30,"baseHealth":-350,"baseThunderDefence":30},"identifications":{"damage":[3,13],"lifeSteal":[30,130],"mainAttackRange":[3,12]},"slug":"hustle-core"}

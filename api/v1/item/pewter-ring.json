@@ -1,0 +1,1 @@
+{"name":"Pewter Ring","type":"ring","category":"accessory","rarity":"unique","level":46,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicIron.webp","skillRequirements":{"defence":20},"base":{"baseHealth":70},"identifications":{"healthRegen":4,"healthRegenRaw":30,"rawDefence":3},"slug":"pewter-ring"}

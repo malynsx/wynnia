@@ -1,0 +1,1 @@
+{"name":"Roasted Tissue","stars":1,"level":93,"professions":["tailoring","cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/376_0.png","identifications":{"fireDamage":[3,5],"gatherXpBonus":[2,2],"mainAttackDamage":[3,5]},"itemOnlyIds":{"defenceRequirement":8,"durabilityModifier":-58000},"consumableOnlyIds":{"duration":-380},"slug":"roasted-tissue"}

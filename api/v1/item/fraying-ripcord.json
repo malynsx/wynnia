@@ -1,0 +1,1 @@
+{"name":"Fraying Ripcord","type":"necklace","category":"accessory","rarity":"rare","level":113,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.air2.webp","skillRequirements":{"agility":50},"base":{"baseAirDefence":60},"identifications":{"healthRegen":[-13,-7],"raw2ndSpellCost":[-1,-6],"rawAgility":7,"rawAirDamage":[18,78],"rawDefence":-3},"slug":"fraying-ripcord"}

@@ -1,0 +1,1 @@
+{"name":"Silver Static Necklace","type":"necklace","category":"accessory","rarity":"legendary","level":95,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.thunder1.webp","skillRequirements":{"dexterity":50},"base":{"baseThunderDefence":30},"identifications":{"rawMainAttackDamage":20,"thunderDamage":2},"restriction":"untradable","slug":"silver-static-necklace"}

@@ -1,0 +1,1 @@
+{"name":"Rask","type":"ring","category":"accessory","rarity":"rare","level":81,"icon":"https://malynsx.github.io/wynntools/img/items/ring.air2.webp","skillRequirements":{"agility":50},"base":{"baseAirDefence":30},"identifications":{"2ndSpellCost":-20,"fireDefence":-10,"rawAgility":5,"sprintRegen":15},"slug":"rask"}

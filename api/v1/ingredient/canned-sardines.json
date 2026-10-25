@@ -1,0 +1,1 @@
+{"name":"Canned Sardines","stars":1,"level":50,"professions":["cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/skin_74843ea5fe093315.png","identifications":{"healthRegen":[-3,-2],"thunderDamage":[5,7],"waterDamage":[5,7]},"consumableOnlyIds":{"duration":-250},"slug":"canned-sardines"}

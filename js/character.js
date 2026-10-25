@@ -104,6 +104,9 @@
       el('div', { class: 'cols' },
         W.win(`Dungeons · ${(c.dungeons && c.dungeons.total) || 0} runs`, barList(c.dungeons && c.dungeons.list, 'gold')),
         W.win(`Raids · ${(c.raids && c.raids.total) || 0} runs`, barList(c.raids && c.raids.list, 'good'))),
-      questBox);
+      questBox,
+      el('div', { class: 'btns', style: { marginTop: 0 } },
+        el('a', { class: 'btnlink', href: `#items/loadout?u=${encodeURIComponent(player.username)}&c=${encodeURIComponent(c.id)}` }, 'Build a loadout for this character')),
+      W.abilityTree(player.uuid, c.id, String(c.type).toLowerCase()));
   };
 })(window.W);

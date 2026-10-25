@@ -1,0 +1,1 @@
+{"name":"Grandfather","type":"spear","category":"weapon","rarity":"unique","level":20,"icon":"https://malynsx.github.io/wynntools/img/items/spear.basicGold.webp","classRequirement":"warrior","base":{"baseDamage":[54,61]},"identifications":{"manaRegen":[2,8],"manaSteal":[2,8],"rawHealth":[-31,-17]},"powderSlots":1,"attackSpeed":"verySlow","averageDps":48,"slug":"grandfather"}

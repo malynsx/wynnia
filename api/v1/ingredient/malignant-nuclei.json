@@ -1,0 +1,1 @@
+{"name":"Malignant Nuclei","stars":3,"level":105,"professions":["armouring"],"icon":"https://malynsx.github.io/wynntools/img/ing/381_0.png","identifications":{"earthDamage":[12,14],"earthDefence":[-15,-12],"healingEfficiency":[4,4]},"itemOnlyIds":{"durabilityModifier":-150000,"strengthRequirement":20},"slug":"malignant-nuclei"}

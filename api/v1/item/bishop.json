@@ -1,0 +1,1 @@
+{"name":"Bishop","type":"helmet","category":"armour","rarity":"rare","level":20,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","skillRequirements":{"intelligence":30},"base":{"baseHealth":120},"identifications":{"combatExperience":[2,10],"damage":[-16,-8],"healingEfficiency":[4,18],"rawIntelligence":5},"slug":"bishop"}

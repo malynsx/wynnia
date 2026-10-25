@@ -1,0 +1,1 @@
+{"name":"Captain's Glass","stars":1,"level":28,"professions":["weaponsmithing","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/390_0.png","identifications":{"rawMainAttackDamage":[15,16],"walkSpeed":[-6,-3]},"itemOnlyIds":{"durabilityModifier":-38000,"strengthRequirement":10},"slug":"captain-s-glass"}

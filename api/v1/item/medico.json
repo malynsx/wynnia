@@ -1,0 +1,1 @@
+{"name":"Medico","type":"boots","category":"armour","rarity":"rare","level":17,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_leather.webp","base":{"baseHealth":70},"identifications":{"healthRegenRaw":[3,13],"rawHealth":[7,29]},"powderSlots":1,"slug":"medico"}

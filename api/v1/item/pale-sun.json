@@ -1,0 +1,1 @@
+{"name":"Pale Sun","type":"bracelet","category":"accessory","rarity":"rare","level":85,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.fire2.webp","skillRequirements":{"defence":55},"base":{"baseFireDefence":35},"identifications":{"damage":-7,"healingEfficiency":7,"healthRegenRaw":130,"reflection":12},"restriction":"untradable","slug":"pale-sun"}

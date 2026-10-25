@@ -1,0 +1,1 @@
+{"name":"Alginate Dressing","stars":3,"level":77,"professions":["armouring"],"icon":"https://malynsx.github.io/wynntools/img/ing/106_0.png","identifications":{"healingEfficiency":[3,4],"walkSpeed":[-6,-5]},"itemOnlyIds":{"durabilityModifier":-125000},"positionModifiers":{"above":55,"touching":-110,"under":55},"slug":"alginate-dressing"}

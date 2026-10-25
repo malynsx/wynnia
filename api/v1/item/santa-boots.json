@@ -1,0 +1,1 @@
+{"name":"Santa Boots","type":"boots","category":"armour","rarity":"rare","level":33,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_gold.webp","base":{"baseFireDefence":20,"baseHealth":275},"identifications":{"airDefence":[3,13],"combatExperience":[5,20],"healthRegen":[6,26],"lootBonus":[3,13],"rawHealth":[17,72]},"powderSlots":1,"slug":"santa-boots"}

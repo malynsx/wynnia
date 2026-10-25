@@ -1,0 +1,1 @@
+{"name":"Pride","type":"bracelet","category":"accessory","rarity":"rare","level":93,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.earth2.webp","skillRequirements":{"strength":50},"base":{"baseEarthDefence":20},"identifications":{"combatExperience":8,"mainAttackDamage":12,"mainAttackRange":16,"manaSteal":6,"rawStrength":5},"slug":"pride"}

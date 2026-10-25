@@ -1,0 +1,1 @@
+{"name":"Matchbook","type":"necklace","category":"accessory","rarity":"rare","level":83,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.fire2.webp","skillRequirements":{"defence":65},"base":{"baseFireDefence":-60,"baseHealth":-125},"identifications":{"exploding":[4,16],"fireDamage":[-9,-5],"rawDefence":10},"slug":"matchbook"}

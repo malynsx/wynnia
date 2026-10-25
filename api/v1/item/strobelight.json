@@ -1,0 +1,1 @@
+{"name":"Strobelight","type":"necklace","category":"accessory","rarity":"fabled","level":54,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.multi2.webp","skillRequirements":{"defence":30},"base":{"baseHealth":350},"identifications":{"rawDefence":7,"reflection":[5,20],"walkSpeed":[-9,-5]},"majorIds":["Taunt"],"slug":"strobelight"}

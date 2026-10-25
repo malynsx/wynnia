@@ -1,0 +1,1 @@
+{"name":"Thin Quill","stars":0,"level":8,"professions":["scribing","armouring","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/288_0.png","identifications":{"airDamage":[1,3]},"itemOnlyIds":{"durabilityModifier":-19000},"consumableOnlyIds":{"duration":-40},"slug":"thin-quill"}

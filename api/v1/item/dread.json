@@ -1,0 +1,1 @@
+{"name":"Dread","type":"bow","category":"weapon","rarity":"rare","level":10,"icon":"https://malynsx.github.io/wynntools/img/items/bow.thunder1.webp","classRequirement":"archer","base":{"baseDamage":[19,27]},"identifications":{"rawDexterity":3,"rawHealth":[-23,-13],"spellDamage":[2,8],"walkSpeed":[2,8]},"powderSlots":1,"attackSpeed":"normal","averageDps":47,"slug":"dread"}

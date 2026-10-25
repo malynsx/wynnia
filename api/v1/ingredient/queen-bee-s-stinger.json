@@ -1,0 +1,1 @@
+{"name":"Queen Bee's Stinger","stars":3,"level":115,"professions":["weaponsmithing","woodworking"],"icon":null,"identifications":{"poison":[1000,1250],"rawDexterity":[4,5],"rawThunderMainAttackDamage":[90,115]},"itemOnlyIds":{"dexterityRequirement":30,"durabilityModifier":-172000},"slug":"queen-bee-s-stinger"}

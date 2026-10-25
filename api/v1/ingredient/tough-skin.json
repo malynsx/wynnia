@@ -1,0 +1,1 @@
+{"name":"Tough Skin","stars":0,"level":84,"professions":["tailoring","armouring"],"icon":"https://malynsx.github.io/wynntools/img/ing/334_0.png","identifications":{"rawDefence":[2,4],"rawHealth":[300,400]},"itemOnlyIds":{"defenceRequirement":10,"durabilityModifier":-52000},"slug":"tough-skin"}

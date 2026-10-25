@@ -1,0 +1,1 @@
+{"name":"Unholy Water","stars":2,"level":75,"professions":["armouring","alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/326_0.png","identifications":{"damage":[6,7],"healingEfficiency":[-6,-6]},"itemOnlyIds":{"durabilityModifier":-90000},"consumableOnlyIds":{"duration":-140},"slug":"unholy-water"}

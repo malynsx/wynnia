@@ -79,6 +79,64 @@
     for (const k of Object.keys(d.stats)) s[k] = [d.stats[k][0], d.stats[k][1], d.maxStats[k] ?? d.stats[k][1]];
     return { type: d.type, name: d.name || d.type[0].toUpperCase() + d.type.slice(1), c1: d.c1, c2: d.c2, s, estimated: d.estimated, potential: d.potential };
   }
-  root.WynntilsDecode = { decodeText, toAppMount };
+  /* Gear items (Wynntils ItemTransformingVersion 3): name, identifications with their exact values, powders, rerolls, shiny.
+     idKeys maps Wynntils' numeric stat ids to API identification names (data/idkeys.json). */
+  const ELEMENTS = ['earth', 'thunder', 'water', 'fire', 'air'];
+  function decodeGearOne(data, idKeys) {
+    const r = reader(toBytes(data));
+    if (r.byte() !== 0) throw new Error('Not a Wynntils item string.');
+    const version = r.byte();
+    if (version < 2) throw new Error('This item was shared with an older Wynntils. Update the mod and share it again.');
+    if (version > 2) throw new Error('Unknown encoding version ' + version);
+    const g = { ids: {}, powders: [], rerolls: 0, shiny: null };
+    let itemType = null, ended = false;
+    while (r.has()) {
+      const id = r.byte();
+      if (id === 255) { ended = true; break; }
+      if (id === 1) itemType = r.byte();
+      else if (id === 2) { let s = '', b; while ((b = r.byte()) !== 0) s += String.fromCharCode(b); g.name = s; }
+      else if (id === 3) {
+        const count = r.byte(), extended = r.byte() === 1, pre = extended ? r.byte() : 0;
+        for (let i = 0; i < pre + count; i++) {
+          const key = idKeys[r.byte()] || null;
+          if (extended) { r.varint(); if (i < pre) continue; }
+          const value = r.varint(), flags = r.byte();
+          if (flags & 4) r.byte();
+          if (key) g.ids[key] = value;
+        }
+      }
+      else if (id === 4) {
+        const slots = r.byte(), n = r.byte(), bytes = [];
+        for (let i = 0; i < Math.ceil(n * 5 / 8); i++) bytes.push(r.byte());
+        const bits = bytes.flatMap(b => [7, 6, 5, 4, 3, 2, 1, 0].map(j => (b >> j) & 1));
+        for (let i = 0; i < Math.min(n, slots); i++) {
+          let v = 0; for (let j = 0; j < 5; j++) if (bits[i * 5 + (4 - j)]) v |= 1 << j;
+          if (!v) continue;
+          let el = Math.floor(v / 6), tier = v % 6; if (tier === 0) { el -= 1; tier = 6; }
+          g.powders.push([ELEMENTS[el] || '?', tier]);
+        }
+        g.slots = slots;
+      }
+      else if (id === 5) g.rerolls = r.byte();
+      else if (id === 6) { const statId = r.byte(), rerolls = r.byte(), value = r.varint(); g.shiny = { statId, rerolls, value }; }
+      else if (id === 7) throw new Error('Crafted gear isn’t supported yet.');
+      else throw new Error('Unsupported data block ' + id);
+    }
+    if (!ended) throw new Error('Item data is incomplete.');
+    if (itemType !== 0) throw new Error('This is not a gear item.');
+    if (!g.name) throw new Error('Item name is missing.');
+    return g;
+  }
+  function decodeGearText(text, idKeys) {
+    const re = /([\u{F0000}-\u{FFFFD}\u{100000}-\u{10FFFD}]+)(?: "([^"]+)")?/gu, res = [];
+    let m;
+    while ((m = re.exec(text))) {
+      try { res.push({ ok: true, gear: decodeGearOne(m[1], idKeys) }); }
+      catch (e) { res.push({ ok: false, error: e.message }); }
+    }
+    return res;
+  }
+
+  root.WynntilsDecode = { decodeText, toAppMount, decodeGearText };
   if (typeof module !== 'undefined') module.exports = root.WynntilsDecode;
 })(typeof window !== 'undefined' ? window : globalThis);

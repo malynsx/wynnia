@@ -1,0 +1,1 @@
+{"name":"Disturbed Dye","stars":3,"level":105,"professions":["armouring"],"icon":"https://malynsx.github.io/wynntools/img/ing/351_0.png","identifications":{"rawSpellDamage":[70,75]},"itemOnlyIds":{"durabilityModifier":-144000,"intelligenceRequirement":35},"positionModifiers":{"touching":-50},"slug":"disturbed-dye"}

@@ -1,0 +1,1 @@
+{"name":"Ancient Panel","stars":2,"level":37,"professions":["woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/405_0.png","identifications":{"fireDamage":[6,8],"healthRegen":[4,5]},"itemOnlyIds":{"defenceRequirement":12,"durabilityModifier":-60000},"slug":"ancient-panel"}

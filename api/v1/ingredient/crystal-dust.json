@@ -1,0 +1,1 @@
+{"name":"Crystal Dust","stars":1,"level":35,"professions":["weaponsmithing","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/348_0.png","identifications":{"spellDamage":[4,6],"walkSpeed":[-5,-2]},"itemOnlyIds":{"durabilityModifier":-40000,"intelligenceRequirement":8},"slug":"crystal-dust"}

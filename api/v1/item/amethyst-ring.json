@@ -1,0 +1,1 @@
+{"name":"Amethyst Ring","type":"ring","category":"accessory","rarity":"rare","level":36,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicPearl.webp","skillRequirements":{"intelligence":5,"defence":10},"base":{"baseFireDefence":4,"baseWaterDefence":4},"identifications":{"healthRegenRaw":[5,22],"rawIntelligence":3},"slug":"amethyst-ring"}

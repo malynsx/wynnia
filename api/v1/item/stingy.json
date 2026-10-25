@@ -1,0 +1,1 @@
+{"name":"Stingy","type":"boots","category":"armour","rarity":"rare","level":20,"icon":"https://malynsx.github.io/wynntools/img/items/boots.gold.webp","base":{"baseHealth":105,"baseThunderDefence":5,"baseWaterDefence":-5},"identifications":{"knockback":15,"lifeSteal":15,"thunderDamage":17},"powderSlots":1,"restriction":"untradable","slug":"stingy"}

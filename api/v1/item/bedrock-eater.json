@@ -1,0 +1,1 @@
+{"name":"Bedrock Eater","type":"spear","category":"weapon","rarity":"unique","level":12,"icon":"https://malynsx.github.io/wynntools/img/items/spear.basicGold.webp","classRequirement":"warrior","base":{"baseDamage":[35,45]},"identifications":{"lifeSteal":[2,7],"manaSteal":[2,8]},"powderSlots":1,"attackSpeed":"verySlow","averageDps":33,"slug":"bedrock-eater"}

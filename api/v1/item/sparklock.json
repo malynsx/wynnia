@@ -1,0 +1,1 @@
+{"name":"Sparklock","type":"wand","category":"weapon","rarity":"unique","level":5,"icon":"https://malynsx.github.io/wynntools/img/items/wand.basicGold.webp","classRequirement":"mage","base":{"baseDamage":[5,9]},"identifications":{"manaSteal":[1,5],"rawDexterity":3,"spellDamage":[1,5]},"powderSlots":1,"attackSpeed":"normal","averageDps":14,"slug":"sparklock"}

@@ -1,0 +1,1 @@
+{"name":"Switch Blade","type":"dagger","category":"weapon","rarity":"unique","level":5,"icon":"https://malynsx.github.io/wynntools/img/items/dagger.basicGold.webp","classRequirement":"assassin","base":{"baseDamage":[7,12]},"identifications":{"damage":[2,10],"mainAttackRange":[5,20]},"powderSlots":1,"attackSpeed":"fast","averageDps":24,"slug":"switch-blade"}

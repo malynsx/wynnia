@@ -1,0 +1,1 @@
+{"name":"Goblin Hood","type":"helmet","category":"armour","rarity":"rare","level":41,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.chainmail.webp","skillRequirements":{"strength":25,"dexterity":10},"base":{"baseAirDefence":-10,"baseHealth":380},"identifications":{"lifeSteal":30,"lootBonus":10,"spellDamage":-7,"walkSpeed":8},"powderSlots":2,"slug":"goblin-hood"}

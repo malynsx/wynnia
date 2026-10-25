@@ -1,0 +1,1 @@
+{"name":"Lucky Boots","type":"boots","category":"armour","rarity":"unique","level":28,"icon":"https://malynsx.github.io/wynntools/img/items/boots.gold.webp","base":{"baseHealth":150},"identifications":{"combatExperience":[3,13],"lootBonus":[6,26],"stealing":[1,4]},"powderSlots":1,"slug":"lucky-boots"}

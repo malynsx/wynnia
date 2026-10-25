@@ -1,0 +1,1 @@
+{"name":"Luminous Rune","stars":3,"level":76,"professions":["woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/138_0.png","identifications":{"mainAttackDamage":[4,5],"spellDamage":[4,5]},"itemOnlyIds":{"durabilityModifier":-131000},"positionModifiers":{"left":-30,"notTouching":30,"right":-30,"touching":30},"slug":"luminous-rune"}

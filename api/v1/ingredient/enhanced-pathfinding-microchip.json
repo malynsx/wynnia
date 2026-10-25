@@ -1,0 +1,1 @@
+{"name":"Enhanced Pathfinding Microchip","stars":2,"level":90,"professions":["armouring","woodworking","weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/356_0.png","identifications":{"mainAttackDamage":[12,16],"poison":[600,650]},"itemOnlyIds":{"durabilityModifier":-98000,"strengthRequirement":30},"slug":"enhanced-pathfinding-microchip"}

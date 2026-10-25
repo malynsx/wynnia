@@ -1,0 +1,1 @@
+{"name":"Empty Body","type":"dagger","category":"weapon","rarity":"unique","level":101,"icon":"https://malynsx.github.io/wynntools/img/items/dagger.basicWood.webp","classRequirement":"assassin","base":{"baseDamage":[650,760]},"identifications":{"mainAttackRange":[-65,-35],"rawStrength":-35},"attackSpeed":"verySlow","averageDps":585,"slug":"empty-body"}

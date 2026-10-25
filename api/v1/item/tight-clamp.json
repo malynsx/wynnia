@@ -1,0 +1,1 @@
+{"name":"Tight Clamp","type":"bracelet","category":"accessory","rarity":"unique","level":80,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.basicIron.webp","skillRequirements":{"defence":40},"base":{"baseFireDefence":30,"baseHealth":450},"identifications":{"healthRegenRaw":120,"rawDefence":3,"rawDexterity":-2,"sprint":-8},"slug":"tight-clamp"}

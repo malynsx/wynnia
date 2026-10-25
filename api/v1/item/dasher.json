@@ -1,0 +1,1 @@
+{"name":"Dasher","type":"ring","category":"accessory","rarity":"unique","level":85,"icon":"https://malynsx.github.io/wynntools/img/items/ring.air2.webp","skillRequirements":{"strength":30,"agility":40},"base":{"baseFireDefence":-25,"baseHealth":320},"identifications":{"mainAttackDamage":9,"rawStrength":4,"walkSpeed":9},"slug":"dasher"}

@@ -1,0 +1,1 @@
+{"name":"Gust","type":"bracelet","category":"accessory","rarity":"unique","level":20,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.air1.webp","skillRequirements":{"agility":5},"base":{"baseAirDefence":5,"baseFireDefence":-5},"identifications":{"rawAgility":2,"rawAirDamage":[1,5],"walkSpeed":[1,5]},"slug":"gust"}

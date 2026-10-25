@@ -1,0 +1,1 @@
+{"name":"Gravitation Crystal","stars":2,"level":95,"professions":["weaponsmithing","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/264_0.png","identifications":{"rawAttackSpeed":[-1,-1],"spellDamage":[10,12]},"itemOnlyIds":{"durabilityModifier":-100000,"intelligenceRequirement":20},"slug":"gravitation-crystal"}

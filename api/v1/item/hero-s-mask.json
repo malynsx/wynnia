@@ -1,0 +1,1 @@
+{"name":"Hero's Mask","type":"helmet","category":"armour","rarity":"rare","level":50,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","base":{"baseAirDefence":20,"baseEarthDefence":20,"baseFireDefence":20,"baseHealth":700},"identifications":{"combatExperience":[5,20],"mainAttackDamage":[5,20],"walkSpeed":[4,16]},"powderSlots":2,"slug":"hero-s-mask"}

@@ -1,0 +1,1 @@
+{"name":"Refined Bow","type":"bow","category":"weapon","rarity":"unique","level":1,"icon":"https://malynsx.github.io/wynntools/img/items/bow.basicGold.webp","classRequirement":"archer","base":{"baseDamage":[5,9]},"identifications":{"combatExperience":[1,5]},"powderSlots":1,"attackSpeed":"normal","averageDps":14,"slug":"refined-bow"}

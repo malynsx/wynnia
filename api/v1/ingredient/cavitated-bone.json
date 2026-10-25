@@ -1,0 +1,1 @@
+{"name":"Cavitated Bone","stars":2,"level":104,"professions":["armouring","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/352_0.png","identifications":{"exploding":[7,8],"rawDexterity":[-5,-4],"rawStrength":[-5,-4]},"itemOnlyIds":{"dexterityRequirement":-15,"durabilityModifier":-107000,"strengthRequirement":-15},"slug":"cavitated-bone"}

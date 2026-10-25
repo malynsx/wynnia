@@ -1,0 +1,1 @@
+{"name":"Viking Stone","stars":1,"level":47,"professions":["weaponsmithing","woodworking","armouring","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/168_0.png","identifications":{"rawIntelligence":[2,3],"waterDamage":[4,6]},"itemOnlyIds":{"durabilityModifier":-47000,"intelligenceRequirement":7},"slug":"viking-stone"}

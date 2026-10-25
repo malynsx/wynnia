@@ -1,0 +1,1 @@
+{"name":"Stamina","type":"boots","category":"armour","rarity":"unique","level":24,"icon":"https://malynsx.github.io/wynntools/img/items/boots.gold.webp","base":{"baseAirDefence":5,"baseFireDefence":5,"baseHealth":140},"identifications":{"healthRegenRaw":[2,10],"rawAgility":2,"rawDefence":2,"walkSpeed":[2,8]},"powderSlots":1,"slug":"stamina"}

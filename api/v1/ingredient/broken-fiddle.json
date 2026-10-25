@@ -1,0 +1,1 @@
+{"name":"Broken Fiddle","stars":2,"level":63,"professions":["woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/338_0.png","identifications":{"fireDamage":[5,6],"spellDamage":[-3,-2],"walkSpeed":[4,7]},"itemOnlyIds":{"agilityRequirement":10,"defenceRequirement":10,"durabilityModifier":-80000},"slug":"broken-fiddle"}

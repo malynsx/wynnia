@@ -1,0 +1,1 @@
+{"name":"Diamond Sky","type":"relik","category":"weapon","rarity":"unique","level":15,"icon":"https://malynsx.github.io/wynntools/img/items/relik.basicWood.webp","classRequirement":"shaman","base":{"baseDamage":[24,28]},"identifications":{"combatExperience":[2,10],"lootBonus":[5,20],"rawMaxMana":[6,26]},"powderSlots":1,"attackSpeed":"normal","averageDps":53,"slug":"diamond-sky"}

@@ -1,0 +1,1 @@
+{"name":"Soapstone","stars":1,"level":59,"professions":["weaponsmithing","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/1_5.png","identifications":{"rawHealth":[-150,-120],"rawMainAttackDamage":[20,25]},"itemOnlyIds":{"agilityRequirement":10,"durabilityModifier":-63000},"slug":"soapstone"}

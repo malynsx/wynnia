@@ -1,0 +1,1 @@
+{"name":"Death's Toe","type":"boots","category":"armour","rarity":"unique","level":49,"icon":"https://malynsx.github.io/wynntools/img/items/boots.chainmail.webp","skillRequirements":{"dexterity":10},"base":{"baseEarthDefence":-35,"baseHealth":450},"identifications":{"lifeSteal":[9,40],"manaSteal":[2,10],"poison":[24,104]},"powderSlots":2,"slug":"death-s-toe"}

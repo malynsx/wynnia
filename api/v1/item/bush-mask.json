@@ -1,0 +1,1 @@
+{"name":"Bush Mask","type":"helmet","category":"armour","rarity":"unique","level":27,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","base":{"baseAirDefence":5,"baseEarthDefence":10,"baseFireDefence":-8,"baseHealth":125},"identifications":{"rawMainAttackDamage":40,"rawStrength":4,"thorns":20,"walkSpeed":12},"slug":"bush-mask"}

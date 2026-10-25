@@ -1,0 +1,1 @@
+{"name":"Firecloud","type":"ring","category":"accessory","rarity":"unique","level":38,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire1.webp","base":{"baseAirDefence":4},"identifications":{"exploding":[2,8],"fireDamage":[1,5],"rawDefence":3,"rawMainAttackDamage":[4,17]},"slug":"firecloud"}

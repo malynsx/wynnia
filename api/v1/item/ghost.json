@@ -1,0 +1,1 @@
+{"name":"Ghost","type":"ring","category":"accessory","rarity":"unique","level":77,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicIron.webp","skillRequirements":{"intelligence":5,"agility":15},"base":{"baseAirDefence":25},"identifications":{"rawAgility":5,"spellDamage":[2,8],"walkSpeed":[2,8]},"slug":"ghost"}
