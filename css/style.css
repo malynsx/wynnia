@@ -712,3 +712,23 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 .tchip { display: inline-flex; align-items: center; gap: 6px; background: var(--inset); border: 2px solid var(--navy); border-radius: 5px; padding: 3px 8px 3px 4px; font-size: 13px; }
 .tchip img { width: 22px; height: 22px; }
 @media (max-width: 700px) { .recrow { grid-template-columns: auto minmax(0, 1fr); } .recbtns { grid-column: 1 / -1; } .archpick { grid-template-columns: 1fr; } }
+.recrow > .slot { width: 56px; flex: none; }
+/* element toggles: off is dimmed, on is lit with a gold edge; hover never looks like "on" */
+.eltog { opacity: .55; background: var(--card2); color: #fff; }
+.eltog:hover { opacity: .85; filter: none; }
+.eltog.on, .eltog.on:hover { opacity: 1; background: var(--navy2); color: var(--gold); border-color: var(--gold); box-shadow: 0 3px 0 var(--gold-d); }
+.eltog:disabled { cursor: not-allowed; }
+.emtag { display: inline-flex; align-items: center; gap: 6px; cursor: help; white-space: nowrap; } .emtag img { width: 20px; height: 20px; image-rendering: pixelated; }
+.pdetail { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 2px; } .pdetail small { display: inline-flex; align-items: center; gap: 4px; }
+.pdetail .emtag img { width: 14px; height: 14px; } .nwtotal .emtag { justify-content: center; font: 400 34px/1.1 var(--hand); color: var(--gold); } .nwtotal .emtag img { width: 28px; height: 28px; }
+.phead2 { gap: 10px; align-items: baseline; } .phead2 b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .phead2 span { flex: none; white-space: nowrap; }
+/* compare header: item cards keep their tooltip look on hover, single clean outline */
+.crow2.chead:hover > div { background: transparent; }
+.crow2.chead:hover > .citem, .citem { background: #120c1c; }
+.citem { outline: 0; border: 3px solid #2a1550; box-shadow: 0 0 0 2px var(--navy); border-radius: 5px; margin: 2px 8px 6px 2px; }
+.lvcmp { display: grid; gap: 2px; }
+.lvrow { display: grid; grid-template-columns: minmax(90px, 1.1fr) 1fr 1fr 64px; gap: 10px; align-items: center; padding: 5px 8px; border-radius: 4px; font-size: 15px; }
+.lvrow:nth-child(even) { background: rgba(0,0,0,.08); } .lvrow > b, .lvrow > span:nth-child(n+2) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lvrow.lvhead { color: var(--mute); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; background: none; }
+.lvrow small { text-align: right; color: var(--mute); } .lvrow small.up { color: var(--ok); } .lvrow small.down { color: var(--bad); }
+.lvrow.same { opacity: .6; }

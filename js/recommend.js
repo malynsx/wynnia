@@ -192,7 +192,7 @@
       const ctxIds = { ids: itemIds, keyNum: Object.fromEntries(Object.entries(idKeys).map(([n, k]) => [k, +n])) };
       const char = () => RS.data && RS.data.characters && RS.data.characters[RS.char];
       const cname = (c) => { const k = W.cap(String(c.reskin || c.type).toLowerCase()); return c.nickname && c.nickname !== k ? `${c.nickname} · ${k}` : k; };
-      const draw = () => root.replaceChildren(el('div', { class: 'cols wide-l' }, el('div', { class: 'stack' }, form(), result()), el('div', { class: 'stack' }, side())));
+      const draw = () => root.replaceChildren(el('div', { class: 'cols wide-l' }, el('div', { class: 'stack' }, form(), result(), compareWin()), el('div', { class: 'stack' }, side())));
 
       /* loads the class tree and picks its first archetype; runs the search unless the caller will */
       async function setClass(cls, andRun) {
@@ -280,7 +280,7 @@
             el('label', {}, 'Build for', W.sel(GOALS, RS.goal, (v) => { RS.goal = v; run(); })),
             el('label', { class: 'check', style: { alignSelf: 'end' } }, el('input', { type: 'checkbox', checked: RS.mythics, onchange: (e) => { RS.mythics = e.target.checked; run(); } }), 'Allow mythics')),
           el('div', { class: 'cap left' }, 'Elements'),
-          el('div', { class: 'btns', style: { marginTop: 0 } }, W.ELEMS.map(e => el('button', { class: 'mini pwbtn' + (RS.elems.includes(e) ? ' on' : ''), 'aria-pressed': RS.elems.includes(e), disabled: RS.elems.length === 1 && RS.elems[0] === e, title: RS.elems.length === 1 && RS.elems[0] === e ? 'Keep at least one element' : '', onclick: () => {
+          el('div', { class: 'btns', style: { marginTop: 0 } }, W.ELEMS.map(e => el('button', { class: 'mini pwbtn eltog' + (RS.elems.includes(e) ? ' on' : ''), 'aria-pressed': RS.elems.includes(e), disabled: RS.elems.length === 1 && RS.elems[0] === e, title: RS.elems.length === 1 && RS.elems[0] === e ? 'Keep at least one element' : '', onclick: () => {
             if (RS.elems.includes(e)) { if (RS.elems.length === 1) return; RS.elems = RS.elems.filter(x => x !== e); } else RS.elems = RS.elems.concat(e);
             run();
           } }, el('img', { src: `img/ui/powder-${e}.webp`, alt: '' }), W.cap(e)))),
@@ -335,6 +335,48 @@
                 has ? el('small', { class: has[i] >= res.assigned[i] ? 'up' : 'down' }, `has ${has[i]}`) : el('span', {})))),
             el('p', { class: 'hint' }, `All ${res.spAvail} skill points used, at ${Math.round(RS.roll * 100)}% rolls. Ability tree: ${r.treeFrom === 'mine' ? 'this character’s own' : `a suggested ${arch ? arch.name : ''} tree (${r.tree.length} abilities)`}.`),
             el('div', { class: 'btns' }, el('a', { class: 'btnlink', href }, 'Open in Loadout Builder'), el('button', { onclick: run }, 'Search again'))));
+      }
+
+      /* your saved Loadout Builder build next to the recommendation */
+      function compareWin() {
+        const r = RS.result; if (!r) return null;
+        let mine = null;
+        try { mine = JSON.parse(localStorage.getItem('wt.loadout2')); } catch (e) { /* storage blocked */ }
+        const byName = (n) => items.find(i => i.n === n) || tomes.find(i => i.n === n);
+        const minePieces = mine && mine.s ? Object.entries(mine.s).map(([k, v]) => v && byName(v[0]) ? { k, item: byName(v[0]), r: v[1], p: v[2] } : null).filter(Boolean) : [];
+        if (!minePieces.length) return W.win('Compare with your loadout', el('p', { class: 'empty' }, 'Put your current gear in the ', el('a', { href: '#items/loadout' }, 'Loadout Builder'), ' (or paste it from Wynntils there) and it shows up here next to the recommendation.'));
+        const a = W.computeBuild(minePieces, { mode: mine.mode || 'max', level: mine.lvl || RS.lvl, extra: mine.x || {} }, eng), b = r.res;
+        const spl = spellSplit(classSpells(RS.T));
+        const stats = [
+          ['Health', a.hp, b.hp], ['Effective HP', a.ehpAgi, b.ehpAgi],
+          ['Main attack DPS', a.melee && a.melee.dps, b.melee && b.melee.dps],
+          ['Per 100% spell', a.melee && a.melee.spell(spl).expected, b.melee && b.melee.spell(spl).expected],
+          ['Max mana', a.mana, b.mana], ['Mana regen', a.manaRegen, b.manaRegen], ['Mana steal', a.manaSteal, b.manaSteal],
+          ['Life steal', a.lifeSteal, b.lifeSteal], ['Walk speed', a.walk, b.walk],
+          ['Skill points used', a.spTotal, b.spTotal, true],
+        ];
+        const wCls = (minePieces.find(p => p.k === 'w') || {}).item;
+        const clash = wCls && wCls.t !== CLASS_WEAPON[RS.cls];
+        const slotName = (k) => SLOT_NAME[k] || (k[0] === 't' ? 'Tome' : k);
+        const itemCell = (it) => it ? W.tip(el('b', { style: { color: W.tierColor(it.r) } }, it.n), () => W.itemCard(it)) : el('span', { class: 'hint' }, 'Empty');
+        return W.win('Your loadout vs recommended',
+          a.spTotal > a.spAvail ? el('div', { class: 'warn' }, `Your loadout needs ${a.spTotal} skill points but level ${mine.lvl || RS.lvl} only gives ${a.spAvail}, so it can’t be fully worn.`) : null,
+          clash ? el('div', { class: 'warn' }, `Your loadout uses a ${wCls.t}, so it’s for a different class than this ${W.cap(RS.cls)} recommendation.`) : null,
+          el('div', { class: 'lvcmp' },
+            el('div', { class: 'lvrow lvhead' }, el('span', {}), el('span', {}, 'Yours'), el('span', {}, 'Recommended'), el('span', {}, 'Change')),
+            stats.map(([label, x, y, lowerBetter]) => {
+              const d = x && y != null ? (y - x) / Math.abs(x) * 100 : null;
+              const good = d == null || Math.abs(d) < 0.5 ? '' : (d > 0) !== !!lowerBetter ? 'up' : 'down';
+              return el('div', { class: 'lvrow' }, el('span', {}, label), el('b', {}, x == null ? '—' : W.short(Math.round(x))), el('b', {}, y == null ? '—' : W.short(Math.round(y))),
+                el('small', { class: good }, d == null ? '—' : (d > 0 ? '+' : '') + Math.round(d) + '%'));
+            })),
+          el('div', { class: 'cap left' }, 'Slot by slot'),
+          el('div', { class: 'lvcmp' }, ['w', ...ARMOUR.map(x => x[0])].map(k => {
+            const yours = (minePieces.find(p => p.k === k) || {}).item, rec = r.build[k];
+            return el('div', { class: 'lvrow slots' + (yours && rec && yours.n === rec.n ? ' same' : '') }, el('span', {}, slotName(k)), itemCell(yours), itemCell(rec),
+              el('small', {}, yours && rec && yours.n === rec.n ? 'Same' : rec ? 'Swap' : '—'));
+          })),
+          el('p', { class: 'hint' }, `Yours uses ${typeof mine.mode === 'number' ? Math.round(mine.mode * 100) + '%' : mine.mode === 'avg' ? 'average' : mine.mode === 'min' ? 'worst' : 'best'} rolls for anything without exact rolls; the recommendation uses ${Math.round(RS.roll * 100)}%. Both include their tomes and powders.`));
       }
 
       function side() {

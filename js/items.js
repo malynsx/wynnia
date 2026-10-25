@@ -44,7 +44,7 @@
               const l = W.compareList().filter(n => n !== it.n); if (!cmp.includes(it.n)) l.push(it.n); setCompare(l); show();
             } }, cmp.includes(it.n) ? 'Comparing' : 'Compare'),
           }))),
-          res.length > f.shown ? el('div', { class: 'more' }, el('button', { onclick: () => { f.shown += 48; show(); } }, 'Show more')) : null);
+          res.length > f.shown ? el('div', { class: 'more' }, el('button', { onclick: () => { f.shown += 48; show(); } }, 'Show more')) : '');
       };
       const txt = el('input', { type: 'text', value: f.q, placeholder: 'Item name', oninput: (e) => { f.q = e.target.value; f.shown = 48; clearTimeout(typing); typing = setTimeout(run, 250); } });
       let typing = null;

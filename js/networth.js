@@ -18,6 +18,9 @@
     return out.join(' ');
   };
 
+  /* Emerald amount with the emerald icon; hovering shows the exact count */
+  W.emeraldTag = (n, tag = 'b') => el(tag, { class: 'emtag', title: `${Math.round(n || 0).toLocaleString('en-US')} emeralds` }, el('img', { src: 'img/wiki/emeraldicon.webp', alt: '' }), W.emeralds(n));
+
   /* Wynnventory's price answer: prefer an average, then a lowest listing, then any price number. */
   function readPrice(j) {
     const d = j && j.data;
@@ -50,9 +53,11 @@
         const d = j && j.data, p = j && readPrice(j);
         if (!p) { box.replaceChildren(el('span', { class: 'hint' }, noKey ? 'Market prices are switched off on the relay.' : 'Not seen on the trade market lately.')); return; }
         box.replaceChildren(
-          el('div', { class: 'ptop' }, el('span', {}, 'Market'), el('b', {}, W.emeralds(p))),
-          el('small', {}, [d.lowest_price ? `lowest ${W.emeralds(d.lowest_price)}` : null, d.unidentified_count ? `unidentified ${W.emeralds(d.unidentified_average_mid_80_percent_price || d.unidentified_average_price)}` : null,
-            d.total_count ? `${d.total_count} listings` : null].filter(Boolean).join(' · ')));
+          el('div', { class: 'ptop' }, el('span', {}, 'Market'), W.emeraldTag(p)),
+          el('div', { class: 'pdetail' },
+            d.lowest_price ? el('small', {}, 'Lowest ', W.emeraldTag(d.lowest_price, 'span')) : null,
+            d.unidentified_count ? el('small', {}, 'Unidentified ', W.emeraldTag(d.unidentified_average_mid_80_percent_price || d.unidentified_average_price, 'span')) : null,
+            d.total_count ? el('small', {}, `${d.total_count} listings`) : null));
       });
     };
     if (auto || prices[name]) show(); else box.append(el('button', { class: 'mini', onclick: show }, 'Market price'));
@@ -93,8 +98,8 @@
 
       box.replaceChildren(...[box.firstChild,
         el('div', { class: 'nwhead' },
-          el('div', { class: 'nwtotal' }, el('b', {}, W.emeralds(total)), el('span', {}, `${total.toLocaleString('en-US')} emeralds`)),
-          el('p', { class: 'hint' }, 'Wynncraft doesn’t share inventories or banks with outside sites, so list what this player owns. Prices are trade market averages from Wynnventory (the middle 80% of listings); type over any price to set your own.')),
+          el('div', { class: 'nwtotal' }, W.emeraldTag(total), el('span', {}, `${total.toLocaleString('en-US')} emeralds`)),
+          el('p', { class: 'hint' }, 'Wynncraft doesn’t share inventories or banks with outside sites, so list what you own. Prices are trade market averages from Wynnventory (the middle 80% of listings); type over any price to set your own.')),
         noKey ? el('div', { class: 'warn' }, 'Live prices aren’t switched on yet: the Wynntools relay needs a Wynnventory API key. Until then, type prices in yourself.') : null,
         el('div', { class: 'cap left' }, 'Liquid emeralds'),
         el('div', { class: 'fields4 nwcash' }, cashIn),
@@ -107,7 +112,7 @@
           W.numIn(r.qty || 1, (v) => { r.qty = Math.max(1, v); persist(); draw(); }, 1, 99999),
           el('label', { class: 'nwprice' }, el('input', { type: 'number', min: 0, value: r.manual != null ? r.manual : (r.price || ''), placeholder: r.loading ? '…' : 'price',
             onchange: (e) => { r.manual = e.target.value === '' ? null : Math.max(0, +e.target.value); persist(); draw(); } }), el('small', {}, r.manual != null ? 'your price' : r.price ? 'market' : r.loading ? 'looking up' : 'no price')),
-          el('span', { class: 'nwval' }, W.emeralds(value(r))),
+          el('span', { class: 'nwval' }, W.emeraldTag(value(r), 'span')),
           el('button', { class: 'mini danger', title: 'Remove', onclick: () => { st.rows.splice(i, 1); persist(); draw(); } }, 'Remove')))) : el('p', { class: 'empty' }, 'Nothing listed yet.'),
         st.rows.length ? el('div', { class: 'btns' }, el('button', { class: 'mini', onclick: () => { st.rows.forEach(r => { delete prices[r.n]; fetchPrice(r); }); draw(); } }, 'Refresh prices'),
           el('button', { class: 'mini danger', onclick: () => { if (confirm('Clear the list?')) { st.rows = []; st.cash = 0; persist(); draw(); } } }, 'Clear')) : null].filter(Boolean));
@@ -120,4 +125,7 @@
     draw();
     return box;
   };
+
+  /* its own page: one list per browser */
+  W.pages['items/networth'] = (root) => root.replaceChildren(el('div', { class: 'stack' }, W.netWorth(null)));
 })(window.W);

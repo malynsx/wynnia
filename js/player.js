@@ -28,11 +28,7 @@
     let REF = null;
     Promise.all(['profxp', 'spots', 'quests'].map(W.data)).then(r => { REF = r; if (P.data) draw(); }).catch(() => {});
     if (q && q.get('c')) P.char = q.get('c');
-    let nw = null;
-    const draw = () => {
-      if (P.data && (!nw || nw.who !== P.data.username)) nw = { who: P.data.username, box: W.netWorth(P.data) };   // keep its state across redraws
-      root.replaceChildren(el('div', { class: 'stack' }, lookup(), profile(), P.data ? nw.box : null, showcase()));
-    };
+    const draw = () => root.replaceChildren(el('div', { class: 'stack' }, lookup(), profile(), showcase()));
 
     if (q && q.get('u') && !P.name) P.name = q.get('u');
     if (q && q.get('d') && !P.text) { try { P.text = b64.dec(q.get('d')).t || ''; } catch (e) { /* bad link */ } }

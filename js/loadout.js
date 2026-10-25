@@ -121,7 +121,7 @@
           box.replaceChildren(el('span', { class: 'hint' }, 'Checking the trade market…'));
           Promise.all(names.map(n => W.marketPrice(n))).then(ps => {
             const known = ps.filter(p => p > 0), total = known.reduce((a, b) => a + b, 0);
-            box.replaceChildren(el('div', { class: 'ptop' }, el('span', {}, 'Build value'), el('b', {}, W.emeralds(total))),
+            box.replaceChildren(el('div', { class: 'ptop' }, el('span', {}, 'Build value'), W.emeraldTag(total)),
               el('small', {}, known.length === names.length ? 'Trade market averages for every piece of gear (tomes can’t be traded).' : `${names.length - known.length} of ${names.length} pieces haven’t sold recently and aren’t counted. Tomes can’t be traded.`));
           });
         };
