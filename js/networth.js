@@ -20,6 +20,8 @@
 
   /* Wynnventory's price answer: prefer an average, then a lowest listing, then any price number. */
   function readPrice(j) {
+    const d = j && j.data;
+    if (d) for (const k of ['average_mid_80_percent_price', 'p50_price', 'average_price', 'lowest_price']) if (d[k] > 0) return Math.round(d[k]);   // mid-80% average skips troll listings
     const found = [];
     const walk = (o, path) => {
       if (o == null) return;
@@ -72,7 +74,7 @@
       box.replaceChildren(...[box.firstChild,
         el('div', { class: 'nwhead' },
           el('div', { class: 'nwtotal' }, el('b', {}, W.emeralds(total)), el('span', {}, `${total.toLocaleString('en-US')} emeralds`)),
-          el('p', { class: 'hint' }, 'Wynncraft doesn’t share inventories or banks with outside sites, so list what this player owns. Prices are trade market averages from Wynnventory; type over any price to set your own.')),
+          el('p', { class: 'hint' }, 'Wynncraft doesn’t share inventories or banks with outside sites, so list what this player owns. Prices are trade market averages from Wynnventory (the middle 80% of listings); type over any price to set your own.')),
         noKey ? el('div', { class: 'warn' }, 'Live prices aren’t switched on yet: the Wynntools relay needs a Wynnventory API key. Until then, type prices in yourself.') : null,
         el('div', { class: 'cap left' }, 'Liquid emeralds'),
         el('div', { class: 'fields4 nwcash' }, cashIn),
