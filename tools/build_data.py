@@ -247,6 +247,46 @@ def build_recipes(recipes):
     return out
 
 
+def build_spots(base):
+    """Densest clusters of gathering nodes per material, with the nearest named place."""
+    import math
+    feats = get_json(base + 'Reference/gathering_node_mapfeatures.json')
+    nodes = get_json(base + 'Reference/gathering_nodes.json')
+    places = get_json(base + 'Reference/places.json')['labels']
+    level = {}
+    for n in nodes:
+        level[n['resource'].lower()] = n['level']
+    by = {}
+    for f in feats:
+        _, _, prof, res = f['categoryId'].split(':')
+        loc = f['location']
+        by.setdefault((prof, res), []).append((loc['x'], loc.get('y', 64), loc['z']))
+    R, APART = 48, 220
+    out = {}
+    for (prof, res), pts in by.items():
+        scored = []
+        for (x, y, z) in pts:
+            near = [(a, b, c) for (a, b, c) in pts if (a - x) ** 2 + (c - z) ** 2 <= R * R]
+            scored.append((len(near), near))
+        scored.sort(key=lambda s: -s[0])
+        spots = []
+        for n, near in scored:
+            cx = round(sum(p[0] for p in near) / n)
+            cy = round(sum(p[1] for p in near) / n)
+            cz = round(sum(p[2] for p in near) / n)
+            if any((cx - s['x']) ** 2 + (cz - s['z']) ** 2 < APART * APART for s in spots):
+                continue
+            pl = min(places, key=lambda p: (p['x'] - cx) ** 2 + (p['z'] - cz) ** 2)
+            spots.append({'x': cx, 'y': cy, 'z': cz, 'n': n, 'near': pl['name'],
+                          'd': round(math.hypot(pl['x'] - cx, pl['z'] - cz))})
+            if len(spots) == 3:
+                break
+        out.setdefault(prof, []).append({'r': res, 'l': level.get(res, 0), 'total': len(pts), 'spots': spots})
+    for prof in out:
+        out[prof].sort(key=lambda m: m['l'])
+    return out
+
+
 def build_quests():
     u = 'https://wynncraft.wiki.gg/index.php?' + urllib.parse.urlencode({
         'title': 'Special:CargoExport', 'tables': 'Quests', 'limit': '2000', 'format': 'json',
@@ -281,6 +321,7 @@ def main():
     save('ingredients.json', build_ingredients(ing, adv_ing))
     save('materials.json', build_materials(mats, icons))
     save('recipes.json', build_recipes(get_json(base + 'Reference/recipes.json')))
+    save('spots.json', build_spots(base))
     try:
         save('quests.json', build_quests())
         save('profxp.json', build_profxp())

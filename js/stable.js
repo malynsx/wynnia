@@ -18,19 +18,23 @@
     const draw = () => {
       if (S.selected && !W.mountById(S.selected)) S.selected = null;
       const m = W.mountById(S.selected);
-      root.replaceChildren(el('div', { class: 'cols' }, left(m), right(m)));
+      root.replaceChildren(enclosure(), el('div', { class: 'cols', style: { marginTop: '26px' } }, right(m), side()));
     };
     const commit = () => { W.save(); draw(); };
 
-    function left(m) {
-      const n = Math.max(27, Math.ceil((S.mounts.length + 1) / 9) * 9);
-      const g = el('div', { class: 'grid' });
+    function enclosure() {
+      const n = Math.max(18, Math.ceil((S.mounts.length + 1) / 9) * 9);
+      const g = el('div', { class: 'grid enclosure' });
       for (let i = 0; i <= n - 1; i++) {
         const mm = S.mounts[i];
         if (mm) g.append(W.mountSlot(mm, { sel: mm.id === S.selected, onclick: () => { S.selected = mm.id; draw(); } }));
         else if (i === S.mounts.length) g.append(W.slot(el('span', { class: 'plus' }, '+'), { tip: 'Add a new mount', onclick: () => { const x = W.newMount(); S.mounts.push(x); S.selected = x.id; commit(); } }));
         else g.append(W.slot(null));
       }
+      return W.win('Enclosure — Saddle Slots', g, el('p', { class: 'hint' }, 'Click a saddle to edit it. The number is the mount’s Potential, the coloured edge its tier. Everything is saved in this browser only.'));
+    }
+
+    function side() {
       const pots = S.mounts.map(W.potential);
       const sum = (f) => S.mounts.length ? f() : '—';
       const best = (k) => { const b = [...S.mounts].sort((a, c) => c.s[k][2] - a.s[k][2])[0]; return b ? `${b.name} (${b.s[k][2]})` : '—'; };
@@ -41,7 +45,6 @@
         kv('Top Speed max', best('speed')), kv('Top Energy max', best('energy')));
       const io = el('textarea', { rows: 3, placeholder: 'Paste exported stable JSON here to import…' });
       return el('div', {},
-        W.win('Enclosure — Saddle Slots', g, el('p', { class: 'hint' }, 'Click a saddle to edit it. The number is the mount’s Potential. Everything is saved in this browser only.')),
         W.win('Import from Wynntils', wynntilsBox()),
         W.win('Stable Summary', stats),
         W.win('Backup & Share',
@@ -81,7 +84,7 @@
     const kv = (k, v) => el('div', {}, el('span', {}, k), el('b', {}, v));
 
     function right(m) {
-      if (!m) return W.win('Mount', el('p', { class: 'empty' }, 'Select a saddle on the left, or click the + slot to add one.'));
+      if (!m) return W.win('Mount', el('p', { class: 'empty' }, 'Select a saddle above, or click the + slot to add one.'));
       const r = W.rank(W.potential(m));
       const top = Math.max(...W.STATKEYS.map(k => m.s[k][2]));
       const rows = W.STATS.map(s => {

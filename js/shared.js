@@ -37,12 +37,17 @@
   };
 
   /* ---------- Wynncraft API ---------- */
+  /* Browsers can't call api.wynncraft.com directly from another site (it sends no CORS headers),
+     so live lookups go through the Wynntools relay in proxy/worker.js. Put its address here once deployed. */
+  W.API_RELAY = '';
   W.api = async (path) => {
+    if (!W.API_RELAY) throw new Error('Live player and guild lookups aren’t switched on yet: the Wynncraft API only answers other websites through the Wynntools relay, which hasn’t been set up.');
     let r;
-    try { r = await fetch('https://api.wynncraft.com/v3/' + path); }
-    catch (e) { throw new Error('Could not reach the Wynncraft API. It may be down or rate-limiting; try again in a minute.'); }
+    try { r = await fetch(W.API_RELAY.replace(/\/$/, '') + '/v3/' + path); }
+    catch (e) { throw new Error('Could not reach the lookup service. Check your connection and try again.'); }
     const j = await r.json().catch(() => ({}));
     if (r.status === 404) throw new Error('Nothing was found with that name.');
+    if (r.status === 429) throw new Error('The Wynncraft API is busy right now (rate limit). Try again in a minute.');
     if (r.status === 300) return { multiple: j };
     if (!r.ok) throw new Error(j.Error || j.message || `The Wynncraft API answered with error ${r.status}.`);
     return j;
@@ -111,8 +116,9 @@
       el('span', { class: W.idGood(k, v) ? 'pos' : 'neg' }, W.fmtId(k, v)), el('span', { class: 'idn' }, W.idInfo(k).name))) : [];
     return el('div', { class: 'icard' + (opts.compact ? ' compact' : '') },
       el('div', { class: 'ihead' }, el('div', { class: 'iicon' }, W.art.item(it.ic)),
-        el('div', {}, el('div', { class: 'iname', style: { color: W.tierColor(it.r) } }, it.n),
-          el('div', { class: 'isub' }, `${(W.TIERS[it.r] || ['Item'])[0]} ${cap(it.t)}${it.as ? ' · ' + words(it.as) + ' attack' : ''}`))),
+        el('div', { class: 'ititle' }, el('div', { class: 'iname', style: { color: W.tierColor(it.r) } }, it.n),
+          el('div', { class: 'isub' }, `${(W.TIERS[it.r] || ['Item'])[0]} ${cap(it.t)}${it.as ? ' · ' + words(it.as) + ' attack' : ''}`)),
+        opts.action || null),
       lines.length ? el('div', { class: 'iblock' }, lines) : null,
       el('div', { class: 'ireq' }, req.join(' · ')),
       ids.length ? el('div', { class: 'iblock' }, ids) : null,

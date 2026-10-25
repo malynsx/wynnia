@@ -2,7 +2,6 @@
    pasted from Wynntils (the API does not publish mounts themselves). */
 (function (W) {
   const { el } = W;
-  const API = 'https://api.wynncraft.com/v3/player/';
   const REQS = [
     ['horse', 9, 'Stable Story'],
     ['wyvern', 84, 'The Canyon Guides'],
@@ -36,15 +35,12 @@
       name = (name || '').trim(); if (!name) return;
       P.loading = true; P.err = null; P.choices = null; draw();
       try {
-        const r = await fetch(API + encodeURIComponent(uuid || name) + '?fullResult');
-        if (r.status === 404) throw new Error(`No player named “${name}” was found.`);
-        const j = await r.json();
-        if (r.status === 300) { P.choices = j; P.data = null; }
-        else if (!r.ok) throw new Error(j.message || 'The Wynncraft API returned an error.');
+        const j = await W.api('player/' + encodeURIComponent(uuid || name) + '?fullResult');
+        if (j.multiple) { P.choices = j.multiple; P.data = null; }
         else { P.data = j; P.name = j.username; }
       } catch (e) {
         P.data = null;
-        P.err = e instanceof TypeError ? 'Could not reach the Wynncraft API (offline, blocked, or rate-limited). Try again in a moment.' : e.message;
+        P.err = e.message;
       }
       P.loading = false; draw();
     }

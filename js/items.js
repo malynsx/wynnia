@@ -38,9 +38,9 @@
         out.replaceChildren(
           el('div', { class: 'resbar' }, el('span', {}, `${res.length.toLocaleString()} items`), cmp.length ? el('a', { href: '#items/compare' }, `Compare (${cmp.length})`) : null),
           el('div', { class: 'igrid' }, res.slice(0, f.shown).map(it => W.itemCard(it, {
-            actions: el('div', { class: 'iact' }, el('button', { class: 'mini', onclick: (e) => {
-              const l = W.compareList().filter(n => n !== it.n); l.push(it.n); setCompare(l); e.target.textContent = 'Added'; show();
-            } }, cmp.includes(it.n) ? 'In compare' : 'Compare')),
+            action: el('button', { class: 'mini' + (cmp.includes(it.n) ? ' on' : ''), title: 'Add to compare', onclick: () => {
+              const l = W.compareList().filter(n => n !== it.n); if (!cmp.includes(it.n)) l.push(it.n); setCompare(l); show();
+            } }, cmp.includes(it.n) ? 'Comparing' : 'Compare'),
           }))),
           res.length > f.shown ? el('div', { class: 'more' }, el('button', { onclick: () => { f.shown += 48; show(); } }, 'Show more')) : null);
       };
@@ -60,31 +60,55 @@
     });
   };
 
+  let diffOnly = false;
   W.pages['items/compare'] = function (root) {
     W.withData(root, ['items'], (items) => {
       const draw = () => {
         const names = W.compareList(), list = names.map(n => items.find(i => i.n === n)).filter(Boolean);
         if (!list.length) {
-          root.replaceChildren(W.win('Compare items', el('p', { class: 'empty' }, 'Nothing to compare yet. Press “Compare” on items in ', el('a', { href: '#items/search' }, 'Search'), ' (up to four).')));
+          root.replaceChildren(W.win('Compare items', el('p', { class: 'empty' }, 'Nothing to compare yet. Press “Compare” on items in ', el('a', { href: '#items/search' }, 'Item Search'), ' (up to four).')));
           return;
         }
-        const keys = [...new Set(list.flatMap(i => Object.keys(i.i || {})))];
-        const bases = [...new Set(list.flatMap(i => Object.keys(i.b || {})))];
-        const best = (key, inv) => { const vals = list.map(i => i.i && i.i[key] != null ? idMax(i.i[key]) : null).filter(v => v != null); return vals.length > 1 ? (inv ? Math.min(...vals) : Math.max(...vals)) : null; };
-        const cell = (v, key, b) => v == null ? el('td', { class: 'na' }, '—') :
-          el('td', { class: (b != null && idMax(v) === b ? 'top ' : '') + (W.idGood(key, v) ? 'pos' : 'neg') }, W.fmtId(key, v));
-        root.replaceChildren(
-          el('div', { class: 'cmpcards', style: { '--n': list.length } }, list.map(it => W.itemCard(it, { compact: true, actions: el('div', { class: 'iact' },
-            el('button', { class: 'mini', onclick: () => { setCompare(W.compareList().filter(n => n !== it.n)); draw(); } }, 'Remove')) }))),
-          W.win('Side by side',
-            el('div', { class: 'tscroll' }, el('table', { class: 'tbl cmp' },
-              el('thead', {}, el('tr', {}, el('th', {}, ''), list.map(it => el('th', { style: { color: W.tierColor(it.r) } }, it.n)))),
-              el('tbody', {},
-                el('tr', {}, el('td', {}, 'Level'), list.map(it => el('td', {}, it.l))),
-                bases.map(k => el('tr', {}, el('td', {}, W.BASE_NAMES[k] || W.words(k)), list.map(it => el('td', {}, it.b && it.b[k] != null ? (Array.isArray(it.b[k]) ? it.b[k].join('–') : it.b[k]) : '—')))),
-                list.some(i => i.dps) ? el('tr', {}, el('td', {}, 'Average DPS'), list.map(it => el('td', {}, it.dps || '—'))) : null,
-                keys.map(k => { const inv = W.idInfo(k).inverse, b = best(k, inv); return el('tr', {}, el('td', {}, W.idInfo(k).name), list.map(it => cell(it.i && it.i[k], k, b))); })))),
-            el('p', { class: 'hint' }, 'The best maximum roll in each row is outlined. Spell costs count lower as better.')));
+        const n = list.length;
+        const num = (v) => v == null ? null : Array.isArray(v) ? v[1] : v;
+        const show = (v) => Array.isArray(v) ? (v[0] === v[1] ? v[0] : `${v[0]}–${v[1]}`) : v;
+        /* One row: label, then a cell per item. better(a,b) > 0 when a beats b; the best cell gets marked. */
+        const row = (label, vals, fmt, better, cls) => {
+          const nums = vals.map(num), present = nums.filter(x => x != null);
+          if (diffOnly && present.length === n && present.every(x => x === present[0])) return null;
+          const top = present.length > 1 && better ? present.reduce((a, b) => (better(b, a) > 0 ? b : a)) : null;
+          const tied = top != null && present.every(x => x === top);
+          const span = present.length ? Math.max(...present.map(Math.abs)) || 1 : 1;
+          return el('div', { class: 'crow2' }, el('div', { class: 'clabel' }, label), vals.map((v, i) => v == null
+            ? el('div', { class: 'cval na' }, '—')
+            : el('div', { class: 'cval' + (top != null && !tied && nums[i] === top ? ' best' : '') + (cls ? ' ' + cls(v) : '') },
+              el('span', {}, fmt(v)), better ? el('i', { class: 'cbar2', style: { width: Math.abs(nums[i]) / span * 100 + '%' } }) : null)));
+        };
+        const section = (title, rows) => { rows = rows.filter(Boolean); return rows.length ? [el('div', { class: 'csec' }, title), ...rows] : []; };
+        const hi = (a, b) => a - b, lo = (a, b) => b - a;
+        const baseKeys = [...new Set(list.flatMap(i => Object.keys(i.b || {})))];
+        const idKeys = [...new Set(list.flatMap(i => Object.keys(i.i || {})))].sort((a, b) => W.idInfo(a).name.localeCompare(W.idInfo(b).name));
+        const skills = ['strength', 'dexterity', 'intelligence', 'defence', 'agility'].filter(s => list.some(i => i.q && i.q[s]));
+        root.replaceChildren(W.win('Compare items',
+          el('label', { class: 'check', style: { marginBottom: '14px' } }, el('input', { type: 'checkbox', checked: diffOnly, onchange: (e) => { diffOnly = e.target.checked; draw(); } }), 'Only show rows that differ'),
+          el('div', { class: 'tscroll' }, el('div', { class: 'cgrid', style: { '--n': n } },
+            el('div', { class: 'crow2 chead' }, el('div', { class: 'clabel' }), list.map(it => el('div', { class: 'citem' },
+              el('div', { class: 'iicon' }, W.art.item(it.ic)),
+              el('div', { class: 'iname', style: { color: W.tierColor(it.r) } }, it.n),
+              el('div', { class: 'isub' }, `${(W.TIERS[it.r] || ['Item'])[0]} ${W.cap(it.t)}`),
+              el('button', { class: 'mini', onclick: () => { setCompare(W.compareList().filter(x => x !== it.n)); draw(); } }, 'Remove')))),
+            ...section('General', [
+              row('Level', list.map(i => i.l), show, null),
+              list.some(i => i.dps) ? row('Average DPS', list.map(i => i.dps), show, hi) : null,
+              list.some(i => i.as) ? row('Attack speed', list.map(i => i.as ? W.words(i.as) : null), (v) => v, null) : null,
+              list.some(i => i.ps) ? row('Powder slots', list.map(i => i.ps || 0), show, hi) : null,
+              list.some(i => i.c) ? row('Class', list.map(i => i.c ? W.cap(i.c) : null), (v) => v, null) : null,
+            ]),
+            ...section('Base stats', baseKeys.map(k => row(W.BASE_NAMES[k] || W.words(k), list.map(i => i.b && i.b[k]), show, /Defence/.test(k) || /ealth/.test(k) || /Damage/.test(k) ? hi : null))),
+            ...section('Skill requirements', skills.map(s => row(W.cap(s), list.map(i => (i.q && i.q[s]) || null), show, lo))),
+            ...section('Identifications', idKeys.map(k => row(W.idInfo(k).name, list.map(i => i.i && i.i[k]), (v) => W.fmtId(k, v), W.idInfo(k).inverse ? lo : hi, (v) => (W.idGood(k, v) ? 'pos' : 'neg')))),
+            list.some(i => i.m) ? el('div', { class: 'crow2' }, el('div', { class: 'clabel' }, 'Major ID'), list.map(i => el('div', { class: 'cval' }, i.m ? i.m.join(', ') : '—'))) : null)),
+          el('p', { class: 'hint' }, 'The best value in each row is marked in gold. Identifications compare their maximum roll; spell costs and skill requirements count lower as better.')));
       };
       draw();
     });

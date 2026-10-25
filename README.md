@@ -20,4 +20,11 @@ python tools/build_data.py
 
 Sources: Wynntils static data, the Wynncraft item guide, the Wynncraft Wiki and the Wynncraft API. Ingredient icons are the Minecraft items they appear as (PrismarineJS minecraft-assets).
 
+## Live player and guild lookups
+
+The Wynncraft API sends no CORS headers, so browsers refuse to let other websites read it. `proxy/worker.js` is a small Cloudflare Worker that forwards only player and guild requests, adds CORS for this site and caches each answer for two minutes. To switch lookups on:
+
+1. In the Cloudflare dashboard, go to Workers & Pages → Create → Worker, paste `proxy/worker.js` and deploy (or run `npx wrangler deploy` inside `proxy/`).
+2. Put the worker's address (for example `https://wynntools-api.<you>.workers.dev`) into `W.API_RELAY` in `js/shared.js`.
+
 Fan-made; not affiliated with Wynncraft or Mojang.
