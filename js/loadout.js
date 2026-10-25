@@ -99,14 +99,34 @@
             el('a', { href: '#items/loadout', onclick: () => { delete LB.u; delete LB.ch; owner = null; store(); } }, 'Build without a character')) : (ownerErr ? el('div', { class: 'warn' }, ownerErr) : null),
           el('div', { class: 'fields3' },
             el('label', {}, 'Combat level', W.numIn(LB.lvl, (v) => { LB.lvl = Math.max(1, Math.min(120, v)); store(); draw(); }, 1, 120)),
-            el('label', {}, 'Unknown rolls use', W.sel([['max', 'Best roll'], ['avg', 'Average roll'], ['min', 'Worst roll']], LB.mode, (v) => { LB.mode = v; store(); draw(); })),
+            el('label', {}, 'Unknown rolls use', W.sel(W.ROLL_MODES, String(LB.mode), (v) => { LB.mode = isNaN(+v) ? v : +v; store(); draw(); })),
             el('label', {}, 'Rank AP loan', W.sel([[0, 'None'], [2, 'VIP+ (+2)'], [4, 'HERO+ (+4)']], LB.loan, (v) => { LB.loan = +v; store(); draw(); }))),
           !piece('w') ? el('div', { class: 'fields3' }, el('label', {}, 'Class', W.sel([['', 'Pick a weapon or class'], ['archer', 'Archer'], ['warrior', 'Warrior'], ['mage', 'Mage'], ['assassin', 'Assassin'], ['shaman', 'Shaman']], LB.cls || '', (v) => { LB.cls = v || null; store(); draw(); }))) : null,
           el('div', { class: 'cap left' }, 'Share this build'),
           el('div', { class: 'search' }, box, el('button', { onclick: (e) => { box.select(); W.copyText(link, e.target); } }, 'Copy link')),
           el('p', { class: 'hint' }, `${link.split('?b=')[1].length} characters. The link keeps every item, exact roll, powder, tome, skill point and ability.`),
+          buildValue(),
           el('div', { class: 'btns' }, el('a', { class: 'btnlink', href: '#items/recommend' + (LB.u ? '?u=' + encodeURIComponent(LB.u) : '') }, 'Recommended build'),
             el('button', { class: 'danger', onclick: () => { if (confirm('Clear the whole build?')) { LB = blank(); owner = null; store(); draw(); } } }, 'Clear build')));
+      }
+
+      /* what the gear would cost on the trade market, looked up only when asked */
+      let valueAsked = false;
+      function buildValue() {
+        const names = pieces().filter(p => p.item.g !== 'tome').map(p => p.item.n);   // tomes can't be traded
+        const box = el('div', { class: 'pricetag' });
+        if (!names.length) return box;
+        const show = () => {
+          valueAsked = true;
+          box.replaceChildren(el('span', { class: 'hint' }, 'Checking the trade market…'));
+          Promise.all(names.map(n => W.marketPrice(n))).then(ps => {
+            const known = ps.filter(p => p > 0), total = known.reduce((a, b) => a + b, 0);
+            box.replaceChildren(el('div', { class: 'ptop' }, el('span', {}, 'Build value'), el('b', {}, W.emeralds(total))),
+              el('small', {}, known.length === names.length ? 'Trade market averages for every piece of gear (tomes can’t be traded).' : `${names.length - known.length} of ${names.length} pieces haven’t sold recently and aren’t counted. Tomes can’t be traded.`));
+          });
+        };
+        if (valueAsked) show(); else box.append(el('button', { class: 'mini', onclick: show }, 'Market value of this build'));
+        return box;
       }
 
       function slotButton(k, label, small) {
@@ -161,7 +181,7 @@
       function rollTable(it, rolls, setRoll, reset) {
         const quality = W.rollQuality(it, rolls || W.defaultRolls(it, LB.mode));
         return el('div', { class: 'rolls' },
-          el('div', { class: 'rollhead' }, el('b', {}, rolls ? 'Exact rolls' : `Rolls (${({ max: 'best', avg: 'average', min: 'worst' })[LB.mode]} until set)`),
+          el('div', { class: 'rollhead' }, el('b', {}, rolls ? 'Exact rolls' : `Rolls (${W.rollModeName(LB.mode)} until set)`),
             el('span', { class: 'qual big', style: { '--q': quality } }, quality + '%'), rolls ? el('button', { class: 'mini', onclick: reset }, 'Reset') : null),
           Object.entries(it.i).map(([key, v]) => {
             const info = W.idInfo(key), range = Array.isArray(v) ? v : [v, v];
@@ -300,6 +320,8 @@
   };
 
   /* Roll helpers shared with other pages */
+  W.ROLL_MODES = [['max', 'Best roll'], ['0.8', '80% roll'], ['0.75', '75% roll'], ['0.7', '70% roll'], ['avg', 'Average roll'], ['min', 'Worst roll']];
+  W.rollModeName = (m) => typeof m === 'number' ? Math.round(m * 100) + '% roll' : ({ max: 'best', avg: 'average', min: 'worst' })[m] || 'best';
   W.defaultRolls = (it, mode) => Object.fromEntries(Object.keys(it.i || {}).map(k => [k, W.idValue({ item: it, r: null }, k, mode)]));
   W.rollQuality = (it, rolls) => {
     const parts = Object.entries(it.i || {}).filter(([, v]) => Array.isArray(v) && v[0] !== v[1]).map(([k, v]) => {

@@ -32,12 +32,32 @@
     const pick = (re) => { const f = found.find(([p, v]) => re.test(p) && v > 0); return f ? f[1] : null; };
     return pick(/average|avg|mean|median|mid/) ?? pick(/lowest|min|cheapest/) ?? pick(/price/);
   }
-  W.marketPrice = (name) => prices[name] || (prices[name] = fetch(`${W.API_RELAY}/market/price/${encodeURIComponent(name)}`)
+  /* Full Wynnventory answer for one item ({data} or null), fetched once per session. */
+  W.marketInfo = (name) => prices[name] || (prices[name] = fetch(`${W.API_RELAY}/market/price/${encodeURIComponent(name)}`)
     .then(async r => {
       if (r.status === 503) { noKey = true; return null; }
       if (!r.ok) return null;
-      return readPrice(await r.json());
+      return r.json();
     }).catch(() => null));
+  W.marketPrice = (name) => W.marketInfo(name).then(j => j ? readPrice(j) : null);
+
+  /* Price line for an item card: fetched only when asked (or when auto is set for a single looked-up item). */
+  W.priceTag = (name, auto) => {
+    const box = el('div', { class: 'pricetag' });
+    const show = () => {
+      box.replaceChildren(el('span', { class: 'hint' }, 'Checking the trade market…'));
+      W.marketInfo(name).then(j => {
+        const d = j && j.data, p = j && readPrice(j);
+        if (!p) { box.replaceChildren(el('span', { class: 'hint' }, noKey ? 'Market prices are switched off on the relay.' : 'Not seen on the trade market lately.')); return; }
+        box.replaceChildren(
+          el('div', { class: 'ptop' }, el('span', {}, 'Market'), el('b', {}, W.emeralds(p))),
+          el('small', {}, [d.lowest_price ? `lowest ${W.emeralds(d.lowest_price)}` : null, d.unidentified_count ? `unidentified ${W.emeralds(d.unidentified_average_mid_80_percent_price || d.unidentified_average_price)}` : null,
+            d.total_count ? `${d.total_count} listings` : null].filter(Boolean).join(' · ')));
+      });
+    };
+    if (auto || prices[name]) show(); else box.append(el('button', { class: 'mini', onclick: show }, 'Market price'));
+    return box;
+  };
 
   W.netWorth = (player) => {
     const who = (player && player.username || '').toLowerCase();

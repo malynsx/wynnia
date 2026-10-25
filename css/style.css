@@ -672,11 +672,11 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 }
 
 .elname { text-shadow: 1px 0 0 var(--navy), -1px 0 0 var(--navy), 0 1px 0 var(--navy), 0 -1px 0 var(--navy), 1px 1px 0 var(--navy), -1px -1px 0 var(--navy), 1px -1px 0 var(--navy), -1px 1px 0 var(--navy); }
-.reclist { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0 6px; }
+.reclist { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 16px 0 6px; }
 .recrow { display: flex; gap: 10px; align-items: center; background: var(--inset); border: 2px solid var(--navy); border-radius: 5px; padding: 6px 8px; min-width: 0; }
 .recrow > div:last-child { min-width: 0; } .recrow small { color: var(--mute); font-size: 13px; } .recrow b { font-size: 16px; }
 .recrow > div:last-child > small:first-child { display: block; }
-.sprow.rec { grid-template-columns: 110px 60px 1fr; }
+.sprow.rec { grid-template-columns: 110px 70px 70px 1fr; }
 .pwbtn.on { background: var(--gold); color: var(--dark); border-color: var(--navy); }
 .rsbusy { margin-top: 14px; display: grid; gap: 8px; color: var(--mute); }
 @media (max-width: 700px) { .reclist { grid-template-columns: 1fr; } }
@@ -694,3 +694,21 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 .nwprice { display: grid; } .nwprice input { width: 100%; } .nwprice small { color: var(--mute); font-size: 12px; }
 .nwval { font: 400 20px var(--hand); color: var(--gold); text-align: right; }
 @media (max-width: 700px) { .nwhead { grid-template-columns: 1fr; } .fields4 { grid-template-columns: 1fr 1fr; } .nwrow { grid-template-columns: 1fr 70px; } }
+.areabanner, .areabanner.gold { background: none; border: 0; box-shadow: none; padding: 0; }   /* the generic .gold button style was painting a strip behind the tab */
+.pricetag { margin-top: 10px; padding-top: 8px; border-top: 2px solid rgba(23, 48, 74, .4); }
+.pricetag .ptop { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; } .pricetag .ptop span { color: var(--mute); font-size: 14px; }
+.pricetag b { font: 400 22px var(--hand); color: var(--gold); } .pricetag small { color: var(--mute); font-size: 13px; }
+
+/* recommended build v2 */
+.recrow { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; }
+.recmain { display: grid; min-width: 0; } .recmain .pws { display: inline-flex; gap: 2px; margin-left: 8px; vertical-align: middle; } .recmain .pws img { width: 16px; height: 16px; image-rendering: pixelated; }
+.recmain .alts { font-size: 13px; } .recbtns { display: flex; gap: 6px; } .recbtns .mini.on { background: var(--gold); color: var(--dark); }
+.archpick { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.archbtn { display: grid; justify-items: center; gap: 2px; padding: 8px 6px; font: inherit; color: #fff; }
+.archbtn img { width: 40px; height: 40px; image-rendering: pixelated; } .archbtn span { font: 400 20px var(--hand); } .archbtn small { color: var(--mute); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+.archbtn.on { border-color: var(--gold); box-shadow: 0 4px 0 var(--gold-d); background: var(--navy2); }
+.archinfo { display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: center; } .archinfo img { width: 56px; height: 56px; image-rendering: pixelated; } .archinfo p { margin: 0; }
+.tomechips { display: flex; flex-wrap: wrap; gap: 6px; }
+.tchip { display: inline-flex; align-items: center; gap: 6px; background: var(--inset); border: 2px solid var(--navy); border-radius: 5px; padding: 3px 8px 3px 4px; font-size: 13px; }
+.tchip img { width: 22px; height: 22px; }
+@media (max-width: 700px) { .recrow { grid-template-columns: auto minmax(0, 1fr); } .recbtns { grid-column: 1 / -1; } .archpick { grid-template-columns: 1fr; } }

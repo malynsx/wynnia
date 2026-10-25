@@ -39,13 +39,15 @@
         out.replaceChildren(
           el('div', { class: 'resbar' }, el('span', {}, `${res.length.toLocaleString()} items`), cmp.length ? el('a', { href: '#items/compare' }, `Compare (${cmp.length})`) : null),
           el('div', { class: 'igrid' }, res.slice(0, f.shown).map(it => W.itemCard(it, {
+            actions: W.priceTag(it.n, f.q.trim().length >= 3 && (res.length === 1 || it.n.toLowerCase() === f.q.trim().toLowerCase())),   // automatic only for the item you're looking up
             action: el('button', { class: 'mini' + (cmp.includes(it.n) ? ' on' : ''), title: 'Add to compare', onclick: () => {
               const l = W.compareList().filter(n => n !== it.n); if (!cmp.includes(it.n)) l.push(it.n); setCompare(l); show();
             } }, cmp.includes(it.n) ? 'Comparing' : 'Compare'),
           }))),
           res.length > f.shown ? el('div', { class: 'more' }, el('button', { onclick: () => { f.shown += 48; show(); } }, 'Show more')) : null);
       };
-      const txt = el('input', { type: 'text', value: f.q, placeholder: 'Item name', oninput: (e) => { f.q = e.target.value; f.shown = 48; run(); } });
+      const txt = el('input', { type: 'text', value: f.q, placeholder: 'Item name', oninput: (e) => { f.q = e.target.value; f.shown = 48; clearTimeout(typing); typing = setTimeout(run, 250); } });
+      let typing = null;
       const set = (k) => (v) => { f[k] = v; f.shown = 48; if (k === 'id' && v) f.sort = 'id'; run(); if (k === 'id') filters.replaceWith(filters = form()); };
       const form = () => el('div', { class: 'filters' },
         el('label', { class: 'grow' }, 'Search', txt),

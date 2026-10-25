@@ -36,7 +36,7 @@
     const w = writer();
     w.byte(VERSION);
     w.uint(build.lvl || 106);
-    w.byte(Math.max(0, MODES.indexOf(build.mode || 'max')));
+    w.byte(typeof build.mode === 'number' ? 100 + Math.round(build.mode * 100) : Math.max(0, MODES.indexOf(build.mode || 'max')));   // 100+ = a roll percentage
     W.SK.forEach(s => w.int((build.x && build.x[s]) || 0));
     const present = W.BUILD_SLOTS.map(k => build.s[k] && ctx.ids[build.s[k][0]] ? 1 : 0);
     for (let i = 0; i < present.length; i += 8) { let v = 0; for (let j = 0; j < 8; j++) if (present[i + j]) v |= 1 << j; w.byte(v); }
@@ -63,7 +63,8 @@
   W.decodeBuild = (code, ctx) => {
     const r = reader(fromB64(code));
     if (r.byte() !== VERSION) throw new Error('Unknown build code version.');
-    const build = { lvl: r.uint(), mode: MODES[r.byte()] || 'max', x: {}, s: {}, tIdx: [] };
+    const lvl = r.uint(), m = r.byte();
+    const build = { lvl, mode: m >= 100 ? (m - 100) / 100 : MODES[m] || 'max', x: {}, s: {}, tIdx: [] };
     W.SK.forEach(s => { const v = r.int(); if (v) build.x[s] = v; });
     const present = [];
     for (let i = 0; i < W.BUILD_SLOTS.length; i += 8) { const v = r.byte(); for (let j = 0; j < 8; j++) present.push((v >> j) & 1); }

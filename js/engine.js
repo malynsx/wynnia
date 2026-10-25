@@ -11,7 +11,9 @@
   W.SK = SK; W.ELEMS = ELEM; W.SK_ELEM = SK_ELEM;
 
   /* Value of one identification on one equipped piece: exact roll if known, otherwise by roll mode. */
-  const pick = (v, mode) => Array.isArray(v) ? (mode === 'min' ? v[0] : mode === 'avg' ? Math.round((v[0] + v[1]) / 2) : v[1]) : v;
+  /* mode: 'max' | 'avg' | 'min', or a number 0–1 for how far along the range from worst to best (0.75 = a 75% roll) */
+  const pick = (v, mode) => !Array.isArray(v) ? v : typeof mode === 'number' ? Math.round(v[0] + (v[1] - v[0]) * mode)
+    : mode === 'min' ? v[0] : mode === 'avg' ? Math.round((v[0] + v[1]) / 2) : v[1];
   W.idValue = (piece, key, mode) => {
     if (piece.r && piece.r[key] != null) return piece.r[key];
     const v = piece.item.i && piece.item.i[key];
