@@ -10,6 +10,7 @@ Run from the repo root:  python tools/build_data.py
 """
 import concurrent.futures as cf
 import datetime
+import html
 import io
 import json
 import os
@@ -292,7 +293,7 @@ def build_quests():
         'title': 'Special:CargoExport', 'tables': 'Quests', 'limit': '2000', 'format': 'json',
         'fields': 'Quests._pageTitle,Quests.name,Quests.level,Quests.length,Quests.province,Quests.type'})
     rows = get_json(u)
-    out = [{'n': r.get('name') or r.get('_pageTitle'), 'l': r.get('level') or 0, 'len': r.get('length'),
+    out = [{'n': html.unescape(r.get('name') or r.get('_pageTitle')), 'l': r.get('level') or 0, 'len': r.get('length'),
             'p': r.get('province'), 'ty': r.get('type') or 'Normal'} for r in rows if (r.get('name') or '') != '???']
     out.sort(key=lambda x: (x['l'], x['n']))
     return out

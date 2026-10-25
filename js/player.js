@@ -61,12 +61,14 @@
       if (!d) return null;
       const chars = Object.entries(d.characters || {}).map(([id, c]) => ({ id, ...c }))
         .sort((a, b) => (b.level || 0) - (a.level || 0));
+      /* Stable Story unlocks horses for the whole account (wiki: Horses). */
+      const anyStable = chars.some(c => (c.quests || []).includes('Stable Story'));
       const rows = chars.map(c => {
         const quests = c.quests || [];
         return el('tr', {}, el('td', {}, el('b', {}, c.nickname || cls(c)), el('small', {}, c.nickname ? cls(c) : (c.gamemode && c.gamemode.length ? c.gamemode.join(', ') : ''))),
           el('td', {}, c.level ?? '—'),
           ...REQS.map(([k, lvl, quest]) => {
-            const okL = (c.level || 0) >= lvl, okQ = quests.includes(quest), ok = okL && okQ;
+            const okL = (c.level || 0) >= lvl, okQ = quests.includes(quest) || (k === 'horse' && anyStable), ok = okL && okQ;
             const why = ok ? 'Unlocked' : [!okL && `needs combat level ${lvl}`, !okQ && `needs quest “${quest}”`].filter(Boolean).join(', ');
             return el('td', {}, W.tip(el('span', { class: 'pill ' + (ok ? 'yes' : 'no') }, ok ? 'Yes' : 'No'), why));
           }));
@@ -82,7 +84,7 @@
           kv('First joined', d.firstJoin ? new Date(d.firstJoin).toLocaleDateString() : '—'),
           kv('Highest character', best || '—')),
         el('table', { class: 'tbl' }, el('thead', {}, el('tr', {}, ['Character', 'Level', 'Horse', 'Wyvern', 'Adasaur'].map(h => el('th', {}, h)))), el('tbody', {}, rows)),
-        el('p', { class: 'hint' }, 'A mount is usable once the character has the combat level and has finished its quest: Stable Story (9), The Canyon Guides (84), Burning Bonds (115).'));
+        el('p', { class: 'hint' }, 'A mount is usable once the character has the combat level and the quest is done: Stable Story (level 9, once per account), The Canyon Guides (84) and Burning Bonds (115).'));
     }
     const cls = (c) => { const t = String(c.reskin || c.type || ''); return t.charAt(0) + t.slice(1).toLowerCase(); };
     const kv = (k, v) => el('div', {}, el('span', {}, k), el('b', {}, v));

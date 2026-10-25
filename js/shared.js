@@ -39,7 +39,7 @@
   /* ---------- Wynncraft API ---------- */
   /* Browsers can't call api.wynncraft.com directly from another site (it sends no CORS headers),
      so live lookups go through the Wynntools relay in proxy/worker.js. Put its address here once deployed. */
-  W.API_RELAY = '';
+  W.API_RELAY = 'https://api-wynntools.connormaltren.workers.dev';
   W.api = async (path) => {
     if (!W.API_RELAY) throw new Error('Live player and guild lookups aren’t switched on yet: the Wynncraft API only answers other websites through the Wynntools relay, which hasn’t been set up.');
     let r;

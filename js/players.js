@@ -1,6 +1,8 @@
 /* Players: compare two players, and a quest checklist per character. Uses the live Wynncraft API. */
 (function (W) {
   const { el } = W;
+  /* The API names some quests differently from the wiki ("Realm of Light II - Taproot" vs "Taproot"). */
+  const qkey = (n) => String(n).toLowerCase().replace(/^realm of light [ivx]+ - /, '').replace(/[^a-z0-9]/g, '');
   const g = (o, path) => path.split('.').reduce((a, k) => (a == null ? a : a[k]), o);
   const cls = (c) => { const t = String(c.reskin || c.type || ''); return t.charAt(0) + t.slice(1).toLowerCase(); };
   const avatar = (uuid, size = 64) => el('img', { class: 'avatar', src: `https://mc-heads.net/avatar/${uuid}/${size}`, alt: '', width: size, height: size });
@@ -84,7 +86,7 @@
       }
       function list() {
         const c = char(); if (!c) return null;
-        const done = new Set(c.quests || []);
+        const doneKeys = new Set((c.quests || []).map(qkey)), done = { has: (n) => doneKeys.has(qkey(n)) };
         const rows = quests.filter(x => (!QS.missingOnly || !done.has(x.n)) && (!QS.fit || x.l <= (c.level || 0)) && (!QS.province || x.p === QS.province));
         return W.win(`${rows.length} quest${rows.length === 1 ? '' : 's'}`, el('table', { class: 'tbl' },
           el('thead', {}, el('tr', {}, ['Quest', 'Level', 'Length', 'Province', ''].map(h => el('th', {}, h)))),
@@ -96,7 +98,7 @@
       function summary() {
         const c = char();
         if (!c) return W.win('Progress', el('p', { class: 'empty' }, 'Enter a username to load their characters. Quest data comes from the wiki’s quest list.'));
-        const done = new Set(c.quests || []), total = quests.length, have = quests.filter(x => done.has(x.n)).length;
+        const doneKeys = new Set((c.quests || []).map(qkey)), done = { has: (n) => doneKeys.has(qkey(n)) }, total = quests.length, have = quests.filter(x => done.has(x.n)).length;
         const avail = quests.filter(x => !done.has(x.n) && x.l <= (c.level || 0));
         return W.win('Progress',
           el('div', { class: 'phead' }, avatar(QS.data.uuid), el('div', {}, el('h3', {}, QS.data.username), el('small', {}, `${cls(c)} · Level ${c.level}`))),
