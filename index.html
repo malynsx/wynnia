@@ -1,43 +1,62 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="wynn">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Paddock · Wynncraft Mount Breeding Helper</title>
-<meta name="description" content="Plan Wynncraft mount breeding: simulate foals, build lineage trees, plan feeding and training.">
+<title>Wynntools</title>
+<meta name="description" content="Wynncraft tools: mount breeding, item search and compare, ingredient combiner, profession XP, player and guild lookups.">
+<script>try { document.documentElement.dataset.theme = localStorage.getItem('wt.theme') || 'wynn'; } catch (e) {}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Delicious+Handrawn&family=Patrick+Hand&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
 <header class="top">
-  <div class="brand">
-    <img class="logo" src="img/logo.png" alt="" height="76">
+  <a class="brand" href="#home">
+    <img class="logo" src="img/wynntools-logo.png" alt="" height="72">
     <div>
-      <h1>Paddock</h1>
-      <p>Mount breeding for Wynncraft</p>
+      <h1>Wynntools</h1>
+      <p>Handy tools for Wynncraft</p>
     </div>
-  </div>
+  </a>
+  <div class="theme-pick"><span>Theme</span><div id="themes"></div></div>
 </header>
 <div class="shell">
-  <nav id="tabs" class="tabs"></nav>
+  <nav id="tabs" class="tabs" aria-label="Sections"></nav>
+  <nav id="subtabs" class="subtabs" aria-label="Pages"></nav>
   <main id="main" class="frame"></main>
 </div>
-<footer>Fan-made tool. Not affiliated with Wynncraft or Mojang. Game data from the <a href="https://wynncraft.wiki.gg/wiki/Mounts" target="_blank" rel="noopener">Wynncraft Wiki</a>; unknown mechanics are estimates you can tune.</footer>
-<script src="js/data.js"></script>
-<script src="js/art.js"></script>
-<script src="js/wynntils.js"></script>
-<script src="js/core.js"></script>
-<script src="js/stable.js"></script>
-<script src="js/feeder.js"></script>
-<script src="js/lineage.js"></script>
-<script src="js/cookbook.js"></script>
-<script src="js/training.js"></script>
-<script src="js/want.js"></script>
-<script src="js/player.js"></script>
-<script src="js/almanac.js"></script>
-<script src="js/ledger.js"></script>
-<script src="js/main.js"></script>
+<footer class="foot">
+  <div class="maker">
+    <img src="img/malyns.png" alt="" width="44" height="44">
+    <div>Made by <b>Malyns</b><small>Fan-made and not affiliated with Wynncraft or Mojang.</small></div>
+  </div>
+  <div class="credits">Game data from <a href="https://github.com/Wynntils/Wynntils" target="_blank" rel="noopener">Wynntils</a>, the <a href="https://wynncraft.wiki.gg" target="_blank" rel="noopener">Wynncraft Wiki</a> and the <a href="https://docs.wynncraft.com" target="_blank" rel="noopener">Wynncraft API</a>. Icons belong to Wynncraft and the wiki's contributors.</div>
+</footer>
+<script src="js/data.js?v=3"></script>
+<script src="js/art.js?v=3"></script>
+<script src="js/wynntils.js?v=3"></script>
+<script src="js/core.js?v=3"></script>
+<script src="js/shared.js?v=3"></script>
+<script src="js/home.js?v=3"></script>
+<script src="js/stable.js?v=3"></script>
+<script src="js/feeder.js?v=3"></script>
+<script src="js/pairs.js?v=3"></script>
+<script src="js/lineage.js?v=3"></script>
+<script src="js/cookbook.js?v=3"></script>
+<script src="js/training.js?v=3"></script>
+<script src="js/timers.js?v=3"></script>
+<script src="js/market.js?v=3"></script>
+<script src="js/want.js?v=3"></script>
+<script src="js/almanac.js?v=3"></script>
+<script src="js/ledger.js?v=3"></script>
+<script src="js/items.js?v=3"></script>
+<script src="js/crafting.js?v=3"></script>
+<script src="js/professions.js?v=3"></script>
+<script src="js/player.js?v=3"></script>
+<script src="js/players.js?v=3"></script>
+<script src="js/guilds.js?v=3"></script>
+<script src="js/main.js?v=3"></script>
 </body>
 </html>

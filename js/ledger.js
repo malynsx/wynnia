@@ -36,7 +36,7 @@
     }
     function table() {
       const rows = L.map((e, i) => el('tr', {}, el('td', {}, i + 1), el('td', {}, e.a), el('td', {}, e.b), el('td', {}, e.c), el('td', {}, (delta(e) >= 0 ? '+' : '') + W.num(delta(e), 2)),
-        el('td', {}, el('button', { class: 'mini', onclick: () => { L.splice(i, 1); W.save(); draw(); } }, '✕'))));
+        el('td', {}, el('button', { class: 'mini', onclick: () => { L.splice(i, 1); W.save(); draw(); } }, 'Remove'))));
       return W.win('Ledger', L.length ? el('table', { class: 'tbl' }, el('thead', {}, el('tr', {}, ['#', 'A limits', 'B limits', 'Foal pot.', 'Bonus/stat', ''].map(h => el('th', {}, h)))), el('tbody', {}, rows)) : el('p', { class: 'empty' }, 'No entries yet.'));
     }
     function why() {

@@ -1,0 +1,137 @@
+/* Things every section uses: themes, lazy data files, item tiers and identification names, emerald maths. */
+(function (W) {
+  const { el } = W;
+  W.pages = W.pages || {};
+
+  /* ---------- Themes (named after Wynn's provinces) ---------- */
+  W.themes = {
+    list: [
+      ['wynn', 'Wynn', '#86a9bf'], ['gavel', 'Gavel', '#d9b98a'], ['corkus', 'Corkus', '#8fb5ae'],
+      ['fruma', 'Fruma', '#dbe7ef'], ['expanse', 'Silent Expanse', '#3a2f4d'],
+    ],
+    get() { try { return localStorage.getItem('wt.theme') || 'wynn'; } catch (e) { return 'wynn'; } },
+    set(t) {
+      document.documentElement.dataset.theme = t;
+      try { localStorage.setItem('wt.theme', t); } catch (e) { /* storage blocked */ }
+      document.querySelectorAll('.swatch').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+    },
+    init() {
+      const box = document.getElementById('themes');
+      box.replaceChildren(...W.themes.list.map(([k, name, c]) =>
+        el('button', { class: 'swatch', 'data-t': k, title: name + ' theme', 'aria-label': name + ' theme', style: { background: c }, onclick: () => W.themes.set(k) })));
+      W.themes.set(W.themes.get());
+    },
+  };
+
+  /* ---------- Data files (data/*.json, built by tools/build_data.py) ---------- */
+  const cache = {};
+  W.data = (name) => cache[name] || (cache[name] = fetch(`data/${name}.json`).then(r => {
+    if (!r.ok) throw new Error('Could not load ' + name);
+    return r.json();
+  }));
+  /* Render a "loading" panel, then the real content once every file has arrived. */
+  W.withData = (root, names, render) => {
+    root.replaceChildren(W.win('Loading', el('p', { class: 'empty' }, 'Loading game data…')));
+    Promise.all(names.map(W.data)).then(d => render(...d)).catch(e =>
+      root.replaceChildren(W.win('Something went wrong', el('div', { class: 'warn' }, e.message))));
+  };
+
+  /* ---------- Wynncraft API ---------- */
+  W.api = async (path) => {
+    let r;
+    try { r = await fetch('https://api.wynncraft.com/v3/' + path); }
+    catch (e) { throw new Error('Could not reach the Wynncraft API. It may be down or rate-limiting; try again in a minute.'); }
+    const j = await r.json().catch(() => ({}));
+    if (r.status === 404) throw new Error('Nothing was found with that name.');
+    if (r.status === 300) return { multiple: j };
+    if (!r.ok) throw new Error(j.Error || j.message || `The Wynncraft API answered with error ${r.status}.`);
+    return j;
+  };
+
+  /* ---------- Items ---------- */
+  W.TIERS = {
+    normal: ['Normal', '#ffffff'], unique: ['Unique', '#ffff55'], rare: ['Rare', '#ff55ff'], legendary: ['Legendary', '#55ffff'],
+    fabled: ['Fabled', '#ff5555'], mythic: ['Mythic', '#aa00aa'], set: ['Set', '#55ff55'],
+  };
+  W.tierColor = (t) => (W.TIERS[t] || W.TIERS.normal)[1];
+  W.ING_STARS = ['#aaaaaa', '#ffff55', '#ff55ff', '#55ffff'];
+
+  const NAMES = {
+    rawStrength: 'Strength', rawDexterity: 'Dexterity', rawIntelligence: 'Intelligence', rawDefence: 'Defence', rawAgility: 'Agility',
+    walkSpeed: 'Walk Speed', healthRegenRaw: 'Health Regen', healthRegen: 'Health Regen', rawHealth: 'Health', manaRegen: 'Mana Regen',
+    manaSteal: 'Mana Steal', lifeSteal: 'Life Steal', combatExperience: 'Combat XP Bonus', lootBonus: 'Loot Bonus', xpBonus: 'XP Bonus',
+    gatherXpBonus: 'Gather XP Bonus', gatherSpeed: 'Gather Speed', lootQuality: 'Loot Quality', rawMaxMana: 'Max Mana',
+    rawAttackSpeed: 'Attack Speed', mainAttackRange: 'Main Attack Range', jumpHeight: 'Jump Height', exploding: 'Exploding',
+    reflection: 'Reflection', thorns: 'Thorns', poison: 'Poison', stealing: 'Stealing', knockback: 'Knockback', sprint: 'Sprint',
+    sprintRegen: 'Sprint Regen', slowEnemy: 'Slow Enemy', weakenEnemy: 'Weaken Enemy', healingEfficiency: 'Healing Efficiency',
+    criticalDamageBonus: 'Critical Damage Bonus', damage: 'Damage', rawDamage: 'Damage', elementalDamage: 'Elemental Damage',
+    elementalDefence: 'Elemental Defence',
+  };
+  const PER = { manaRegen: '/5s', manaSteal: '/3s', lifeSteal: '/3s', poison: '/3s' };
+  const FLAT = new Set(['manaRegen', 'manaSteal', 'lifeSteal', 'poison', 'jumpHeight', 'healthRegenRaw', 'rawAttackSpeed']);
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const words = (s) => cap(s.replace(/([a-z])([A-Z0-9])/g, '$1 $2').replace(/(\d)(st|nd|rd|th) /, '$1$2 '));
+  /* Identification key -> { name, unit } where unit is '%', '' or '/3s' etc. Spell costs are "good" when negative. */
+  W.idInfo = (key) => {
+    let k = key, raw = false;
+    if (k.startsWith('raw')) { raw = true; k = k.charAt(3).toLowerCase() + k.slice(4); }
+    if (k.endsWith('Raw')) { raw = true; k = k.slice(0, -3); }
+    let name = NAMES[key] || NAMES[k] || words(k);
+    name = name.replace(/^(\d)(st|nd|rd|th) Spell Cost$/, '$1$2 Spell Cost');
+    const unit = PER[key] || (raw || FLAT.has(key) ? '' : '%');
+    return { name, unit, inverse: /SpellCost$/i.test(key) };
+  };
+  W.fmtId = (key, v) => {
+    const { unit } = W.idInfo(key), s = (n) => (n > 0 ? '+' : '') + n + unit;
+    return Array.isArray(v) ? (v[0] === v[1] ? s(v[0]) : `${s(v[0])} to ${s(v[1])}`) : s(v);
+  };
+  W.idGood = (key, v) => { const n = Array.isArray(v) ? v[1] : v; return W.idInfo(key).inverse ? n < 0 : n > 0; };
+
+  W.BASE_NAMES = {
+    health: 'Health', baseHealth: 'Health', earthDefence: 'Earth Defence', thunderDefence: 'Thunder Defence', waterDefence: 'Water Defence',
+    fireDefence: 'Fire Defence', airDefence: 'Air Defence', baseEarthDefence: 'Earth Defence', baseThunderDefence: 'Thunder Defence',
+    baseWaterDefence: 'Water Defence', baseFireDefence: 'Fire Defence', baseAirDefence: 'Air Defence',
+    baseDamage: 'Neutral Damage', baseEarthDamage: 'Earth Damage', baseThunderDamage: 'Thunder Damage', baseWaterDamage: 'Water Damage',
+    baseFireDamage: 'Fire Damage', baseAirDamage: 'Air Damage',
+  };
+  W.ELEM = { earth: '#00aa00', thunder: '#ffff55', water: '#55ffff', fire: '#ff5555', air: '#ffffff', neutral: '#ffaa00' };
+  W.baseColor = (k) => { const m = /(earth|thunder|water|fire|air)/i.exec(k); return m ? W.ELEM[m[1].toLowerCase()] : (/health/i.test(k) ? '#ff5555' : '#ffaa00'); };
+
+  /* Wynncraft-style item tooltip. */
+  W.itemCard = (it, opts = {}) => {
+    const lines = [];
+    const order = (k) => ['ealth', 'Damage', 'earth', 'thunder', 'water', 'fire', 'air'].findIndex(w => k.toLowerCase().includes(w.toLowerCase())) * 2 + (/Defence/.test(k) ? 1 : 0);
+    if (it.b) Object.entries(it.b).sort((a, b) => order(a[0]) - order(b[0])).forEach(([k, v]) => lines.push(el('div', { class: 'il' },
+      el('span', { style: { color: W.baseColor(k) } }, W.BASE_NAMES[k] || words(k)), el('span', {}, Array.isArray(v) ? (v[0] === v[1] ? v[0] : `${v[0]}–${v[1]}`) : v))));
+    const req = [];
+    if (it.c) req.push(cap(it.c));
+    req.push('Lv. ' + it.l);
+    if (it.q) Object.entries(it.q).forEach(([k, v]) => req.push(`${cap(k).slice(0, 3)} ${v}`));
+    const ids = it.i ? Object.entries(it.i).map(([k, v]) => el('div', { class: 'il' },
+      el('span', { class: W.idGood(k, v) ? 'pos' : 'neg' }, W.fmtId(k, v)), el('span', { class: 'idn' }, W.idInfo(k).name))) : [];
+    return el('div', { class: 'icard' + (opts.compact ? ' compact' : '') },
+      el('div', { class: 'ihead' }, el('div', { class: 'iicon' }, W.art.item(it.ic)),
+        el('div', {}, el('div', { class: 'iname', style: { color: W.tierColor(it.r) } }, it.n),
+          el('div', { class: 'isub' }, `${(W.TIERS[it.r] || ['Item'])[0]} ${cap(it.t)}${it.as ? ' · ' + words(it.as) + ' attack' : ''}`))),
+      lines.length ? el('div', { class: 'iblock' }, lines) : null,
+      el('div', { class: 'ireq' }, req.join(' · ')),
+      ids.length ? el('div', { class: 'iblock' }, ids) : null,
+      it.m ? el('div', { class: 'imajor' }, 'Major ID: ', it.m.join(', ')) : null,
+      el('div', { class: 'ifoot' }, [it.ps ? `${it.ps} powder slot${it.ps > 1 ? 's' : ''}` : null, it.dps ? `${it.dps} avg DPS` : null, it.rs ? cap(it.rs) : null].filter(Boolean).join(' · ')),
+      opts.actions || null);
+  };
+
+  /* ---------- Emeralds: 64 E = 1 EB, 64 EB = 1 LE, 64 LE = 1 STX ---------- */
+  W.fmtEm = (eb) => {
+    if (!isFinite(eb)) return '—';
+    const le = Math.floor(eb / 64), rest = eb - le * 64;
+    if (le >= 64) return `${W.num(eb / 4096, 2)} stx`;
+    return le ? `${le} LE ${rest ? W.num(rest, 1) + ' EB' : ''}`.trim() : `${W.num(eb, 1)} EB`;
+  };
+
+  W.cap = cap; W.words = words;
+  W.copyText = (text, btn) => {
+    try { navigator.clipboard.writeText(text); } catch (e) { /* manual copy */ }
+    if (btn) { const t = btn.textContent; btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = t; }, 1200); }
+  };
+})(window.W);

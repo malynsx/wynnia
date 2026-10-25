@@ -1,27 +1,55 @@
 (function (W) {
-  const TABS = [
-    ['stable', 'Stable', () => W.art.ui('saddleicon')],
-    ['feeder', 'Feeder', () => W.art.mat('grain')],
-    ['lineage', 'Lineage', () => W.art.mat('gem')],
-    ['cookbook', 'Cookbook', () => W.art.mat('meat')],
-    ['training', 'Training', () => W.art.stat('speed')],
-    ['want', 'Wanted', () => W.art.ui('speed-boost')],
-    ['player', 'Player', () => W.art.stat('boost')],
-    ['almanac', 'Almanac', () => W.art.mat('paper')],
-    ['ledger', 'Ledger', () => W.art.mat('plank')],
+  const { el } = W;
+  const mountIcon = () => W.art.ui('flute');
+  W.SECTIONS = [
+    { k: 'home', name: 'Home', icon: () => W.art.wiki('emeraldicon'), pages: [['home', 'Home']] },
+    { k: 'mounts', name: 'Mounts', icon: mountIcon, pages: [
+      ['stable', 'Stable'], ['feeder', 'Feeder'], ['pairs', 'Pair Finder'], ['lineage', 'Lineage'], ['cookbook', 'Cookbook'],
+      ['training', 'Training'], ['timers', 'Timers'], ['market', 'Market'], ['want', 'Wanted'], ['ledger', 'Ledger'], ['almanac', 'Almanac']] },
+    { k: 'items', name: 'Items', icon: () => W.art.wiki('weaponsmithing'), pages: [['search', 'Search'], ['compare', 'Compare']] },
+    { k: 'crafting', name: 'Crafting', icon: () => W.art.wiki('alchemism'), pages: [['combiner', 'Ingredient Combiner'], ['ingredients', 'Ingredients']] },
+    { k: 'professions', name: 'Professions', icon: () => W.art.wiki('mining'), pages: [['xp', 'XP Calculator'], ['gathering', 'Gathering']] },
+    { k: 'players', name: 'Players', icon: () => W.art.wiki('warrior'), pages: [['lookup', 'Lookup'], ['compare', 'Compare'], ['quests', 'Quest Checklist']] },
+    { k: 'guilds', name: 'Guilds', icon: () => W.art.wiki('guild-banner-tier-3'), pages: [['lookup', 'Lookup'], ['territories', 'Territories']] },
   ];
-  W.go = (name) => { location.hash = name; };
-  function route() {
-    const [hn, hq] = location.hash.slice(1).split('?');
-    const name = TABS.some(t => t[0] === hn) ? hn : 'stable';
-    const nav = document.getElementById('tabs'), main = document.getElementById('main');
-    nav.replaceChildren(...TABS.map(([k, label, icon]) => W.el('a', { href: '#' + k, class: 'tab' + (k === name ? ' on' : '') }, icon(), W.el('span', {}, label))));
-    main.replaceChildren();
-    W.pages[name](main, new URLSearchParams(hq || ''));
-    document.title = `${TABS.find(t => t[0] === name)[1]} · Paddock`;
+  /* Old Paddock links (#stable, #want?…, #player?…) keep working. */
+  const LEGACY = { player: 'players/lookup' };
+  W.SECTIONS[1].pages.forEach(([p]) => { LEGACY[p] = 'mounts/' + p; });
+
+  W.go = (path) => { location.hash = path.includes('/') ? path : (LEGACY[path] || 'mounts/' + path); };
+
+  let cleanup = [];
+  W.onLeave = (fn) => cleanup.push(fn);
+
+  function parse() {
+    let [path, q] = location.hash.slice(1).split('?');
+    if (LEGACY[path]) path = LEGACY[path];
+    let [sk, pk] = (path || 'home').split('/');
+    const sec = W.SECTIONS.find(s => s.k === sk) || W.SECTIONS[0];
+    if (!sec.pages.some(p => p[0] === pk)) pk = sec.pages[0][0];
+    return { sec, pk, q: new URLSearchParams(q || '') };
   }
+
+  function route() {
+    cleanup.forEach(f => { try { f(); } catch (e) { /* ignore */ } }); cleanup = [];
+    const { sec, pk, q } = parse();
+    document.getElementById('tabs').replaceChildren(...W.SECTIONS.map(s =>
+      el('a', { href: '#' + s.k, class: 'tab' + (s === sec ? ' on' : '') }, s.icon(), el('span', {}, s.name))));
+    const sub = document.getElementById('subtabs');
+    sub.replaceChildren(...(sec.pages.length > 1 ? sec.pages.map(([k, label]) =>
+      el('a', { href: `#${sec.k}/${k}`, class: 'sub' + (k === pk ? ' on' : '') }, label)) : []));
+    sub.hidden = sec.pages.length < 2;
+    const main = document.getElementById('main');
+    main.replaceChildren();
+    const fn = W.pages[`${sec.k}/${pk}`] || W.pages[pk];
+    fn(main, q);
+    const label = sec.pages.find(p => p[0] === pk)[1];
+    document.title = sec.k === 'home' ? 'Wynntools' : `${label} · ${sec.name} · Wynntools`;
+    window.scrollTo(0, 0);
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
-    W.load(); W.art.favicon();
+    W.load(); W.art.favicon(); W.themes.init();
     window.addEventListener('hashchange', route);
     route();
   });

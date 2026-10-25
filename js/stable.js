@@ -49,7 +49,7 @@
             el('button', { onclick: () => { io.value = JSON.stringify({ mounts: S.mounts }); io.select(); } }, 'Export'),
             el('button', { onclick: () => {
               try { const d = JSON.parse(io.value); if (!Array.isArray(d.mounts)) throw 0; d.mounts.forEach(x => W.clampMount(x)); S.mounts = S.mounts.concat(d.mounts.map(x => ({ ...x, id: 'm' + Math.random().toString(36).slice(2, 9) }))); commit(); }
-              catch (e) { io.value = '⚠ That is not valid stable JSON.'; }
+              catch (e) { io.value = 'That is not valid stable JSON.'; }
             } }, 'Import (adds)'),
             el('button', { class: 'danger', onclick: () => { if (confirm('Delete every mount?')) { S.mounts = []; S.selected = null; commit(); } } }, 'Clear all')),
           io));
@@ -64,7 +64,7 @@
         if (!res.length) { out.append(el('div', { class: 'warn' }, 'No Wynntils item string found in that text.')); return; }
         const fresh = [];
         res.forEach(r => {
-          if (!r.ok) { out.append(el('div', { class: 'warn' }, '⚠ ' + r.error)); return; }
+          if (!r.ok) { out.append(el('div', { class: 'warn' }, r.error)); return; }
           const d = WynntilsDecode.toAppMount(r.mount), C = W.COLORS[d.type];
           const m = W.newMount(d.type, { name: d.name, s: d.s });
           if (C.body.some(c => c[0] === d.c1)) m.c1 = d.c1;
@@ -120,7 +120,7 @@
               kv('Rank*', el('span', { style: { color: r.color } }, r.name)),
               kv('Average limit', W.num(W.avgLim(m), 2)),
               kv('Feed time / material', W.fmtDur(W.feedMinutes(Math.ceil(W.avgLim(m))))),
-              kv('Breeding', W.canBreed(m) ? '✔ ready' : `needs +${W.num((20 - W.avgLim(m)) * 8, 0)} limit points`),
+              kv('Breeding', W.canBreed(m) ? 'Ready' : `needs +${W.num((20 - W.avgLim(m)) * 8, 0)} limit points`),
               kv('Limit room left', W.STATKEYS.reduce((a, k) => a + m.s[k][2] - m.s[k][1], 0) + ' pts'),
               kv('Levels to train', W.STATKEYS.reduce((a, k) => a + m.s[k][1] - m.s[k][0], 0) + ' pickups'))),
           el('p', { class: 'hint' }, '*Tiers follow the Wynntils tooltip colours for Potential (red, gold, yellow, green, aqua).')));

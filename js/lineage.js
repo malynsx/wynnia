@@ -18,6 +18,8 @@
     return { rounds, balanced: nodes[0], chain };
   }
 
+  W.lineageSim = simulate;
+
   W.pages.lineage = function (root) {
     const draw = () => root.replaceChildren(el('div', { class: 'cols wide-l' }, el('div', {}, controls(), table()), el('div', {}, tree(), notes())));
     const S = W.state.settings;

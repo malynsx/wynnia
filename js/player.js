@@ -72,7 +72,7 @@
           ...REQS.map(([k, lvl, quest]) => {
             const okL = (c.level || 0) >= lvl, okQ = quests.includes(quest), ok = okL && okQ;
             const why = ok ? 'Unlocked' : [!okL && `needs combat level ${lvl}`, !okQ && `needs quest “${quest}”`].filter(Boolean).join(', ');
-            return el('td', {}, W.tip(el('span', { class: 'pill ' + (ok ? 'yes' : 'no') }, ok ? '✔' : '✘'), why));
+            return el('td', {}, W.tip(el('span', { class: 'pill ' + (ok ? 'yes' : 'no') }, ok ? 'Yes' : 'No'), why));
           }));
       });
       const best = chars.reduce((a, c) => Math.max(a, c.level || 0), 0);
@@ -98,7 +98,7 @@
       const good = results.filter(r => r.ok);
       const link = () => {
         const u = new URL(location.href.split('#')[0]);
-        u.hash = 'player?' + new URLSearchParams({ ...(P.data ? { u: P.data.username } : P.name ? { u: P.name } : {}), d: b64.enc({ t: P.text }) });
+        u.hash = 'players/lookup?' + new URLSearchParams({ ...(P.data ? { u: P.data.username } : P.name ? { u: P.name } : {}), d: b64.enc({ t: P.text }) });
         return u.toString();
       };
       const out = el('input', { type: 'text', readonly: true, value: '', placeholder: 'Press “Make link”' });
@@ -109,7 +109,7 @@
           el('button', { onclick: () => { P.text = ta.value; out.value = link(); out.select(); try { navigator.clipboard.writeText(out.value); } catch (e) { /* manual copy */ } } }, 'Make link'),
           el('button', { class: 'danger', onclick: () => { P.text = ''; draw(); } }, 'Clear')),
         out,
-        results.some(r => !r.ok) && el('div', { class: 'warn' }, '⚠ ' + results.filter(r => !r.ok).map(r => r.error).join(' ')),
+        results.some(r => !r.ok) && el('div', { class: 'warn' }, results.filter(r => !r.ok).map(r => r.error).join(' ')),
         good.length ? el('div', { class: 'mcards' }, good.map(r => card(r.mount, r.estimated))) : el('p', { class: 'hint' }, 'Copy a mount with the Wynntils share option in-game and paste it above. The link bundles the pasted strings, so anyone can open the same showcase.'));
     }
 

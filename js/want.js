@@ -22,7 +22,7 @@
     if (N.c2) q.set('c2', N.c2);
     if (N.ign) q.set('i', N.ign);
     if (N.note) q.set('n', N.note);
-    return location.href.split('#')[0] + '#want?' + q.toString();
+    return location.href.split('#')[0] + '#mounts/want?' + q.toString();
   }
   function chatLines() {
     const type = N.type === 'any' ? 'mount' : W.TYPES[N.type].name;

@@ -9,7 +9,7 @@
     };
     return el('div', { class: 'model' },
       f('Bonus per stat', 'bonus', 0.5), f('Spread (σ)', 'sd', 0.5), f('Level spread', 'curSd', 0.1),
-      el('a', { href: '#ledger', class: 'link' }, 'calibrate from real breeds →'));
+      el('a', { href: '#mounts/ledger', class: 'link' }, 'Calibrate from real breeds'));
   };
 
   W.simulate = (a, b, n = 4000) => {
@@ -47,7 +47,7 @@
       root.replaceChildren(el('div', { class: 'cols wide-l' }, el('div', {}, top(a, b), result(a, b)), el('div', {}, inv(a, b), W.win('How breeding works', rules()))));
     };
     function top(a, b) {
-      const arrow = el('div', { class: 'arrow' }, '➜');
+      const arrow = el('div', { class: 'arrow', 'aria-hidden': 'true' });
       const res = sample ? W.mountSlot(sample, { big: true }) : W.slot(el('span', { class: 'plus' }, '?'), { big: true, tip: 'Press “Roll one outcome”' });
       return W.win('Feeder — Breeding',
         el('div', { class: 'feeder' },
@@ -81,7 +81,7 @@
           el('td', {}, el('b', {}, W.num(avg + set.bonus)), ` ± ${W.num(set.sd)}`), el('td', {}, Math.max(a.s[k][0], b.s[k][0])));
       });
       return W.win('Prediction',
-        ...warns.map(w => el('div', { class: 'warn' }, '⚠ ' + w)),
+        ...warns.map(w => el('div', { class: 'warn' }, w)),
         el('div', { class: 'kv wide' },
           el('div', {}, el('span', {}, 'Expected Potential'), el('b', {}, W.num(mean, 0))),
           el('div', {}, el('span', {}, 'Likely range (80%)'), el('b', {}, `${pct(.1)} – ${pct(.9)}`)),

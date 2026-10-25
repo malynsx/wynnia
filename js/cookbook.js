@@ -20,7 +20,7 @@
           el('label', {}, `Material level: ${cfg.level}`, el('input', { type: 'range', min: 1, max: 115, value: cfg.level, oninput: (e) => { cfg.level = +e.target.value; e.target.previousSibling.textContent = `Material level: ${cfg.level}`; }, onchange: draw })),
           el('label', {}, 'Goal', W.sel([['max', 'Fill every chosen limit to its max'], ['avg', 'Reach a target average limit']], cfg.target, (v) => { cfg.target = v; draw(); })),
           cfg.target === 'avg' && el('label', {}, 'Target average limit', W.numIn(cfg.avg, (v) => { cfg.avg = v; draw(); }, 10, 120, 0.5))),
-        high < cfg.level ? el('div', { class: 'warn' }, `⚠ A material can’t be fed if its level is above the mount’s highest stat (${high}). Train it first or lower the level.`) : null,
+        high < cfg.level ? el('div', { class: 'warn' }, `A material can’t be fed if its level is above the mount’s highest stat (${high}). Train it first or lower the level.`) : null,
         el('div', { class: 'cap left' }, 'Materials you have'),
         toggles(W.MATS, 'cats', o => o.name, o => W.art.mat(o.k)),
         el('div', { class: 'cap left' }, 'Stats to improve'),
@@ -47,7 +47,7 @@
           el('div', {}, el('span', {}, 'Total feed time'), el('b', {}, W.fmtDur(r.minutes))),
           el('div', {}, el('span', {}, 'Final avg limit'), el('b', {}, W.num(r.steps.at(-1).avgAfter, 2))),
           el('div', {}, el('span', {}, 'Points wasted'), el('b', {}, wasted))),
-        !r.done && el('div', { class: 'warn' }, '⚠ The goal can’t be fully reached with these materials — some stats have no source left.'),
+        !r.done && el('div', { class: 'warn' }, 'The goal can’t be fully reached with these materials — some stats have no source left.'),
         el('div', { class: 'cap left' }, 'Shopping list'), shop,
         el('table', { class: 'tbl' }, el('thead', {}, el('tr', {}, ['#', 'Material', 'Points', 'Avg limit after', 'Time'].map(h => el('th', {}, h)))), el('tbody', {}, rows)),
         el('p', { class: 'hint' }, 'Greedy plan: each step picks the material that wastes the fewest points. Time per material depends on the average limit when it starts being eaten. Real games may differ slightly in rounding.'));

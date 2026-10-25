@@ -154,7 +154,7 @@
     d.append(el('div', { class: 'tt-gap' }),
       el('div', {}, el('span', { class: 'tt-g' }, 'Potential: '), el('span', { class: 'tt-w' }, W.potential(m)), el('span', { style: { color: r.color } }, ` [${r.name}]`)),
       el('div', {}, el('span', { class: 'tt-g' }, 'Average Limit: '), el('span', { class: 'tt-w' }, W.num(W.avgLim(m), 2))),
-      el('div', { style: { color: W.canBreed(m) ? '#55ff55' : '#ff5555' } }, W.canBreed(m) ? '✔ Ready to breed' : '✘ Needs average limit 20'));
+      el('div', { style: { color: W.canBreed(m) ? '#55ff55' : '#ff5555' } }, W.canBreed(m) ? 'Ready to breed' : 'Needs average limit 20 to breed'));
     return d;
   };
   W.slot = (child, opts = {}) => {
