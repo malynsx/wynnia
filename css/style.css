@@ -600,3 +600,8 @@ button.charcard.sel { border-color: var(--gold); box-shadow: 0 4px 0 var(--gold-
   .foot { padding: 0 14px 30px; }
   .atree { grid-template-columns: repeat(9, 34px); } .atree .anode { width: 24px; height: 24px; margin: 5px; }
 }
+.abtip { max-width: 340px; line-height: 1.35; } .abtip .tt-name span { color: inherit; }
+.lbt .lbname { color: var(--dark); font-weight: 700; text-decoration: none; }
+.lbt .lbname .banner { width: 16px; height: 32px; border-width: 2px; box-shadow: none; flex: none; }
+.lbt .rankbadge { height: 18px; }
+.tag.small { font-size: 16px; padding: 0 8px 1px; }

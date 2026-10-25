@@ -49,8 +49,8 @@
             }
             const a = abilities[n.meta && n.meta.id] || {};
             return W.tip(el('div', { class: 'anode' + (lit ? ' lit' : ''), style: { ...pos, '--nc': nodeColour(n.meta && n.meta.icon) } }),
-              () => el('div', {}, el('div', { class: 'tt-name' }, text(a.name) || n.meta.id), el('div', { class: 'tt-sub' }, lit ? 'Unlocked' : 'Not taken'),
-                el('div', { class: 'tt-g', style: { whiteSpace: 'pre-line', maxWidth: '320px' } }, text(a.description))));
+              () => el('div', { class: 'abtip' }, el('div', { class: 'tt-name' }, a.name ? W.mcHtml(a.name) : n.meta.id), el('div', { class: 'tt-sub' }, lit ? 'Unlocked' : 'Not taken'),
+                W.mcHtml(a.description)));
           })));
       };
       drawPage();

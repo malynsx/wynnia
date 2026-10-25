@@ -187,6 +187,37 @@
     return c;
   };
 
+  /* Wynncraft's tooltip HTML -> safe DOM: keeps only text colour, turns its private-use icon glyphs into
+     the element symbols, and applies Minecraft § colour codes. Nothing else from the source is kept. */
+  const GLYPHS = { '': '❋', '': '✤', '': '✹', '': '✦', '': '❉', '': '✣' };
+  const MC = { 0: '#000000', 1: '#0000aa', 2: '#00aa00', 3: '#00aaaa', 4: '#aa0000', 5: '#aa00aa', 6: '#ffaa00', 7: '#aaaaaa', 8: '#555555', 9: '#5555ff', a: '#55ff55', b: '#55ffff', c: '#ff5555', d: '#ff55ff', e: '#ffff55', f: '#ffffff' };
+  W.mcHtml = (html) => {
+    const src = new DOMParser().parseFromString([].concat(html || '').join('<br>'), 'text/html').body;
+    const out = document.createElement('div');
+    const text = (s, parent) => {
+      s = s.replace(/[-]/g, (c) => GLYPHS[c] || '◆');
+      let cur = parent;
+      s.split(/(§[0-9a-fk-or])/i).forEach(part => {
+        const m = /^§([0-9a-fk-or])$/i.exec(part);
+        if (!m) { if (part) cur.append(part); return; }
+        const code = m[1].toLowerCase();
+        if (MC[code]) { cur = document.createElement('span'); cur.style.color = MC[code]; parent.append(cur); }
+        else if (code === 'r') cur = parent;
+      });
+    };
+    const walk = (node, parent) => node.childNodes.forEach(n => {
+      if (n.nodeType === 3) return text(n.textContent, parent);
+      if (n.nodeType !== 1) return;
+      if (n.tagName === 'BR') { parent.append(document.createElement('br')); return; }
+      const span = document.createElement('span');
+      const colour = n.style && n.style.color;
+      if (colour) span.style.color = colour;
+      parent.append(span); walk(n, span);
+    });
+    walk(src, out);
+    return out;
+  };
+
   W.cap = cap; W.words = words;
   W.copyText = (text, btn) => {
     try { navigator.clipboard.writeText(text).catch(() => {}); } catch (e) { /* manual copy */ }
