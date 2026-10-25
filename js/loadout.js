@@ -41,7 +41,53 @@
     const every = /every ([\d.]+)s/i.exec(txt), dur = /Duration:\s*([\d.]+)s/.exec(txt);
     const hits = count ? +count[1] : every && dur ? Math.round(+dur[1] / +every[1]) : 1;
     const unit = count ? count[2].toLowerCase() : every && dur ? `ticks over ${dur[1]}s` : '';
-    return { name: W.treePlain(a.name), cost: cost ? +cost[1] : null, total: total ? +total[1] : null, per: total ? total[2].replace(/^,\s*/, '').trim() : '', parts, slot, combo: combo ? combo.join('-') : '', hits, unit };
+    return { name: W.treePlain(a.name), cost: cost ? +cost[1] : null, total: total ? +total[1] : null, per: total ? total[2].replace(/^,\s*/, '').trim() : '', parts, slot, combo: combo ? combo.join('-') : '', hits, unit,
+      perStream: count ? +count[1] : null };
+  };
+
+  /* A spell with the unlocked tree upgrades that change it applied: signed damage changes ("-20% per arrow"),
+     mana cost changes, and extra streams / arrows per stream / hits. Upgrades count when they need the spell
+     or name it; damage lines marked "for X" or "per Y" only apply to the matching spell. */
+  W.treeSpell = (sp, spellId, T, selected) => {
+    const parts = Object.assign({}, sp.parts);
+    let streams = 1, perStream = sp.perStream, extraHits = 0, costAdj = 0;
+    const applied = [];
+    const units = (sp.per.match(/per (\w+)/) || [])[1] || '';
+    selected.forEach(id => {
+      const a = T.abilities[id];
+      if (!a || id === spellId || W.parseSpell(a).slot) return;
+      const txt = W.mcHtml(a.description).textContent.replace(/\s+/g, ' ');
+      const req = [].concat((a.requirements || {}).NODE || []);
+      if (!req.includes(spellId) && !txt.includes(sp.name)) return;
+      let used = false;
+      txt.split('◆').forEach(line => {
+        const d = /Total Damage:\s*([+-][\d.]+)%\s*\(([^)]*)\)/.exec(line);
+        if (d) {
+          const q = d[2], forX = /for ([^,]+)$/.exec(q), perY = /per ([\w/]+)/.exec(q);
+          if (forX && forX[1].trim() !== sp.name) return;
+          if (perY && !perY[1].split('/').some(u => units.startsWith(u.replace(/s$/, '')))) return;
+          let sum = 0;
+          for (const m of line.matchAll(/\(([✣✤✦❉✹❋])\s*\w+:\s*([+-]?[\d.]+)%\)/g)) { const e = GLYPH_EL[m[1]]; parts[e] = (parts[e] || 0) + +m[2]; sum += +m[2]; }
+          if (Math.abs(sum - +d[1]) > 0.01) parts.neutral = (parts.neutral || 0) + (+d[1] - sum);   // the listed parts don't always add up to the total
+          used = true;
+        }
+        const c = /Mana Cost:\s*([+-]\d+)/.exec(line);
+        if (c) { costAdj += +c[1]; used = true; }
+      });
+      /* counts, unless conditional ("Hitting 1 flint arrow ... (Max 40)") */
+      if (!/\(Max \d+\)/.test(txt)) {
+        const st = /\+(\d+) (?:extra |additional )?streams?/i.exec(txt), ps = /\+(\d+) (?:extra |additional )?arrows? per stream/i.exec(txt), h = /\+(\d+) (?:extra |additional )?hits?\b/i.exec(txt);
+        if (st) { streams += +st[1]; used = true; }
+        if (ps && perStream) { perStream += +ps[1]; used = true; }
+        if (h) { extraHits += +h[1]; used = true; }
+      }
+      if (used) applied.push(W.treePlain(a.name));
+    });
+    Object.keys(parts).forEach(e => { if (parts[e] <= 0) delete parts[e]; });
+    const total = Object.values(parts).reduce((x, y) => x + y, 0);
+    const hits = perStream ? streams * perStream + extraHits : sp.hits + extraHits;
+    const unit = perStream ? (streams > 1 ? `arrows (${streams} streams × ${perStream})` : sp.unit) : sp.unit || (extraHits ? 'hits' : '');
+    return Object.assign({}, sp, { parts, total: sp.total != null ? total : null, cost: sp.cost != null ? Math.max(1, sp.cost + costAdj) : null, hits, unit, applied });
   };
 
   W.pages['items/loadout'] = function (root, q) {
@@ -164,9 +210,12 @@
 
       function rollTable(it, rolls, setRoll, reset) {
         const quality = W.rollQuality(it, rolls || W.defaultRolls(it, LB.mode));
+        /* some items (often untradable or quest ones) always roll the same values */
+        const fixed = Object.values(it.i).every(v => !Array.isArray(v) || v[0] === v[1]);
         return el('div', { class: 'rolls' },
-          el('div', { class: 'rollhead' }, el('b', {}, rolls ? 'Exact rolls' : `Rolls (${W.rollModeName(LB.mode)} until set)`),
-            el('span', { class: 'qual big', style: { '--q': quality } }, quality + '%'), rolls ? el('button', { class: 'mini', onclick: reset }, 'Reset') : null),
+          el('div', { class: 'rollhead' }, el('b', {}, fixed ? 'Fixed identifications' : rolls ? 'Exact rolls' : `Rolls (${W.rollModeName(LB.mode)} until set)`),
+            fixed ? null : el('span', { class: 'qual big', style: { '--q': quality } }, quality + '%'), rolls && !fixed ? el('button', { class: 'mini', onclick: reset }, 'Reset') : null),
+          fixed ? el('p', { class: 'hint', style: { margin: '0 0 6px' } }, `${it.n} doesn’t roll: every copy has exactly these values, so the roll setting doesn’t change it.`) : null,
           Object.entries(it.i).map(([key, v]) => {
             const info = W.idInfo(key), range = Array.isArray(v) ? v : [v, v];
             const cur = rolls && rolls[key] != null ? rolls[key] : W.idValue({ item: it, r: null }, key, LB.mode);
@@ -249,7 +298,7 @@
             el('div', {}, el('span', {}, 'Health regen'), el('b', {}, res.hpRegen + ' /4s')),
             el('div', {}, el('span', {}, 'Life steal'), el('b', {}, res.lifeSteal + ' /3s'))));
 
-        const spells = T && T.cls === cls() ? Object.entries(T.abilities).filter(([, a]) => /node(Archer|Warrior|Mage|Assassin|Shaman)/.test(JSON.stringify(a.icon))).map(([id, a]) => ({ id, ...W.parseSpell(a), on: LB.t.includes(id) })) : [];
+        const spells = T && T.cls === cls() ? Object.entries(T.abilities).filter(([, a]) => /node(Archer|Warrior|Mage|Assassin|Shaman)/.test(JSON.stringify(a.icon))).map(([id, a]) => { const base = { id, ...W.parseSpell(a), on: LB.t.includes(id) }; return base.on ? W.treeSpell(base, id, T, LB.t) : base; }) : [];
         const dmgWin = res.melee ? W.win('Damage (estimate)',
           el('div', { class: 'bigstats' },
             el('div', {}, el('b', {}, fmt(res.melee.dps)), el('span', {}, 'Main attack DPS')),
@@ -266,12 +315,13 @@
             const cost = sp.cost != null && sp.slot ? res.spellCost(sp.slot, sp.cost) : sp.cost;
             const hit = sp.total ? res.melee.spell(Object.keys(sp.parts).length ? sp.parts : { neutral: sp.total }) : null;
             return el('div', { class: 'spell' + (sp.on ? '' : ' off') },
-              el('div', {}, el('b', {}, sp.name), el('small', {}, `${sp.combo}${sp.on ? '' : ' · not unlocked'}`)),
+              el('div', {}, el('b', {}, sp.name), el('small', {}, `${sp.combo}${sp.on ? '' : ' · not unlocked'}`),
+                sp.applied && sp.applied.length ? el('small', { class: 'spup' }, 'With ' + sp.applied.join(', ')) : null),
               el('div', { class: 'sv' }, el('b', {}, cost != null ? cost : '—'), el('small', {}, 'mana')),
               el('div', { class: 'sv' }, el('b', {}, !hit ? '—' : sp.hits > 1 ? fmt(hit.expected) : ''), el('small', {}, !hit ? 'no damage' : sp.hits > 1 ? (sp.per || 'per hit') : 'single hit')),
               el('div', { class: 'sv total' }, el('b', {}, hit ? fmt(hit.expected * sp.hits) : '—'), el('small', {}, !hit ? '' : sp.hits > 1 ? `per cast · ${sp.hits} ${sp.unit}` : 'per cast')));
           }),
-          el('p', { class: 'hint' }, 'Estimates from base spell values: tree upgrades that change spells aren’t applied, and the game rounds some steps differently.')) :
+          el('p', { class: 'hint' }, 'Estimates. Unlocked tree upgrades that change a spell’s damage, mana cost or arrow/hit count are included (listed under each spell); other effects aren’t. “Per cast” assumes every arrow or hit lands on one target. Crits are averaged in.')) :
           W.win('Damage', el('p', { class: 'empty' }, 'Add a weapon to see damage.'));
 
         /* Mana sustain: natural regen (wiki: 5 mana/s, editable) + Mana Regen per 5s, plus Mana Steal per 3s while your attacks land */

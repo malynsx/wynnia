@@ -898,3 +898,4 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 @media (max-width: 500px) { .islot { width: 54px; height: 54px; padding: 6px; } .invbody { height: 240px; } .invbody img { height: 210px; } .lo-kpi b { font-size: 21px; } .kpi.lo-kpi { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .islot .ighost { opacity: .22; filter: grayscale(1) brightness(1.6); }
 @media (max-width: 600px) { .ipanel .ihead { flex-wrap: wrap; } .ipanel .ihead .ititle { flex: 1 1 60%; } }
+.spell small.spup { color: var(--gold); font-size: 12px; }

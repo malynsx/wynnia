@@ -119,13 +119,15 @@
       const rawElemShared = (kind) => id('rawElementalDamage') + id('rawElemental' + cap(kind) + 'Damage');
       const critChance = Math.min(100, scale(finalSP[1])) / 100, critMult = 2 + id('criticalDamageBonus') / 100;
       /* damage for a map of element -> [min, max] base values */
-      const damage = (baseMap, kind) => {
+      /* rawScale: raw damage IDs count in full on a main attack, but a spell only gets its own % of them
+         (a 40%-per-arrow spell adds 40% of your Raw Spell Damage to each arrow) */
+      const damage = (baseMap, kind, rawScale = 1) => {
         const per = {}; let lo = 0, hi = 0;
         const elems = Object.keys(baseMap).filter(e => baseMap[e][1] > 0);
         const avgOf = (e) => (baseMap[e][0] + baseMap[e][1]) / 2;
         const all = elems.reduce((a, e) => a + avgOf(e), 0) || 1, elemOnly = elems.filter(e => e !== 'neutral').reduce((a, e) => a + avgOf(e), 0) || 1;
         elems.forEach(e => {
-          const raw = rawShared(kind) * avgOf(e) / all + rawFor(e, kind) + (e !== 'neutral' ? rawElemShared(kind) * avgOf(e) / elemOnly : 0);
+          const raw = rawScale * (rawShared(kind) * avgOf(e) / all + rawFor(e, kind) + (e !== 'neutral' ? rawElemShared(kind) * avgOf(e) / elemOnly : 0));
           const m = Math.max(0, 1 + pctFor(e, kind) / 100);
           const a = Math.max(0, (baseMap[e][0] + raw) * m), b = Math.max(0, (baseMap[e][1] + raw) * m);
           per[e] = [a, b]; lo += a; hi += b;
@@ -145,7 +147,7 @@
           if (e === 'neutral') present.forEach(x => { map[x] = map[x] || [0, 0]; map[x][0] += base[x][0] * f; map[x][1] += base[x][1] * f; });
           else { map[e] = map[e] || [0, 0]; map[e][0] += baseAvg * f * 0.9; map[e][1] += baseAvg * f * 1.1; }
         });
-        return damage(map, 'spell');
+        return damage(map, 'spell', Object.values(parts).reduce((a, b) => a + b, 0) / 100);
       };
     }
     const intCost = scale(finalSP[2]) * 0.5 / 80.8;
