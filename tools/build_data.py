@@ -328,6 +328,29 @@ def build_spots(base):
     return out
 
 
+def build_tomes(tomes, icons):
+    out = []
+    for name, t in tomes.items():
+        o = {'n': name, 't': t.get('subType'), 'g': 'tome', 'r': t.get('tier'), 'l': (t.get('requirements') or {}).get('level', 0), 'ic': icons.get(icon_name(t))}
+        if t.get('identifications'):
+            o['i'] = {k: rng(v) for k, v in t['identifications'].items()}
+        out.append(o)
+    out.sort(key=lambda x: (x['t'], x['l'], x['n']))
+    return out
+
+
+def stable_ids(names):
+    """Short build links store items by number. Numbers never change once given; new items get the next one."""
+    path = os.path.join(DATA, 'itemids.json')
+    ids = json.load(open(path, encoding='utf8')) if os.path.exists(path) else {}
+    nxt = max(ids.values(), default=0) + 1
+    for n in sorted(names):
+        if n not in ids:
+            ids[n] = nxt
+            nxt += 1
+    save('itemids.json', ids)
+
+
 def build_quests():
     u = 'https://wynncraft.wiki.gg/index.php?' + urllib.parse.urlencode({
         'title': 'Special:CargoExport', 'tables': 'Quests', 'limit': '2000', 'format': 'json',
@@ -404,11 +427,14 @@ def main():
     adv_ing = get_json(base + 'Reference/advanced_ingredients.json')
     mats = get_json(base + 'Reference/materials.json')
 
-    names = {icon_name(v) for v in list(gear.values()) + list(mats.values())} - {None}
+    tomes = get_json(base + 'Reference/tomes.json')
+    names = {icon_name(v) for v in list(gear.values()) + list(mats.values()) + list(tomes.values())} - {None}
     icons = item_icons(names)
     print('item icons:', sum(1 for v in icons.values() if v), '/', len(icons))
 
     save('items.json', build_gear(gear, icons))
+    save('tomes.json', build_tomes(tomes, icons))
+    stable_ids(list(gear.keys()) + list(tomes.keys()))
     save('ingredients.json', build_ingredients(ing, adv_ing))
     save('materials.json', build_materials(mats, icons))
     save('recipes.json', build_recipes(get_json(base + 'Reference/recipes.json')))

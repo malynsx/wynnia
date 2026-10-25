@@ -106,7 +106,8 @@
         W.win(`Raids · ${(c.raids && c.raids.total) || 0} runs`, barList(c.raids && c.raids.list, 'good'))),
       questBox,
       el('div', { class: 'btns', style: { marginTop: 0 } },
-        el('a', { class: 'btnlink', href: `#items/loadout?u=${encodeURIComponent(player.username)}&c=${encodeURIComponent(c.id)}` }, 'Build a loadout for this character')),
-      W.abilityTree(player.uuid, c.id, String(c.type).toLowerCase()));
+        el('a', { class: 'btnlink', href: `#items/loadout?u=${encodeURIComponent(player.username)}&c=${encodeURIComponent(c.id)}` }, 'Build a loadout for this character'),
+        el('a', { class: 'btnlink', href: `#items/recommend?u=${encodeURIComponent(player.username)}&c=${encodeURIComponent(c.id)}` }, 'Recommended build')),
+      W.abilityTree(player.uuid, c.id, String(c.type).toLowerCase(), c.level));
   };
 })(window.W);

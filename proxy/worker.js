@@ -1,9 +1,12 @@
 /* Wynntools API relay (Cloudflare Worker).
    The Wynncraft API does not send CORS headers, so browsers block it on other sites.
    This worker forwards player, guild, ability-tree and leaderboard requests only, adds CORS for
-   the Wynntools site, and caches each answer for two minutes to stay well under Wynncraft's rate limit. */
+   the Wynntools site, and caches each answer for two minutes to stay well under Wynncraft's rate limit.
+   /market/price/{item} asks Wynnventory for trade market prices with the key stored as the worker secret
+   WYNNVENTORY_KEY (never sent to browsers); answers are cached for ten minutes. */
 const ALLOWED = ['https://malynsx.github.io', 'http://localhost:8765', 'http://localhost:8766'];
 const PATHS = /^\/v3\/(player|guild|ability|leaderboards)(\/[^/]+){0,4}$/;
+const MARKET = /^\/market\/price\/([^/]{1,80})$/;
 
 export default {
   async fetch(request, env, ctx) {
@@ -17,17 +20,21 @@ export default {
     if (request.method !== 'GET') return new Response('Method not allowed', { status: 405, headers: cors });
 
     const url = new URL(request.url);
-    if (!PATHS.test(url.pathname)) return new Response('Not found', { status: 404, headers: cors });
-    const target = 'https://api.wynncraft.com' + url.pathname + url.search;
+    const market = MARKET.exec(url.pathname);
+    if (market && !env.WYNNVENTORY_KEY) return Response.json({ error: 'no-key' }, { status: 503, headers: cors });
+    if (!market && !PATHS.test(url.pathname)) return new Response('Not found', { status: 404, headers: cors });
+    const target = market ? `https://wynnventory.com/api/v2/market/items/${market[1]}/price` : 'https://api.wynncraft.com' + url.pathname + url.search;
+    const headers = { 'User-Agent': 'Wynntools relay (github.com/malynsx/wynntools)' };
+    if (market) headers.Authorization = 'Api-Key ' + env.WYNNVENTORY_KEY;
 
     const cache = caches.default;
     const key = new Request(target);
     let res = await cache.match(key);
     if (!res) {
-      const upstream = await fetch(target, { headers: { 'User-Agent': 'Wynntools relay (github.com/malynsx/wynntools)' } });
+      const upstream = await fetch(target, { headers });
       res = new Response(upstream.body, upstream);
       if ([200, 300, 404].includes(upstream.status)) {
-        res.headers.set('Cache-Control', 'public, max-age=120');
+        res.headers.set('Cache-Control', 'public, max-age=' + (market ? 600 : 120));
         ctx.waitUntil(cache.put(key, res.clone()));
       }
     }
