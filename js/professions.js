@@ -5,14 +5,6 @@
   const GATHER = ['woodcutting', 'mining', 'fishing', 'farming'];
   const st = { prof: 'woodcutting', cur: 1, pct: 0, target: 10, per: 0, secs: 4, gLevel: 1 };
 
-  /* Olinus10's 2026 leveling guides: video id and the timestamp (seconds) of each level bracket. */
-  const VIDEOS = {
-    woodcutting: ['cEUPXr1n8os', { 1: 6, 10: 15, 20: 26, 30: 42, 40: 51, 50: 60, 60: 71, 70: 82, 80: 93, 90: 102, 100: 112, 105: 121, 110: 131, 115: 141 }],
-    farming: ['PayEVNh_m-g', { 1: 6, 10: 17, 20: 24, 30: 32, 40: 40, 50: 49, 60: 58, 70: 67, 80: 78, 90: 88, 100: 97, 105: 108, 110: 120, 115: 135 }],
-    mining: ['eMfgSZicuvw', { 1: 6, 10: 16, 20: 24, 30: 35, 40: 46, 50: 57, 60: 65, 70: 75, 80: 85, 90: 103, 100: 126, 105: 135, 110: 144, 115: 155 }],
-    fishing: ['UWIQMIYsBGQ', { 1: 5, 10: 15, 20: 25, 30: 36, 40: 46, 50: 56, 60: 67, 70: 78, 80: 91, 90: 99, 100: 125, 105: 136, 110: 148, 115: 157 }],
-  };
-
   const profPicker = (list, val, on) => el('div', { class: 'profpick' }, list.map(p =>
     el('button', { class: 'prof' + (p === val ? ' on' : ''), title: W.cap(p), onclick: () => on(p) }, W.art.wiki(p), el('span', {}, W.cap(p)))));
 
@@ -85,26 +77,37 @@
   };
 
   W.pages['professions/spots'] = function (root) {
-    W.withData(root, ['spots', 'materials'], (spots, mats) => {
+    W.withData(root, ['spots', 'materials', 'olinus'], (spots, mats, olinus) => {
       const draw = () => {
         if (!GATHER.includes(st.prof)) st.prof = 'woodcutting';
-        const list = spots[st.prof] || [], [vid, stamps] = VIDEOS[st.prof];
+        const picks = olinus[st.prof] || {};
+        /* Levels Olinus10 covers that the node map has no material for still get a card, named from the materials list. */
+        const list = (spots[st.prof] || []).slice();
+        Object.keys(picks).map(Number).filter(l => !list.some(m => m.l === l)).forEach(l => {
+          const mat = mats.find(x => x.p === st.prof && x.l === l);
+          list.push({ r: mat ? mat.n.split(' ')[0].toLowerCase() : 'level ' + l, l, total: null, spots: [] });
+        });
+        list.sort((a, b) => a.l - b.l);
         const pref = { woodcutting: 'Plank', mining: 'Ingot', farming: 'Grains', fishing: 'Meat' }[st.prof];
         const icon = (res) => { const own = mats.filter(x => x.p === st.prof && x.n.toLowerCase().startsWith(res + ' ') && x.ic); const m = own.find(x => x.n.endsWith(pref)) || own[0]; return m ? W.art.item(m.ic) : W.art.wiki(st.prof); };
         const best = list.filter(m => m.l <= st.gLevel).pop();
+        const pickRow = ([name, x, y, z]) => el('div', { class: 'spotrow pick' },
+          el('div', { class: 'areabanner gold' }, el('div', { class: 'abl' }, 'Olinus10’s pick'), el('div', { class: 'abn' }, name)),
+          el('div', { class: 'spotmeta' }, el('code', {}, `${x}, ${y}, ${z}`), el('small', {}, 'Recommended in the 2026 leveling guide')),
+          el('button', { class: 'mini', onclick: (e) => W.copyText(`${x} ${y} ${z}`, e.target) }, 'Copy'));
         root.replaceChildren(el('div', {},
           W.win('Grinding spots',
             profPicker(GATHER, st.prof, (p) => { st.prof = p; draw(); }),
             el('div', { class: 'fields3' }, el('label', {}, `Your ${W.cap(st.prof)} level`, W.numIn(st.gLevel, (v) => { st.gLevel = Math.max(1, v); draw(); }, 1, 132))),
             best ? el('p', { class: 'hint' }, 'Best for you right now: ', el('b', {}, W.cap(best.r)), ` (level ${best.l}). Highlighted below.`) : null,
-            el('p', { class: 'hint' }, 'Spots are the densest clusters of nodes in Wynntils’ map data, named after the area they sit in. The level on each banner is the nearest town’s level. Each material also links to the moment in ',
-              el('a', { href: 'https://www.youtube.com/@Olinus10', target: '_blank', rel: 'noopener' }, 'Olinus10'), '’s 2026 leveling guide where that spot is shown.')),
+            el('p', { class: 'hint' }, 'The gold banner on each material is the spot ', el('a', { href: 'https://www.youtube.com/@Olinus10', target: '_blank', rel: 'noopener' }, 'Olinus10'),
+              ' recommends in his 2026 leveling guide. The blue ones are the densest clusters of nodes in Wynntils’ map data, named after the area they sit in; their level is the nearest town’s.')),
           el('div', { class: 'spotlist' }, list.map(m => el('div', { class: 'spot' + (m === best ? ' now' : '') + (m.l > st.gLevel ? ' later' : '') },
             el('div', { class: 'shead2' },
               el('div', { class: 'sico' }, icon(m.r)),
-              el('div', {}, el('h3', {}, W.cap(m.r)), el('small', {}, `Lv. ${m.l} · ${m.total.toLocaleString()} nodes`)),
-              stamps[m.l] != null ? el('a', { class: 'yt', href: `https://www.youtube.com/watch?v=${vid}&t=${stamps[m.l]}s`, target: '_blank', rel: 'noopener' }, 'Watch Olinus10’s spot') : null),
-            el('div', { class: 'spotrows' }, m.spots.map(s => el('div', { class: 'spotrow' },
+              el('div', {}, el('h3', {}, W.cap(m.r)), el('small', {}, m.total != null ? `Lv. ${m.l} · ${m.total.toLocaleString()} nodes` : `Lv. ${m.l} · not on the node map yet`)),
+            ),
+            el('div', { class: 'spotrows' }, picks[m.l] ? pickRow(picks[m.l]) : null, m.spots.map(s => el('div', { class: 'spotrow' },
               el('div', { class: 'areabanner' },
                 s.lvl ? el('div', { class: 'abl' }, 'Lv. ' + s.lvl) : null,
                 el('div', { class: 'abn' }, s.area || s.near)),

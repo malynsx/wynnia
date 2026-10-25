@@ -1,0 +1,31 @@
+{
+  "_source": "Read from the on-screen banners in Olinus10's 2026 leveling guides (youtube.com/@Olinus10). Edit by hand when a new guide comes out.",
+  "woodcutting": {
+    "1": ["South Eastern Nivla Edge", -180, 68, -1404], "10": ["Detlas Suburbs", 207, 68, -1666], "20": ["Nemract Edge", 94, 49, -2104],
+    "30": ["Bremminglar Outskirts", 655, 75, -1967], "40": ["Bob's Tomb Grove", 221, 74, -754], "50": ["Fountain of Youth Edge", -844, 20, -356],
+    "60": ["Overtaken Fort Grove", -1420, 47, -5075], "70": ["Light Peninsula Grove", -932, 88, -4361], "80": ["Thesead Entrance", 653, 78, -5067],
+    "90": ["Corkus Mountain", -1834, 114, -2928], "100": ["Kandon-Beda Grove", 767, 101, -4639], "105": ["Lutho Entrance", 1012, 79, -612],
+    "110": ["Espren Lake Edge", -2203, 28, -1101], "115": ["Northeast Mistwood Border", -1149, 57, -871]
+  },
+  "farming": {
+    "1": ["Ragni Farm", -793, 69, -1717], "10": ["Eastern Durum Isle", 560, 34, -2953], "20": ["South-Eastern Durum Isle", 505, 35, -2827],
+    "30": ["Western Durum Isle", 386, 35, -2823], "40": ["Bucie Town Farm", -1510, 47, -4713], "50": ["Worm Hole Farms", -2064, 53, -5466],
+    "60": ["Cinfras County Farm", -722, 44, -5013], "70": ["Cinfras County Farm", -722, 44, -5013], "80": ["Burning Farm", 77, 41, -4829],
+    "90": ["Corkus Lighthouse Farm", -1382, 121, -3009], "100": ["Sky Castle Cave Farm", 852, 40, -4421], "105": ["Upper Void Valley Farm", 1090, 134, -1131],
+    "110": ["Roughworks Terrace Farms", -1826, 49, -886], "115": ["Highlands Dam Fields", -1600, 123, -1067]
+  },
+  "mining": {
+    "1": ["Emerald Trail Deposit", -476, 69, -1683], "10": ["Upper Abandoned Mines", 795, 80, -1230], "20": ["Lower Abandoned Mines", 867, 27, -1295],
+    "30": ["Lower Mesa Ravine", 1135, 30, -1569], "40": ["Olux Deposit", -1886, 54, -5403], "50": ["Troms Silver Mine", -621, 84, -1026],
+    "60": ["Swamp Edge Cave", -1444, 48, -5372], "70": ["Gylia Edge Deposit", -384, 43, -5383], "80": ["Hidden Diamond Cave", 330, 28, -4831],
+    "90": ["Upper Molten Heights Cave", 1433, 142, -5108], "100": ["Void Island Cave", 14068, 180, -3751], "105": ["Olmic Cathedral Deposit", 559, 85, -409],
+    "110": ["Highlands Entrance Mine", -1468, 79, -899], "115": ["Wasteland Edge Deposit", -2286, 68, -462]
+  },
+  "fishing": {
+    "1": ["Maltic Pond", -619, 59, -1875], "10": ["Upper Pigmen Ravine", -685, 127, -1325], "20": ["Nemract Cathedral", 404, 36, -2122],
+    "30": ["Upper Desert Waterfall", 1186, 152, -2260], "40": ["Bridge Statue Pond", -93, 69, -752], "50": ["Troms Large Lake", -628, 58, -952],
+    "60": ["Fountain of Youth Lake", -817, 18, -409], "70": ["Gylia Watch Ravine", -70, 10, -5438], "80": ["Relos Beach", -1866, 34, -2184],
+    "90": ["Upper Molten Heights", 1432, 139, -5095], "100": ["Sky Falls", 1430, 126, -4578], "105": ["Toxic Caves", 977, 125, -1111],
+    "110": ["Torann Springs", -2193, 86, -1507], "115": ["Upper Royal Dam", -1604, 119, -1445]
+  }
+}
