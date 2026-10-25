@@ -399,3 +399,63 @@ button.mini.on { background: var(--gold); color: var(--dark); }
 .yt:hover { filter: brightness(1.1); }
 .spot .tbl td code { font-size: 15px; }
 .spot .tbl td code { white-space: nowrap; }
+
+/* ---------- round 3: hero pages, guild members, area banners ---------- */
+.stack { display: grid; gap: 26px; }
+.rankbadge { height: 30px; width: auto; image-rendering: pixelated; filter: drop-shadow(0 2px 0 rgba(0,0,0,.35)); }
+.head { width: 56px; height: 56px; image-rendering: pixelated; border: 3px solid var(--navy); border-radius: 4px; background: var(--inset); flex: none; }
+
+.herocard { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 28px; align-items: center; background: var(--card); border: 4px solid var(--navy); border-radius: 8px; box-shadow: 0 6px 0 var(--navy); padding: 24px 30px; overflow: hidden; }
+.herobody { width: 150px; display: grid; place-items: end center; align-self: end; margin-bottom: -24px; }
+.herobody img { width: 150px; height: auto; image-rendering: pixelated; filter: drop-shadow(0 6px 0 rgba(0,0,0,.25)); }
+.herobanner { width: 110px; padding: 6px 0; }
+.banner { width: 110px; height: 220px; image-rendering: pixelated; display: block; border: 4px solid var(--navy); border-radius: 3px; box-shadow: 0 6px 0 var(--navy); background: #000; }
+.heroname { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.heroname h2 { margin: 0; font: 400 64px/1 var(--logo); color: #fff; letter-spacing: .01em; text-shadow: 3px 0 0 var(--navy), -3px 0 0 var(--navy), 0 3px 0 var(--navy), 0 -3px 0 var(--navy), 3px 3px 0 var(--navy), -3px -3px 0 var(--navy), 3px -3px 0 var(--navy), -3px 3px 0 var(--navy), 0 6px 0 var(--navy); overflow-wrap: anywhere; }
+.tag { font: 400 26px var(--hand); background: var(--navy); color: var(--gold); padding: 2px 12px 3px; border-radius: 5px; }
+.herometa { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 12px 0 18px; font-size: 16.5px; color: var(--mute); }
+.online { color: #fff; background: #2f8a4c; border: 2px solid var(--navy); padding: 2px 10px; border-radius: 4px; font-weight: 700; }
+.offline { color: var(--mute); }
+.guildchip { color: #fff; background: var(--navy); padding: 3px 12px 4px; border-radius: 4px; text-decoration: none; font-weight: 500; }
+.guildchip:hover { filter: brightness(1.2); }
+.stars { color: var(--gold); letter-spacing: 1px; margin-right: 6px; }
+.herotiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+.herotiles > div { background: var(--navy); border-radius: 5px; padding: 10px 12px 8px; }
+.herotiles b { display: block; font: 400 30px/1.1 var(--hand); color: var(--gold); }
+.herotiles span { font-size: 13.5px; color: var(--mute); text-transform: uppercase; letter-spacing: .05em; }
+.glevel { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; margin-bottom: 16px; }
+.glevel b { font: 400 26px var(--hand); } .glevel .bar { height: 16px; } .glevel span { color: var(--mute); }
+@media (max-width: 720px) { .herocard { grid-template-columns: 1fr; justify-items: start; } .herobody { margin-bottom: 0; } .heroname h2 { font-size: 46px; } }
+
+.chargrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.charcard { display: grid; grid-template-columns: 84px 1fr; gap: 14px; background: var(--card2); border: 3px solid var(--navy); border-radius: 6px; padding: 12px; align-items: center; }
+.charart { width: 84px; height: 100px; } .charart .sprite { filter: drop-shadow(0 3px 0 rgba(0,0,0,.3)); }
+.charname { font: 400 26px/1.1 var(--hand); } .charinfo small { color: var(--mute); }
+.charlvl { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; margin: 6px 0 8px; } .charlvl b { font-size: 17px; }
+.charmounts { display: flex; gap: 8px; }
+.mnt { width: 46px; height: 46px; background: var(--inset); border: 2px solid var(--navy); border-radius: 5px; padding: 3px; }
+.mnt.locked { opacity: .45; filter: grayscale(1); }
+
+.memtools { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; } .memtools input[type=text] { flex: 1; min-width: 200px; }
+.ranksec { margin-top: 18px; }
+.rankhead { display: flex; align-items: center; gap: 4px; font: 400 26px var(--hand); padding-bottom: 6px; border-bottom: 3px solid var(--navy); margin-bottom: 12px; }
+.rankhead small { margin-left: 10px; font: 500 15px var(--ui); background: var(--navy); color: var(--mute); padding: 1px 9px; border-radius: 10px; }
+.memgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.member { display: grid; grid-template-columns: 56px 1fr auto; gap: 12px; align-items: center; background: var(--card2); border: 3px solid var(--navy); border-radius: 6px; padding: 8px 10px; text-decoration: none; color: #fff; }
+.member:hover { filter: brightness(1.1); }
+.member.on { border-color: #2f8a4c; }
+.minfo { min-width: 0; } .minfo b { display: block; font-size: 17px; overflow: hidden; text-overflow: ellipsis; } .minfo small { display: block; color: var(--mute); font-size: 13.5px; }
+.pill { width: auto !important; padding: 2px 8px; font-size: 13.5px; white-space: nowrap; }
+.pill.yes { background: #2f8a4c; color: #fff; } .pill.no { background: var(--navy); color: var(--mute); }
+
+/* in-game style area banner */
+.spotrows { display: grid; gap: 10px; margin-top: 6px; }
+.spotrow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; align-items: center; }
+.areabanner { display: grid; justify-items: center; }
+.abl { background: #1f55d6; color: #fff; font: 400 17px/1 var(--hand); padding: 4px 16px 3px; position: relative; z-index: 1;
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, calc(100% - 8px) 4px, 100% 4px, 100% 100%, 0 100%, 0 4px, 8px 4px); box-shadow: inset 0 3px 0 #3d74f0; }
+.abn { width: 100%; background: #1f55d6; color: #fff; text-align: center; font: 400 22px/1.15 var(--hand); text-transform: uppercase; letter-spacing: .06em; padding: 6px 12px 5px;
+  border-top: 3px solid #0e2f8a; border-bottom: 3px solid #0e2f8a; box-shadow: inset 0 3px 0 #3d74f0, inset 0 -3px 0 #1645b0; text-shadow: 2px 2px 0 #0e2f8a;
+  clip-path: polygon(0 6px, 6px 6px, 6px 0, calc(100% - 6px) 0, calc(100% - 6px) 6px, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 6px calc(100% - 6px), 0 calc(100% - 6px)); }
+.spotmeta code { display: block; font-size: 15px; white-space: nowrap; } .spotmeta small { color: var(--mute); font-size: 13px; }
+@media (max-width: 560px) { .spotrow { grid-template-columns: 1fr auto; } .spotrow .areabanner { grid-column: 1 / -1; } }

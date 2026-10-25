@@ -248,9 +248,48 @@ def build_recipes(recipes):
     return out
 
 
+def banner_textures():
+    """Front face (20x40) of every Minecraft banner pattern, used to draw guild banners."""
+    from PIL import Image
+    folder = os.path.join(ROOT, 'img', 'banner')
+    os.makedirs(folder, exist_ok=True)
+    listing = get_json('https://api.github.com/repos/PrismarineJS/minecraft-assets/contents/data/1.20.2/entity/banner')
+    for f in listing:
+        dest = os.path.join(folder, f['name'])
+        if os.path.exists(dest):
+            continue
+        im = Image.open(io.BytesIO(get(f['download_url']))).convert('RGBA')
+        s = im.width // 64   # textures are 64x64 (or a multiple); the front face sits at (1,1) size 20x40
+        im.crop((1 * s, 1 * s, 21 * s, 41 * s)).save(dest)
+
+
+def territory_areas():
+    try:
+        terr = get_json('https://athena.wynntils.com/cache/get/territoryList')
+    except Exception:
+        return []
+    out = []
+    for name, t in terr.items():
+        loc = t.get('location') or {}
+        (x1, z1), (x2, z2) = loc.get('start', [0, 0]), loc.get('end', [0, 0])
+        out.append((name, min(x1, x2), max(x1, x2), min(z1, z2), max(z1, z2)))
+    return out
+
+
 def build_spots(base):
-    """Densest clusters of gathering nodes per material, with the nearest named place."""
+    """Densest clusters of gathering nodes per material, with the area (territory) and nearest named place."""
     import math
+    areas = territory_areas()
+
+    def area_at(x, z):
+        inside = [a for a in areas if a[1] <= x <= a[2] and a[3] <= z <= a[4]]
+        if inside:
+            return min(inside, key=lambda a: (a[2] - a[1]) * (a[4] - a[3]))[0]
+        near = min(areas, key=lambda a: math.hypot((a[1] + a[2]) / 2 - x, (a[3] + a[4]) / 2 - z), default=None)
+        if near and math.hypot((near[1] + near[2]) / 2 - x, (near[3] + near[4]) / 2 - z) < 250:
+            return near[0]
+        return None
+
     feats = get_json(base + 'Reference/gathering_node_mapfeatures.json')
     nodes = get_json(base + 'Reference/gathering_nodes.json')
     places = get_json(base + 'Reference/places.json')['labels']
@@ -278,8 +317,8 @@ def build_spots(base):
             if any((cx - s['x']) ** 2 + (cz - s['z']) ** 2 < APART * APART for s in spots):
                 continue
             pl = min(places, key=lambda p: (p['x'] - cx) ** 2 + (p['z'] - cz) ** 2)
-            spots.append({'x': cx, 'y': cy, 'z': cz, 'n': n, 'near': pl['name'],
-                          'd': round(math.hypot(pl['x'] - cx, pl['z'] - cz))})
+            spots.append({'x': cx, 'y': cy, 'z': cz, 'n': n, 'near': pl['name'], 'area': area_at(cx, cz),
+                          'lvl': pl.get('level'), 'd': round(math.hypot(pl['x'] - cx, pl['z'] - cz))})
             if len(spots) == 3:
                 break
         out.setdefault(prof, []).append({'r': res, 'l': level.get(res, 0), 'total': len(pts), 'spots': spots})
@@ -323,6 +362,10 @@ def main():
     save('materials.json', build_materials(mats, icons))
     save('recipes.json', build_recipes(get_json(base + 'Reference/recipes.json')))
     save('spots.json', build_spots(base))
+    try:
+        banner_textures()
+    except Exception as e:
+        print('banner textures skipped:', e)
     try:
         save('quests.json', build_quests())
         save('profxp.json', build_profxp())

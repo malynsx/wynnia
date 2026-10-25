@@ -135,6 +135,55 @@
     return le ? `${le} LE ${rest ? W.num(rest, 1) + ' EB' : ''}`.trim() : `${W.num(eb, 1)} EB`;
   };
 
+  /* ---------- Numbers and dates ---------- */
+  W.short = (n) => {
+    n = Number(n) || 0;
+    const u = [[1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'k']].find(([v]) => Math.abs(n) >= v);
+    return u ? W.num(n / u[0], n / u[0] >= 100 ? 0 : 1) + u[1] : String(n);
+  };
+  W.ago = (iso) => {
+    if (!iso) return null;
+    const s = (Date.now() - new Date(iso)) / 1000;
+    if (s < 3600) return Math.max(1, Math.round(s / 60)) + ' min ago';
+    if (s < 86400) return Math.round(s / 3600) + ' h ago';
+    if (s < 86400 * 60) return Math.round(s / 86400) + ' days ago';
+    return new Date(iso).toLocaleDateString();
+  };
+
+  /* ---------- Wynncraft visuals ---------- */
+  W.rankBadge = (path, title) => path ? el('img', { class: 'rankbadge', src: 'https://cdn.wynncraft.com/' + path.replace(/^\//, ''), alt: title || '', title: title || '' }) : null;
+  W.GUILD_RANKS = ['owner', 'chief', 'strategist', 'captain', 'recruiter', 'recruit'];
+  W.rankStars = (rank) => { const n = 5 - W.GUILD_RANKS.indexOf(String(rank).toLowerCase()); return n > 0 && n <= 5 ? '★'.repeat(n) : ''; };
+  W.CLASS_ART = { archer: 'archer', hunter: 'archer', warrior: 'warrior', knight: 'warrior', mage: 'mage', darkwizard: 'mage', assassin: 'assassin', ninja: 'assassin', shaman: 'shaman', skyseer: 'shaman' };
+  W.head = (uuid, size = 64) => el('img', { class: 'head', src: `https://mc-heads.net/avatar/${uuid}/${size}`, alt: '', width: size, height: size, loading: 'lazy' });
+
+  /* Guild banner drawn from Minecraft's own pattern textures (img/banner, front face 20x40). */
+  const DYES = { WHITE: '#f9fffe', ORANGE: '#f9801d', MAGENTA: '#c74ebd', LIGHT_BLUE: '#3ab3da', YELLOW: '#fed83d', LIME: '#80c71f', PINK: '#f38baa', GRAY: '#474f52',
+    LIGHT_GRAY: '#9d9d97', SILVER: '#9d9d97', CYAN: '#169c9c', PURPLE: '#8932b8', BLUE: '#3c44aa', BROWN: '#835432', GREEN: '#5e7c16', RED: '#b02e26', BLACK: '#1d1d21' };
+  const PATTERN_FILE = { STRIPE_SMALL: 'small_stripes', CIRCLE_MIDDLE: 'circle', RHOMBUS_MIDDLE: 'rhombus', DIAGONAL_LEFT_MIRROR: 'diagonal_up_left', DIAGONAL_RIGHT_MIRROR: 'diagonal_up_right',
+    HALF_VERTICAL_MIRROR: 'half_vertical_right', HALF_HORIZONTAL_MIRROR: 'half_horizontal_bottom' };
+  const texCache = {};
+  const tex = (name) => texCache[name] || (texCache[name] = new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = `img/banner/${name}.png`; }));
+  W.banner = (b) => {
+    const c = el('canvas', { class: 'banner', width: 20, height: 40 });
+    if (!b) return c;
+    const g = c.getContext('2d');
+    const layer = async (file, colour) => {
+      const img = await tex(file), o = document.createElement('canvas'); o.width = 20; o.height = 40;
+      const x = o.getContext('2d');
+      x.drawImage(img, 0, 0); x.globalCompositeOperation = 'multiply'; x.fillStyle = DYES[colour] || '#888'; x.fillRect(0, 0, 20, 40);
+      x.globalCompositeOperation = 'destination-in'; x.drawImage(img, 0, 0);
+      g.drawImage(o, 0, 0);
+    };
+    (async () => {
+      try {
+        await layer('base', b.base || 'WHITE');
+        for (const l of b.layers || []) await layer(PATTERN_FILE[l.pattern] || String(l.pattern).toLowerCase(), l.colour);
+      } catch (e) { /* missing texture: keep what is drawn */ }
+    })();
+    return c;
+  };
+
   W.cap = cap; W.words = words;
   W.copyText = (text, btn) => {
     try { navigator.clipboard.writeText(text); } catch (e) { /* manual copy */ }

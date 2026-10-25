@@ -97,20 +97,21 @@
             profPicker(GATHER, st.prof, (p) => { st.prof = p; draw(); }),
             el('div', { class: 'fields3' }, el('label', {}, `Your ${W.cap(st.prof)} level`, W.numIn(st.gLevel, (v) => { st.gLevel = Math.max(1, v); draw(); }, 1, 132))),
             best ? el('p', { class: 'hint' }, 'Best for you right now: ', el('b', {}, W.cap(best.r)), ` (level ${best.l}). Highlighted below.`) : null,
-            el('p', { class: 'hint' }, 'Spots are the densest clusters of nodes on the Wynntils map data; the count is how many nodes sit within 48 blocks. Each level also links to the moment in ',
+            el('p', { class: 'hint' }, 'Spots are the densest clusters of nodes in Wynntils’ map data, named after the area they sit in. The level on each banner is the nearest town’s level. Each material also links to the moment in ',
               el('a', { href: 'https://www.youtube.com/@Olinus10', target: '_blank', rel: 'noopener' }, 'Olinus10'), '’s 2026 leveling guide where that spot is shown.')),
           el('div', { class: 'spotlist' }, list.map(m => el('div', { class: 'spot' + (m === best ? ' now' : '') + (m.l > st.gLevel ? ' later' : '') },
             el('div', { class: 'shead2' },
               el('div', { class: 'sico' }, icon(m.r)),
               el('div', {}, el('h3', {}, W.cap(m.r)), el('small', {}, `Level ${m.l} · ${m.total} nodes in the world`)),
               stamps[m.l] != null ? el('a', { class: 'yt', href: `https://www.youtube.com/watch?v=${vid}&t=${stamps[m.l]}s`, target: '_blank', rel: 'noopener' }, 'Watch Olinus10’s spot') : null),
-            el('div', { class: 'tscroll' }, el('table', { class: 'tbl' },
-              el('thead', {}, el('tr', {}, ['Near', 'Coordinates', 'Nodes', ''].map(h => el('th', {}, h)))),
-              el('tbody', {}, m.spots.map(s => el('tr', {},
-                el('td', {}, s.d < 150 ? s.near : `${s.d} blocks from ${s.near}`),
-                el('td', {}, el('code', {}, `${s.x}, ${s.y}, ${s.z}`)),
-                el('td', {}, s.n),
-                el('td', {}, el('button', { class: 'mini', onclick: (e) => W.copyText(`${s.x} ${s.y} ${s.z}`, e.target) }, 'Copy'))))))))))));
+            el('div', { class: 'spotrows' }, m.spots.map(s => el('div', { class: 'spotrow' },
+              el('div', { class: 'areabanner' },
+                s.lvl ? el('div', { class: 'abl' }, 'Lv. ' + s.lvl) : null,
+                el('div', { class: 'abn' }, s.area || s.near)),
+              el('div', { class: 'spotmeta' },
+                el('code', {}, `${s.x}, ${s.y}, ${s.z}`),
+                el('small', {}, `${s.n} nodes within 48 blocks${s.area && s.area !== s.near ? ' · near ' + s.near : ''}`)),
+              el('button', { class: 'mini', onclick: (e) => W.copyText(`${s.x} ${s.y} ${s.z}`, e.target) }, 'Copy')))))))));
       };
       draw();
     });

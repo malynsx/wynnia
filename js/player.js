@@ -25,7 +25,7 @@
   }
 
   W.pages.player = function (root, q) {
-    const draw = () => root.replaceChildren(el('div', { class: 'cols' }, el('div', {}, lookup(), profile()), el('div', {}, showcase())));
+    const draw = () => root.replaceChildren(el('div', { class: 'stack' }, lookup(), profile(), showcase()));
 
     if (q && q.get('u') && !P.name) P.name = q.get('u');
     if (q && q.get('d') && !P.text) { try { P.text = b64.dec(q.get('d')).t || ''; } catch (e) { /* bad link */ } }
@@ -49,7 +49,7 @@
       const inp = el('input', { type: 'text', value: P.name, placeholder: 'Minecraft username', maxlength: 32, onkeydown: (e) => { if (e.key === 'Enter') { P.name = inp.value; find(inp.value); } } });
       return W.win('Player Lookup',
         el('div', { class: 'search' }, inp, el('button', { onclick: () => { P.name = inp.value; find(inp.value); } }, 'Look up')),
-        el('p', { class: 'hint' }, 'Reads the public Wynncraft API. It lists which mounts each of a player’s characters can use. The API does not publish the mounts themselves, so use the showcase on the right for those.'));
+        el('p', { class: 'hint' }, 'Live data from the Wynncraft API. Mounts themselves aren’t published, so paste them into the showcase below.'));
     }
 
     function profile() {
@@ -59,35 +59,49 @@
         el('button', { onclick: () => find(P.name, id) }, (v && (v.storedName || v.username)) || id))));
       const d = P.data;
       if (!d) return null;
+      const gd = d.globalData || {};
       const chars = Object.entries(d.characters || {}).map(([id, c]) => ({ id, ...c }))
         .sort((a, b) => (b.level || 0) - (a.level || 0));
       /* Stable Story unlocks horses for the whole account (wiki: Horses). */
       const anyStable = chars.some(c => (c.quests || []).includes('Stable Story'));
-      const rows = chars.map(c => {
-        const quests = c.quests || [];
-        return el('tr', {}, el('td', {}, el('b', {}, c.nickname || cls(c)), el('small', {}, c.nickname ? cls(c) : (c.gamemode && c.gamemode.length ? c.gamemode.join(', ') : ''))),
-          el('td', {}, c.level ?? '—'),
-          ...REQS.map(([k, lvl, quest]) => {
-            const okL = (c.level || 0) >= lvl, okQ = quests.includes(quest) || (k === 'horse' && anyStable), ok = okL && okQ;
-            const why = ok ? 'Unlocked' : [!okL && `needs combat level ${lvl}`, !okQ && `needs quest “${quest}”`].filter(Boolean).join(', ');
-            return el('td', {}, W.tip(el('span', { class: 'pill ' + (ok ? 'yes' : 'no') }, ok ? 'Yes' : 'No'), why));
-          }));
+      const tile = (label, value) => el('div', {}, el('b', {}, value == null ? '—' : value), el('span', {}, label));
+      const status = d.online ? el('span', { class: 'online' }, `Online on ${d.server}`) : el('span', { class: 'offline' }, 'Last seen ' + (W.ago(d.lastJoin) || 'a while ago'));
+      const hero = el('section', { class: 'herocard' },
+        el('div', { class: 'herobody' }, el('img', { src: `https://mc-heads.net/body/${d.uuid}/220`, alt: '', loading: 'lazy' })),
+        el('div', { class: 'heroinfo' },
+          el('div', { class: 'heroname' }, el('h2', {}, d.username), W.rankBadge(d.rankBadge, d.supportRank || d.rank)),
+          el('div', { class: 'herometa' }, status,
+            d.guild ? el('a', { class: 'guildchip', href: '#guilds/lookup?g=' + encodeURIComponent(d.guild.name) },
+              el('span', { class: 'stars' }, W.rankStars(d.guild.rank)), `${W.cap(String(d.guild.rank || '').toLowerCase())} of ${d.guild.name} [${d.guild.prefix}]`) : null,
+            d.firstJoin ? el('span', {}, 'Joined ' + new Date(d.firstJoin).toLocaleDateString()) : null),
+          el('div', { class: 'herotiles' },
+            tile('Playtime', d.playtime != null ? W.num(d.playtime, 0) + ' h' : null),
+            tile('Total level', gd.totalLevel != null ? gd.totalLevel.toLocaleString() : null),
+            tile('Quests', gd.completedQuests),
+            tile('Mobs killed', gd.mobsKilled != null ? W.short(gd.mobsKilled) : null),
+            tile('Dungeons', gd.dungeons && gd.dungeons.total),
+            tile('Raids', gd.raids && gd.raids.total),
+            tile('Wars', gd.wars),
+            tile('Chests', gd.chestsFound != null ? W.short(gd.chestsFound) : null))));
+      const cards = chars.map(c => {
+        const quests = c.quests || [], art = W.CLASS_ART[String(c.reskin || c.type || '').toLowerCase()] || 'warrior';
+        return el('div', { class: 'charcard' },
+          el('div', { class: 'charart' }, W.art.wiki(art)),
+          el('div', { class: 'charinfo' },
+            el('div', { class: 'charname' }, c.nickname || cls(c)),
+            el('small', {}, [c.nickname ? cls(c) : null, ...(c.gamemode || []).map(W.cap)].filter(Boolean).join(' · ') || (c.reskin ? W.cap(String(c.type).toLowerCase()) + ' reskin' : '')),
+            el('div', { class: 'charlvl' }, el('b', {}, 'Lv. ' + (c.level ?? '?')), c.xpPercent != null ? el('div', { class: 'bar' }, el('i', { class: 'bcur', style: { width: c.xpPercent + '%', '--c': 'var(--gold)' } })) : null),
+            el('div', { class: 'charmounts' }, REQS.map(([k, lvl, quest]) => {
+              const okL = (c.level || 0) >= lvl, okQ = quests.includes(quest) || (k === 'horse' && anyStable), ok = okL && okQ;
+              const why = ok ? `Can ride a ${W.TYPES[k].name}` : `${W.TYPES[k].name}: ` + [!okL && `needs combat level ${lvl}`, !okQ && `needs the quest ${quest}`].filter(Boolean).join(' and ');
+              return W.tip(el('span', { class: 'mnt' + (ok ? '' : ' locked') }, W.art.mount(k, W.COLORS[k].body[0][0], W.COLORS[k].second[0][0])), why);
+            }))));
       });
-      const best = chars.reduce((a, c) => Math.max(a, c.level || 0), 0);
-      return W.win('Profile',
-        el('div', { class: 'phead' },
-          el('img', { class: 'avatar', src: `https://mc-heads.net/avatar/${d.uuid}/64`, alt: '', width: 64, height: 64 }),
-          el('div', {}, el('h3', {}, d.username), el('small', {}, [d.supportRank && d.supportRank.toUpperCase(), d.online ? `Online · ${d.server}` : 'Offline'].filter(Boolean).join(' · ')))),
-        el('div', { class: 'kv' },
-          kv('Playtime', d.playtime != null ? W.num(d.playtime, 0) + ' h' : '—'),
-          kv('Guild', d.guild ? `${d.guild.name} (${d.guild.rank || ''})` : 'None'),
-          kv('First joined', d.firstJoin ? new Date(d.firstJoin).toLocaleDateString() : '—'),
-          kv('Highest character', best || '—')),
-        el('table', { class: 'tbl' }, el('thead', {}, el('tr', {}, ['Character', 'Level', 'Horse', 'Wyvern', 'Adasaur'].map(h => el('th', {}, h)))), el('tbody', {}, rows)),
-        el('p', { class: 'hint' }, 'A mount is usable once the character has the combat level and the quest is done: Stable Story (level 9, once per account), The Canyon Guides (84) and Burning Bonds (115).'));
+      return el('div', { class: 'stack' }, hero,
+        W.win(`Characters (${chars.length})`, el('div', { class: 'chargrid' }, cards),
+          el('p', { class: 'hint' }, 'The mount icons show which mounts each character can ride; hover them for what is missing. Stable Story counts once per account.')));
     }
     const cls = (c) => { const t = String(c.reskin || c.type || ''); return t.charAt(0) + t.slice(1).toLowerCase(); };
-    const kv = (k, v) => el('div', {}, el('span', {}, k), el('b', {}, v));
 
     function showcase() {
       const ta = el('textarea', { rows: 4, placeholder: 'Paste Wynntils item strings here (one per mount)…' }, '');
