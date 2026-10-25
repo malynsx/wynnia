@@ -733,13 +733,22 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 .wordmark p { display: inline-block; margin: 8px 0 0 4px; padding: 2px 12px 3px; background: var(--navy); color: var(--gold); border-radius: 4px; font: 400 19px var(--hand); letter-spacing: .03em; box-shadow: 0 3px 0 rgba(0,0,0,.25); }
 @media (max-width: 700px) { .emblem { width: 58px; height: 66px; } .emblem .logo { width: 42px; } .wordmark p { font-size: 16px; } }
 
-/* profile badges: pixel hex gems */
-.badgegrid { display: grid; grid-template-columns: repeat(auto-fill, 76px); gap: 10px 12px; }
-.badge { position: relative; width: 76px; height: 84px; cursor: default; }
-.badge .bgem { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; filter: drop-shadow(0 3px 0 rgba(0,0,0,.3)); }
-.badge .bicon { position: absolute; left: 50%; top: 50%; width: 38px; height: 38px; object-fit: contain; transform: translate(-50%, -50%); filter: drop-shadow(2px 2px 0 rgba(0,0,0,.45)); }
-.badge .btier { position: absolute; right: 2px; bottom: 0; font: 700 20px/1 var(--ui); color: #fff; text-shadow: 2px 2px 0 #14213a, -1px -1px 0 #14213a, 1px -1px 0 #14213a, -1px 1px 0 #14213a; }
-.badge.locked { opacity: .45; } .badge.locked .bicon { filter: grayscale(1) brightness(.8); }
-.badge:hover { transform: translateY(-2px); } .badge:hover .bgem { filter: drop-shadow(0 5px 0 rgba(0,0,0,.3)) brightness(1.1); }
+/* profile badges: pixel hex gems holding Wynncraft item sprites, tier pips underneath */
+.badgegrid { display: grid; grid-template-columns: repeat(auto-fill, 84px); gap: 14px 14px; }
+.badge { position: relative; width: 84px; height: 112px; cursor: default; transition: transform .12s; }
+.badge .bgem { position: absolute; left: 0; top: 0; width: 84px; height: 94px; image-rendering: pixelated; filter: drop-shadow(0 4px 0 rgba(0,0,0,.3)); }
+.badge .bicon { position: absolute; left: 18px; top: 23px; width: 48px; height: 48px; image-rendering: pixelated; filter: drop-shadow(2px 2px 0 rgba(10,16,30,.55)); }
+.bpips { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; gap: 4px; }
+.bpips i { width: 9px; height: 9px; background: #1a2638; border: 2px solid #14213a; transform: rotate(45deg); }
+.bpips i.on { background: var(--tl); box-shadow: inset -2px -2px 0 var(--tc); }
+.badge.t4 .bgem, .badge.t5 .bgem { filter: drop-shadow(0 4px 0 rgba(0,0,0,.3)) drop-shadow(0 0 6px var(--tc)); }
+.badge.t5::after { content: ''; position: absolute; left: 0; top: 0; width: 84px; height: 94px; pointer-events: none;
+  background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.55) 48%, transparent 60%) no-repeat; background-size: 250% 100%; animation: bglint 3.2s ease-in-out infinite;
+  -webkit-mask: var(--gemmask) center / contain no-repeat; mask: var(--gemmask) center / contain no-repeat; }
+@keyframes bglint { 0%, 55% { background-position: 130% 0; } 100% { background-position: -40% 0; } }
+.badge.locked { opacity: .4; } .badge.locked .bicon { filter: grayscale(1) brightness(.75); }
+.badge:hover { transform: translateY(-3px); } .badge:hover .bgem { filter: drop-shadow(0 6px 0 rgba(0,0,0,.3)) brightness(1.12); }
 .badgetip { display: grid; gap: 4px; } .badgetip b { color: var(--gold); } .bnext { display: grid; gap: 4px; margin-top: 4px; } .bnext small { color: #b8c4cf; }
-@media (prefers-reduced-motion: reduce) { .badge:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .badge:hover { transform: none; } .badge.t5::after { animation: none; display: none; } }
+/* logo: keep the tagline ribbon clear of the wordmark */
+.wordmark h1 { line-height: 1.05; } .wordmark p { margin-top: 12px; }

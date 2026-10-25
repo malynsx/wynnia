@@ -36,6 +36,11 @@
     return (gemCache[key] = 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${Wd} ${Ht}" shape-rendering="crispEdges">${rects}</svg>`));
   }
 
+  /* every badge uses a Wynncraft item-guide sprite, so they all share one pixel style */
+  const CLASS_WEAPON = { archer: 'bow', warrior: 'spear', mage: 'wand', assassin: 'dagger', shaman: 'relik' };
+  const PROF_ICON = { mining: 'profession.ingotIron', woodcutting: 'profession.plankOak', farming: 'profession.grainWheat', fishing: 'profession.meatSalmon',
+    alchemism: 'profession.oilKoi', armouring: 'helmet.iron', cooking: 'profession.meatTrout', jeweling: 'ring.basicGem', scribing: 'profession.paperOak',
+    tailoring: 'boots.pale_leather', weaponsmithing: 'dagger.basicWood', woodworking: 'bow.basicWood' };
   const years = (d) => d.firstJoin ? (Date.now() - new Date(d.firstJoin)) / (365.25 * 864e5) : 0;
   const chars = (d) => Object.values(d.characters || {});
   const maxProf = (d) => {
@@ -47,23 +52,23 @@
 
   /* id, name, what it's for, icon, value getter, tier thresholds (lower-is-better when `low`) and how to show the value */
   const BADGES = [
-    { id: 'veteran', name: 'Old Timer', what: 'Years since first joining Wynncraft', icon: 'wiki/scribing', get: years, tiers: [1, 2, 3, 5, 8], fmt: (v) => W.num(v, 1) + ' years' },
-    { id: 'playtime', name: 'Dedicated', what: 'Hours played', icon: 'ui/energy-boost', get: (d) => d.playtime || 0, tiers: [50, 250, 750, 2000, 5000], fmt: (v) => W.num(v, 0) + ' h' },
-    { id: 'level', name: 'Seasoned', what: 'Total level across all characters', icon: 'ui/boost', get: (d) => (d.globalData || {}).totalLevel || 0, tiers: [100, 300, 700, 1500, 3000] },
-    { id: 'combat', name: 'Battle Ready', what: 'Highest combat level on one character', iconFn: (d) => { const c = chars(d).sort((a, b) => (b.level || 0) - (a.level || 0))[0]; return 'wiki/' + (c ? (W.CLASS_ART[String(c.reskin || c.type).toLowerCase()] || 'warrior') : 'warrior'); },
+    { id: 'veteran', name: 'Old Timer', what: 'Years since first joining Wynncraft', icon: 'ring.basicWedding', get: years, tiers: [1, 2, 3, 5, 8], fmt: (v) => W.num(v, 1) + ' years' },
+    { id: 'playtime', name: 'Dedicated', what: 'Hours played', icon: 'tome.movement', get: (d) => d.playtime || 0, tiers: [50, 250, 750, 2000, 5000], fmt: (v) => W.num(v, 0) + ' h' },
+    { id: 'level', name: 'Seasoned', what: 'Total level across all characters', icon: 'profession.gemDiamond', get: (d) => (d.globalData || {}).totalLevel || 0, tiers: [100, 300, 700, 1500, 3000] },
+    { id: 'combat', name: 'Battle Ready', what: 'Highest combat level on one character', iconFn: (d) => { const c = chars(d).sort((a, b) => (b.level || 0) - (a.level || 0))[0]; return (CLASS_WEAPON[String(c && c.type).toLowerCase()] || 'spear') + '.multi3'; },
       get: (d) => Math.max(0, ...chars(d).map(c => c.level || 0)), tiers: [25, 50, 80, 100, 106] },
-    { id: 'quests', name: 'Storyteller', what: 'Quests completed', icon: 'wiki/questbook', get: (d) => (d.globalData || {}).completedQuests || 0, tiers: [25, 75, 150, 250, 400] },
-    { id: 'completion', name: 'Completionist', what: 'Content completion points', icon: 'wiki/jeweling', get: (d) => (d.globalData || {}).contentCompletion || 0, tiers: [100, 400, 1000, 2000, 4000] },
-    { id: 'mobs', name: 'Slayer', what: 'Mobs killed', icon: 'wiki/weaponsmithing', get: (d) => (d.globalData || {}).mobsKilled || 0, tiers: [10000, 50000, 200000, 1000000, 5000000] },
-    { id: 'chests', name: 'Treasure Hunter', what: 'Loot chests opened', icon: 'wiki/3d-items', get: (d) => (d.globalData || {}).chestsFound || 0, tiers: [100, 500, 2000, 10000, 30000] },
-    { id: 'dungeons', name: 'Dungeon Diver', what: 'Dungeons cleared', icon: 'ui/toughness', get: (d) => ((d.globalData || {}).dungeons || {}).total || 0, tiers: [10, 50, 200, 600, 2000] },
-    { id: 'raids', name: 'Raider', what: 'Raids cleared', icon: 'wiki/armouring', get: (d) => ((d.globalData || {}).raids || {}).total || 0, tiers: [5, 25, 100, 400, 1500] },
-    { id: 'wars', name: 'Warmonger', what: 'Guild wars fought', icon: 'wiki/guild-banner-tier-3', get: (d) => (d.globalData || {}).wars || 0, tiers: [1, 50, 300, 1500, 6000] },
-    { id: 'pvp', name: 'Duelist', what: 'PvP kills', icon: 'wiki/assassin', get: (d) => (((d.globalData || {}).pvp) || {}).kills || 0, tiers: [10, 100, 500, 2500, 10000] },
-    { id: 'prof', name: 'Artisan', what: 'Highest profession level', iconFn: (d) => 'wiki/' + maxProf(d)[0], get: (d) => maxProf(d)[1], tiers: [25, 50, 75, 100, 132], fmt: (v, d) => `${W.cap(maxProf(d)[0])} ${v}` },
-    { id: 'chars', name: 'Many Faces', what: 'Characters on the account', icon: 'wiki/3d-players', get: (d) => chars(d).length, tiers: [2, 4, 7, 10, 14] },
-    { id: 'rank', name: 'Leaderboard', what: 'Best spot on any Wynncraft leaderboard', icon: 'ui/speed', get: bestRank, tiers: [50000, 10000, 1000, 100, 10], low: true, fmt: (v) => isFinite(v) ? '#' + v.toLocaleString() : 'not ranked' },
-    { id: 'guild', name: 'Guildmate', what: 'Rank in a guild', icon: 'wiki/3d-guilds', get: (d) => d.guild ? (['RECRUIT', 'RECRUITER', 'CAPTAIN', 'STRATEGIST', 'CHIEF', 'OWNER'].indexOf(d.guild.rank) + 1) : 0,
+    { id: 'quests', name: 'Storyteller', what: 'Quests completed', icon: 'profession.paperOak', get: (d) => (d.globalData || {}).completedQuests || 0, tiers: [25, 75, 150, 250, 400] },
+    { id: 'completion', name: 'Completionist', what: 'Content completion points', icon: 'profession.gemVoidstone', get: (d) => (d.globalData || {}).contentCompletion || 0, tiers: [100, 400, 1000, 2000, 4000] },
+    { id: 'mobs', name: 'Slayer', what: 'Mobs killed', icon: 'dagger.fire3', get: (d) => (d.globalData || {}).mobsKilled || 0, tiers: [10000, 50000, 200000, 1000000, 5000000] },
+    { id: 'chests', name: 'Treasure Hunter', what: 'Loot chests opened', icon: 'profession.ingotGold', get: (d) => (d.globalData || {}).chestsFound || 0, tiers: [100, 500, 2000, 10000, 30000] },
+    { id: 'dungeons', name: 'Dungeon Diver', what: 'Dungeons cleared', icon: 'helmet.diamond', get: (d) => ((d.globalData || {}).dungeons || {}).total || 0, tiers: [10, 50, 200, 600, 2000] },
+    { id: 'raids', name: 'Raider', what: 'Raids cleared', icon: 'chestplate.gold', get: (d) => ((d.globalData || {}).raids || {}).total || 0, tiers: [5, 25, 100, 400, 1500] },
+    { id: 'wars', name: 'Warmonger', what: 'Guild wars fought', icon: 'spear.thunder3', get: (d) => (d.globalData || {}).wars || 0, tiers: [1, 50, 300, 1500, 6000] },
+    { id: 'pvp', name: 'Duelist', what: 'PvP kills', icon: 'dagger.basicGold', get: (d) => (((d.globalData || {}).pvp) || {}).kills || 0, tiers: [10, 100, 500, 2500, 10000] },
+    { id: 'prof', name: 'Artisan', what: 'Highest profession level', iconFn: (d) => PROF_ICON[maxProf(d)[0]] || 'profession.ingotIron', get: (d) => maxProf(d)[1], tiers: [25, 50, 75, 100, 132], fmt: (v, d) => `${W.cap(maxProf(d)[0])} ${v}` },
+    { id: 'chars', name: 'Many Faces', what: 'Characters on the account', icon: 'necklace.multi2', get: (d) => chars(d).length, tiers: [2, 4, 7, 10, 14] },
+    { id: 'rank', name: 'Leaderboard', what: 'Best spot on any Wynncraft leaderboard', icon: 'helmet.gold', get: bestRank, tiers: [50000, 10000, 1000, 100, 10], low: true, fmt: (v) => isFinite(v) ? '#' + v.toLocaleString() : 'not ranked' },
+    { id: 'guild', name: 'Guildmate', what: 'Rank in a guild', icon: 'tome.guild', get: (d) => d.guild ? (['RECRUIT', 'RECRUITER', 'CAPTAIN', 'STRATEGIST', 'CHIEF', 'OWNER'].indexOf(d.guild.rank) + 1) : 0,
       tiers: [1, 2, 3, 5, 6], fmt: (v, d) => d.guild ? `${W.cap(String(d.guild.rank).toLowerCase())} of ${d.guild.name}` : 'no guild' },
   ];
 
@@ -81,8 +86,9 @@
       const next = b.tiers[t];
       const node = el('div', { class: 'badge' + (t ? ' t' + t : ' locked') },
         el('img', { class: 'bgem', src: gem(col), alt: '' }),
-        el('img', { class: 'bicon', src: `img/${icon}.webp`, alt: '' }),
-        t ? el('span', { class: 'btier' }, t) : null);
+        el('img', { class: 'bicon', src: `img/items/${icon}.webp`, alt: '' }),
+        el('div', { class: 'bpips' }, [1, 2, 3, 4, 5].map(i => el('i', { class: i <= t ? 'on' : '' }))));
+      node.style.setProperty('--tc', col[1]); node.style.setProperty('--tl', col[0]); node.style.setProperty('--gemmask', `url("${gem(col)}")`);
       return W.tip(node, () => el('div', { class: 'badgetip' },
         el('div', { class: 'tt-name', style: { color: t ? col[0] : '#aab4bf' } }, b.name),
         el('div', { class: 'tt-sub' }, t ? `${TIER[t - 1].name} of V` : 'Not earned yet'),
@@ -94,7 +100,7 @@
     };
     const box = W.win(`Badges · ${earned.length} of ${BADGES.length}`,
       el('div', { class: 'badgegrid' }, list.map(badge)),
-      el('p', { class: 'hint' }, 'Earned from public Wynncraft stats. Hover a badge to see what it’s for and how far the next tier is. The gem colour shows the tier, from green (I) to purple (V).'));
+      el('p', { class: 'hint' }, 'Earned from public Wynncraft stats. Each badge has five tiers: the pips and the gem colour show how far you are, from green (I) to mythic purple (V). Hover one for the details.'));
     return box;
   };
 })(window.W);
