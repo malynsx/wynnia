@@ -72,7 +72,7 @@
       const hero = el('section', { class: 'herocard' },
         el('div', { class: 'heroportrait' }, el('img', { src: `https://mc-heads.net/body/${d.uuid}/220`, alt: '' })),
         el('div', { class: 'heroinfo' },
-          el('div', { class: 'heroname' }, el('h2', {}, d.username), W.rankBadge(d.rankBadge, d.supportRank || d.rank), W.staffBadge(d.uuid)),
+          el('div', { class: 'heroname' }, el('h2', {}, d.username), W.rankBadge(d.rankBadge, d.supportRank || d.rank)),
           el('div', { class: 'herometa' }, status,
             d.guild ? el('a', { class: 'guildchip', href: '#guilds/lookup?g=' + encodeURIComponent(d.guild.name) },
               el('span', { class: 'stars' }, W.rankStars(d.guild.rank)), `${W.cap(String(d.guild.rank || '').toLowerCase())} of ${d.guild.name} [${d.guild.prefix}]`) : null,

@@ -155,31 +155,6 @@
 
   /* ---------- Wynncraft visuals ---------- */
   W.rankBadge = (path, title) => path ? el('img', { class: 'rankbadge', src: 'https://cdn.wynncraft.com/' + path.replace(/^\//, ''), alt: title || '', title: title || '' }) : null;
-  /* Wynntools staff tag, drawn like Wynncraft's pixel rank badges. Keyed by UUID so a name change keeps it. */
-  W.STAFF = { '2974ac90-091f-442c-abc1-086564f57ce0': 'Admin' };
-  /* 5px pixel letters, outlined like the HERO+ lettering */
-  const GLYPH = { A: ['.##.', '#..#', '####', '#..#', '#..#'], D: ['###.', '#..#', '#..#', '#..#', '###.'], M: ['#...#', '##.##', '#.#.#', '#...#', '#...#'],
-    I: ['###', '.#.', '.#.', '.#.', '###'], N: ['#..#', '##.#', '#.##', '#..#', '#..#'] };
-  const staffSvg = (label) => {
-    const letters = label.toUpperCase().split('').map(c => GLYPH[c]).filter(Boolean);
-    const textW = letters.reduce((a, g) => a + g[0].length + 1, -1);
-    const w = 16 + textW + 6, H = 15;
-    const px = (x, y, ww, hh, f) => `<rect x="${x}" y="${y}" width="${ww}" height="${hh}" fill="${f}"/>`;
-    let out = px(2, 0, w - 4, H, '#2a0808') + px(0, 2, w, H - 4, '#2a0808') + px(1, 1, w - 2, H - 2, '#2a0808')
-      + px(2, 2, w - 4, H - 4, '#c62f2f') + px(2, 2, w - 4, 3, '#ec5a4c') + px(2, H - 4, w - 4, 2, '#8e1d1d')
-      /* gold hex gem on the left, like the logo */
-      + px(5, 4, 4, 7, '#f7d25e') + px(4, 5, 6, 5, '#f7d25e') + px(6, 5, 2, 2, '#fff6c2') + px(5, 9, 4, 1, '#d9ad2c') + px(4, 9, 1, 1, '#d9ad2c');
-    const on = [];
-    let x0 = 15;
-    letters.forEach(g => { g.forEach((row, y) => [...row].forEach((c, x) => { if (c === '#') on.push([x0 + x, 5 + y]); })); x0 += g[0].length + 1; });
-    const key = new Set(on.map(([x, y]) => x + ',' + y));
-    const ring = new Set();
-    on.forEach(([x, y]) => { for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) if (!key.has((x + dx) + ',' + (y + dy))) ring.add((x + dx) + ',' + (y + dy)); });
-    ring.forEach(k => { const [x, y] = k.split(',').map(Number); out += px(x, y, 1, 1, '#2a0808'); });
-    on.forEach(([x, y]) => { out += px(x, y, 1, 1, y >= 8 ? '#f7d25e' : '#fff6c2'); });
-    return 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${H}" width="${w * 2}" height="${H * 2}" shape-rendering="crispEdges">${out}</svg>`);
-  };
-  W.staffBadge = (uuid) => W.STAFF[uuid] ? el('img', { class: 'rankbadge staffbadge', src: staffSvg(W.STAFF[uuid]), alt: W.STAFF[uuid], title: `Wynntools ${W.STAFF[uuid].toLowerCase()}: made this site` }) : null;
   W.GUILD_RANKS = ['owner', 'chief', 'strategist', 'captain', 'recruiter', 'recruit'];
   W.rankStars = (rank) => { const n = 5 - W.GUILD_RANKS.indexOf(String(rank).toLowerCase()); return n > 0 && n <= 5 ? '★'.repeat(n) : ''; };
   W.CLASS_ART = { archer: 'archer', hunter: 'archer', warrior: 'warrior', knight: 'warrior', mage: 'mage', darkwizard: 'mage', assassin: 'assassin', ninja: 'assassin', shaman: 'shaman', skyseer: 'shaman' };
