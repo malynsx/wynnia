@@ -27,14 +27,18 @@
 
   /* ---------- Tooltip ---------- */
   const tip = el('div', { class: 'tooltip', hidden: true });
+  let tipOwner = null;   // which element the tooltip is currently showing for
   document.addEventListener('DOMContentLoaded', () => document.body.append(tip));
   W.tip = (node, content) => {
     node.dataset.hastip = '';
+    /* build the tooltip once per hover; moving the mouse only moves it (rebuilding made images flash) */
     node.addEventListener('mousemove', (e) => {
-      const c = typeof content === 'function' ? content() : content;
-      if (!c) { tip.hidden = true; return; }
-      tip.replaceChildren(c.nodeType ? c : el('div', { html: c }));
-      tip.hidden = false;
+      if (tipOwner !== node || tip.hidden) {
+        const c = typeof content === 'function' ? content() : content;
+        if (!c) { tip.hidden = true; return; }
+        tip.replaceChildren(c.nodeType ? c : el('div', { html: c }));
+        tip.hidden = false; tipOwner = node;
+      }
       const r = tip.getBoundingClientRect();
       let x = e.clientX + 16, y = e.clientY - 12;
       if (x + r.width > innerWidth - 8) x = e.clientX - r.width - 16;
@@ -42,8 +46,8 @@
       tip.style.left = Math.max(8, x) + 'px';
       tip.style.top = Math.max(8, y) + 'px';
     });
-    node.addEventListener('mouseleave', () => { tip.hidden = true; });
-    node.addEventListener('click', () => { tip.hidden = true; });
+    node.addEventListener('mouseleave', () => { tip.hidden = true; tipOwner = null; });
+    node.addEventListener('click', () => { tip.hidden = true; tipOwner = null; });
     return node;
   };
 

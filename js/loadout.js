@@ -36,7 +36,12 @@
       if (c[0] === 'L') c = c.replace(/[LR]/g, x => (x === 'L' ? 'R' : 'L'));
       slot = { RLR: 1, RRR: 2, RLL: 3, RRL: 4 }[c] || null;
     }
-    return { name: W.treePlain(a.name), cost: cost ? +cost[1] : null, total: total ? +total[1] : null, per: total ? total[2].replace(/^,\s*/, '').trim() : '', parts, slot, combo: combo ? combo.join('-') : '' };
+    /* how many times one cast hits: "a stream of 8 arrows", "a flurry of 8 hits", or "every 0.4s" over its duration */
+    const count = /(?:stream|flurry|volley|barrage|burst) of (\d+) (\w+)/i.exec(txt);
+    const every = /every ([\d.]+)s/i.exec(txt), dur = /Duration:\s*([\d.]+)s/.exec(txt);
+    const hits = count ? +count[1] : every && dur ? Math.round(+dur[1] / +every[1]) : 1;
+    const unit = count ? count[2].toLowerCase() : every && dur ? `ticks over ${dur[1]}s` : '';
+    return { name: W.treePlain(a.name), cost: cost ? +cost[1] : null, total: total ? +total[1] : null, per: total ? total[2].replace(/^,\s*/, '').trim() : '', parts, slot, combo: combo ? combo.join('-') : '', hits, unit };
   };
 
   W.pages['items/loadout'] = function (root, q) {
@@ -276,7 +281,7 @@
             el('div', {}, el('span', {}, 'Hit range'), el('b', {}, `${fmt(res.melee.lo)} – ${fmt(res.melee.hi)}`)),
             el('div', {}, el('span', {}, 'Weapon base DPS'), el('b', {}, fmt(res.melee.baseDps)))),
           el('div', { class: 'elbars' }, Object.entries(res.melee.per).map(([e, [a, b]]) => el('div', { class: 'brow2' }, el('span', { class: 'elname', style: { color: ELEM_COL[e] } }, W.cap(e)),
-            el('div', { class: 'cbar' }, el('i', { style: { width: ((a + b) / 2) / res.melee.avg * 100 + '%', background: ELEM_COL[e] } }), el('b', {}, `${fmt(a)}–${fmt(b)}`))))),
+            el('div', { class: 'cbar' }, el('i', { style: { width: ((a + b) / 2) / res.melee.avg * 100 + '%', background: ELEM_COL[e] } }), el('b', { style: ['air', 'thunder', 'water'].includes(e) && (a + b) / 2 / res.melee.avg > 0.3 ? { color: '#17202a', textShadow: 'none' } : null }, `${fmt(a)}–${fmt(b)}`))))),
           spells.length ? el('div', { class: 'cap left' }, 'Spells') : null,
           spells.sort((x, y) => (x.slot || 9) - (y.slot || 9)).map(sp => {
             const cost = sp.cost != null && sp.slot ? res.spellCost(sp.slot, sp.cost) : sp.cost;
@@ -284,17 +289,40 @@
             return el('div', { class: 'spell' + (sp.on ? '' : ' off') },
               el('div', {}, el('b', {}, sp.name), el('small', {}, `${sp.combo}${sp.on ? '' : ' · not unlocked'}`)),
               el('div', { class: 'sv' }, el('b', {}, cost != null ? cost : '—'), el('small', {}, 'mana')),
-              el('div', { class: 'sv' }, el('b', {}, hit ? fmt(hit.expected) : '—'), el('small', {}, hit ? (sp.per ? sp.per : 'damage') : 'no damage')));
+              el('div', { class: 'sv' }, el('b', {}, !hit ? '—' : sp.hits > 1 ? fmt(hit.expected) : ''), el('small', {}, !hit ? 'no damage' : sp.hits > 1 ? (sp.per || 'per hit') : 'single hit')),
+              el('div', { class: 'sv total' }, el('b', {}, hit ? fmt(hit.expected * sp.hits) : '—'), el('small', {}, !hit ? '' : sp.hits > 1 ? `per cast · ${sp.hits} ${sp.unit}` : 'per cast')));
           }),
           el('p', { class: 'hint' }, 'Estimates from base spell values: tree upgrades that change spells aren’t applied, and the game rounds some steps differently.')) :
           W.win('Damage', el('p', { class: 'empty' }, 'Add a weapon to see damage.'));
 
-        const manaWin = W.win('Mana', el('div', { class: 'kv' },
-          el('div', {}, el('span', {}, 'Max mana'), el('b', {}, res.mana)),
-          el('div', {}, el('span', {}, 'Mana regen'), el('b', {}, res.manaRegen + ' /5s')),
-          el('div', {}, el('span', {}, 'Mana steal'), el('b', {}, res.manaSteal + ' /3s')),
-          el('div', {}, el('span', {}, 'Spell cost from Intelligence'), el('b', {}, '−' + W.num(res.intCost * 100, 1) + '%')),
-          el('div', {}, el('span', {}, 'Walk speed'), el('b', {}, (res.walk > 0 ? '+' : '') + res.walk + '%'))));
+        /* Mana sustain: natural regen (wiki: 5 mana/s, editable) + Mana Regen per 5s, plus Mana Steal per 3s while your attacks land */
+        const natural = LB.regen != null ? LB.regen : 5;
+        const idle = natural + res.manaRegen / 5, fighting = idle + Math.max(0, res.manaSteal) / 3;
+        const dmgSpells = spells.filter(sp => sp.cost && sp.total && sp.slot).map(sp => {
+          const cost = res.spellCost(sp.slot, sp.cost);
+          const hit = res.melee ? res.melee.spell(Object.keys(sp.parts).length ? sp.parts : { neutral: sp.total }).expected * sp.hits : 0;
+          return { ...sp, cost, perMana: hit / cost, idle: idle * 60 / cost, fight: fighting * 60 / cost, dry: cost > fighting ? res.mana / (cost - fighting) : Infinity };
+        }).sort((x, y) => y.perMana - x.perMana);
+        const manaWin = W.win('Mana and sustain',
+          el('div', { class: 'bigstats', style: { marginTop: 0 } },
+            el('div', {}, el('b', {}, res.mana), el('span', {}, 'Max mana')),
+            el('div', {}, el('b', {}, W.num(idle, 1)), el('span', {}, 'Mana / s idle')),
+            el('div', {}, el('b', {}, W.num(fighting, 1)), el('span', {}, 'Mana / s fighting'))),
+          el('div', { class: 'kv', style: { marginTop: '12px' } },
+            el('div', {}, el('span', {}, 'Mana regen'), el('b', {}, res.manaRegen + ' /5s')),
+            el('div', {}, el('span', {}, 'Mana steal'), el('b', {}, res.manaSteal + ' /3s')),
+            el('div', {}, el('span', {}, 'Spell cost from Intelligence'), el('b', {}, '−' + W.num(res.intCost * 100, 1) + '%')),
+            el('div', {}, el('span', {}, 'Natural regen (mana/s)'), W.numIn(natural, (v) => { LB.regen = Math.max(0, v); store(); draw(); }, 0, 50)),
+            el('div', {}, el('span', {}, 'Walk speed'), el('b', {}, (res.walk > 0 ? '+' : '') + res.walk + '%'))),
+          dmgSpells.length ? el('div', { class: 'cap left' }, 'Spell spam') : null,
+          dmgSpells.length ? el('div', { class: 'sustain' },
+            el('div', { class: 'surow suhead' }, ['Spell', 'Mana', 'Casts/min', 'Runs dry'].map(h => el('span', {}, h))),
+            dmgSpells.map((sp, i) => el('div', { class: 'surow' + (i === 0 ? ' best' : '') },
+              el('span', {}, el('b', {}, sp.name), i === 0 ? el('small', {}, 'most damage per mana') : null),
+              el('span', {}, sp.cost),
+              el('span', {}, `${W.num(sp.fight, 0)}`, el('small', {}, ` (${W.num(sp.idle, 0)} idle)`)),
+              el('span', { class: isFinite(sp.dry) ? '' : 'up' }, isFinite(sp.dry) ? W.num(sp.dry, 0) + 's' : 'Never')))) : null,
+          el('p', { class: 'hint' }, 'Casts per minute you can keep up forever. “Runs dry” is how long a full mana bar lasts casting that spell once a second while your attacks land. Natural regen is the wiki’s 5 mana/s; change it if the game differs.'));
 
         const idWin = W.win('Identifications', el('div', { class: 'idlist' }, Object.entries(res.ids).filter(([, v]) => v).sort((a, b) => W.idInfo(a[0]).name.localeCompare(W.idInfo(b[0]).name)).map(([k, v]) =>
           el('div', { class: 'il' }, el('span', { class: W.idGood(k, v) ? 'pos' : 'neg' }, W.fmtId(k, v)), el('span', { class: 'idn' }, W.idInfo(k).name)))));
