@@ -102,7 +102,7 @@
           el('div', { class: 'spotlist' }, list.map(m => el('div', { class: 'spot' + (m === best ? ' now' : '') + (m.l > st.gLevel ? ' later' : '') },
             el('div', { class: 'shead2' },
               el('div', { class: 'sico' }, icon(m.r)),
-              el('div', {}, el('h3', {}, W.cap(m.r)), el('small', {}, `Level ${m.l} · ${m.total} nodes in the world`)),
+              el('div', {}, el('h3', {}, W.cap(m.r)), el('small', {}, `Lv. ${m.l} · ${m.total.toLocaleString()} nodes`)),
               stamps[m.l] != null ? el('a', { class: 'yt', href: `https://www.youtube.com/watch?v=${vid}&t=${stamps[m.l]}s`, target: '_blank', rel: 'noopener' }, 'Watch Olinus10’s spot') : null),
             el('div', { class: 'spotrows' }, m.spots.map(s => el('div', { class: 'spotrow' },
               el('div', { class: 'areabanner' },

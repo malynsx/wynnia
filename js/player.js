@@ -25,6 +25,9 @@
   }
 
   W.pages.player = function (root, q) {
+    let REF = null;
+    Promise.all(['profxp', 'spots', 'quests'].map(W.data)).then(r => { REF = r; if (P.data) draw(); }).catch(() => {});
+    if (q && q.get('c')) P.char = q.get('c');
     const draw = () => root.replaceChildren(el('div', { class: 'stack' }, lookup(), profile(), showcase()));
 
     if (q && q.get('u') && !P.name) P.name = q.get('u');
@@ -67,14 +70,14 @@
       const tile = (label, value) => el('div', {}, el('b', {}, value == null ? '—' : value), el('span', {}, label));
       const status = d.online ? el('span', { class: 'online' }, `Online on ${d.server}`) : el('span', { class: 'offline' }, 'Last seen ' + (W.ago(d.lastJoin) || 'a while ago'));
       const hero = el('section', { class: 'herocard' },
-        el('div', { class: 'herobody' }, el('img', { src: `https://mc-heads.net/body/${d.uuid}/220`, alt: '', loading: 'lazy' })),
+        el('div', { class: 'heroportrait' }, el('img', { src: `https://mc-heads.net/body/${d.uuid}/220`, alt: '' })),
         el('div', { class: 'heroinfo' },
           el('div', { class: 'heroname' }, el('h2', {}, d.username), W.rankBadge(d.rankBadge, d.supportRank || d.rank)),
           el('div', { class: 'herometa' }, status,
             d.guild ? el('a', { class: 'guildchip', href: '#guilds/lookup?g=' + encodeURIComponent(d.guild.name) },
               el('span', { class: 'stars' }, W.rankStars(d.guild.rank)), `${W.cap(String(d.guild.rank || '').toLowerCase())} of ${d.guild.name} [${d.guild.prefix}]`) : null,
             d.firstJoin ? el('span', {}, 'Joined ' + new Date(d.firstJoin).toLocaleDateString()) : null),
-          el('div', { class: 'herotiles' },
+          el('div', { class: 'herotiles four' },
             tile('Playtime', d.playtime != null ? W.num(d.playtime, 0) + ' h' : null),
             tile('Total level', gd.totalLevel != null ? gd.totalLevel.toLocaleString() : null),
             tile('Quests', gd.completedQuests),
@@ -85,7 +88,12 @@
             tile('Chests', gd.chestsFound != null ? W.short(gd.chestsFound) : null))));
       const cards = chars.map(c => {
         const quests = c.quests || [], art = W.CLASS_ART[String(c.reskin || c.type || '').toLowerCase()] || 'warrior';
-        return el('div', { class: 'charcard' },
+        return el('button', { class: 'charcard' + (P.char === c.id ? ' sel' : ''), title: 'Show everything about this character', onclick: () => {
+            P.char = P.char === c.id ? null : c.id;
+            history.replaceState(null, '', `#players/lookup?u=${encodeURIComponent(d.username)}${P.char ? '&c=' + P.char : ''}`);
+            draw();
+            if (P.char) setTimeout(() => { const x = document.getElementById('chardetail'); if (x) x.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+          } },
           el('div', { class: 'charart' }, W.art.wiki(art)),
           el('div', { class: 'charinfo' },
             el('div', { class: 'charname' }, c.nickname || cls(c)),
@@ -99,7 +107,8 @@
       });
       return el('div', { class: 'stack' }, hero,
         W.win(`Characters (${chars.length})`, el('div', { class: 'chargrid' }, cards),
-          el('p', { class: 'hint' }, 'The mount icons show which mounts each character can ride; hover them for what is missing. Stable Story counts once per account.')));
+          el('p', { class: 'hint' }, 'Click a character for its full breakdown. The mount icons show which mounts it can ride; hover them for what is missing.')),
+        P.char && chars.find(c => c.id === P.char) ? W.charDetail(chars.find(c => c.id === P.char), d, REF) : null);
     }
     const cls = (c) => { const t = String(c.reskin || c.type || ''); return t.charAt(0) + t.slice(1).toLowerCase(); };
 

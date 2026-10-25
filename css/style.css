@@ -459,3 +459,53 @@ button.mini.on { background: var(--gold); color: var(--dark); }
   clip-path: polygon(0 6px, 6px 6px, 6px 0, calc(100% - 6px) 0, calc(100% - 6px) 6px, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 6px calc(100% - 6px), 0 calc(100% - 6px)); }
 .spotmeta code { display: block; font-size: 15px; white-space: nowrap; } .spotmeta small { color: var(--mute); font-size: 13px; }
 @media (max-width: 560px) { .spotrow { grid-template-columns: 1fr auto; } .spotrow .areabanner { grid-column: 1 / -1; } }
+
+/* ---------- round 4 ---------- */
+/* spot cards: banner on its own row, details underneath */
+.spotrows { gap: 14px; margin-top: 10px; }
+.spotrow { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'banner banner' 'meta copy'; gap: 6px 12px; background: rgba(0,0,0,.08); border-radius: 6px; padding: 10px 10px 8px; }
+.spotrow .areabanner { grid-area: banner; }
+.spotrow .spotmeta { grid-area: meta; min-width: 0; }
+.spotrow > button { grid-area: copy; align-self: center; }
+.abn { width: auto; min-width: 70%; max-width: 100%; }
+.spotmeta small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.shead2 { align-items: flex-start; } .shead2 h3 { line-height: 1.1; }
+
+/* player hero */
+.herocard { grid-template-columns: 200px minmax(0, 1fr); align-items: stretch; }
+.heroportrait { display: grid; place-items: end center; background: var(--inset); border: 3px solid var(--navy); border-radius: 6px; padding: 12px 10px 0; overflow: hidden; min-height: 260px; }
+.heroportrait img { width: 150px; height: auto; image-rendering: pixelated; display: block; }
+.heroportrait.small { min-height: 0; padding: 12px; place-items: center; } .heroportrait.small .sprite { width: 150px; height: 170px; }
+.heroinfo { align-self: center; }
+.herotiles.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 720px) { .herocard { grid-template-columns: 1fr; } .heroportrait { min-height: 0; } .herotiles.four { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* character cards are buttons now */
+button.charcard { font: inherit; color: inherit; text-align: left; cursor: pointer; box-shadow: 0 4px 0 var(--navy); }
+button.charcard:hover { filter: brightness(1.1); }
+button.charcard.sel { border-color: var(--gold); box-shadow: 0 4px 0 var(--gold-d); }
+
+/* character detail */
+.chardetail { scroll-margin-top: 16px; }
+.mode { background: var(--navy); color: var(--gold); font: 400 18px var(--hand); padding: 1px 10px 2px; border-radius: 4px; }
+.cstats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.cstat { background: var(--navy); border-radius: 5px; padding: 8px 12px; }
+.cstat b { display: block; font: 400 26px/1.1 var(--hand); color: var(--gold); }
+.cstat span { display: block; font-size: 13.5px; color: #fff; text-transform: uppercase; letter-spacing: .04em; }
+.cstat small { display: block; font-size: 12.5px; color: var(--mute); }
+.skills { display: grid; gap: 10px; }
+.skill { display: grid; grid-template-columns: 110px 1fr 44px; gap: 12px; align-items: center; font-weight: 700; }
+.snum { font: 400 24px var(--hand); text-align: right; }
+.skill span { text-shadow: 1px 1px 0 var(--navy); }
+.pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.pcard { display: flex; gap: 12px; background: var(--card2); border: 3px solid var(--navy); border-radius: 6px; padding: 8px 10px; }
+.pcard .pico { width: 44px; height: 44px; flex: none; }
+.pbody { flex: 1; min-width: 0; display: grid; gap: 4px; }
+.phead2 { display: flex; justify-content: space-between; } .phead2 span { font: 400 20px var(--hand); color: var(--gold); }
+.pbody small { color: var(--mute); }
+.pspot { font-size: 13.5px; color: #fff; text-decoration: underline; text-decoration-color: var(--gold); }
+.blist { display: grid; gap: 6px; }
+.brow2 { display: grid; grid-template-columns: minmax(0, 1fr) 46%; gap: 12px; align-items: center; font-weight: 500; }
+.brow2 em { font-style: normal; font-size: 12px; background: #7a2f8f; color: #fff; border-radius: 3px; padding: 0 5px; margin-left: 6px; }
+.cbar.big { height: 34px; } .cbar.big b { line-height: 34px; font-size: 17px; }
+.btnlink { display: inline-block; font: 400 22px var(--hand); background: var(--gold); color: var(--dark); text-decoration: none; padding: 5px 18px 6px; border: 3px solid var(--navy); border-radius: 5px; box-shadow: 0 4px 0 var(--navy); }

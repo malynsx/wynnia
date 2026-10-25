@@ -55,7 +55,9 @@
   };
 
   const QS = { name: '', data: null, err: null, busy: false, char: '', missingOnly: true, fit: false, province: '' };
-  W.pages['players/quests'] = function (root) {
+  W.pages['players/quests'] = function (root, q) {
+    const want = q && q.get('c');
+    if (q && q.get('u') && (!QS.data || QS.data.username !== q.get('u'))) QS.name = q.get('u');
     W.withData(root, ['quests'], (quests) => {
       const draw = () => root.replaceChildren(el('div', { class: 'cols wide-l' }, el('div', {}, form(), list()), el('div', {}, summary())));
       async function go() {
@@ -65,7 +67,7 @@
           if (d.multiple) throw new Error('That name matches several players. Use the exact name.');
           QS.data = d;
           const chars = Object.entries(d.characters || {}).sort((a, b) => (b[1].level || 0) - (a[1].level || 0));
-          QS.char = chars.length ? chars[0][0] : '';
+          QS.char = want && d.characters[want] ? want : (chars.length ? chars[0][0] : '');
         } catch (e) { QS.err = e.message; QS.data = null; }
         QS.busy = false; draw();
       }
@@ -109,6 +111,7 @@
           el('p', { class: 'hint' }, 'Mini-quests and discoveries are not counted.'));
       }
       draw();
+      if (q && q.get('u') && (!QS.data || QS.data.username !== q.get('u'))) go();
     });
   };
 })(window.W);
