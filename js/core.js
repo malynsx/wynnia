@@ -29,6 +29,7 @@
   const tip = el('div', { class: 'tooltip', hidden: true });
   document.addEventListener('DOMContentLoaded', () => document.body.append(tip));
   W.tip = (node, content) => {
+    node.dataset.hastip = '';
     node.addEventListener('mousemove', (e) => {
       const c = typeof content === 'function' ? content() : content;
       if (!c) { tip.hidden = true; return; }
@@ -45,6 +46,31 @@
     node.addEventListener('click', () => { tip.hidden = true; });
     return node;
   };
+
+  /* Every plain title="" on the site shows as the site's own tooltip, instantly, instead of the browser's. */
+  const hint = el('div', { class: 'tooltip hinttip', hidden: true });
+  document.addEventListener('DOMContentLoaded', () => document.body.append(hint));
+  let hintFor = null;
+  const placeHint = (e) => {
+    const r = hint.getBoundingClientRect();
+    let x = e.clientX + 14, y = e.clientY + 18;
+    if (x + r.width > innerWidth - 8) x = e.clientX - r.width - 10;
+    if (y + r.height > innerHeight - 8) y = e.clientY - r.height - 12;
+    hint.style.left = Math.max(8, x) + 'px'; hint.style.top = Math.max(8, y) + 'px';
+  };
+  /* a tooltip whose element vanished (page change, redraw) never gets mouseleave, so hide it here */
+  const dropTips = () => { tip.hidden = true; hint.hidden = true; hintFor = null; };
+  window.addEventListener('hashchange', dropTips);
+  document.addEventListener('mouseover', (e) => {
+    if (!(e.target.closest && e.target.closest('[data-hastip]'))) tip.hidden = true;
+    const t = e.target.closest && e.target.closest('[title], [data-tip]');
+    if (t && t.hasAttribute('title')) { if (t.title) t.dataset.tip = t.title; t.removeAttribute('title'); }
+    if (!t || !t.dataset.tip) { hint.hidden = true; hintFor = null; return; }
+    hintFor = t; hint.textContent = t.dataset.tip; hint.hidden = false; placeHint(e);
+  });
+  document.addEventListener('mousemove', (e) => { if (hintFor && !hint.hidden) placeHint(e); });
+  document.addEventListener('mousedown', () => { hint.hidden = true; hintFor = null; });
+  window.addEventListener('scroll', () => { hint.hidden = true; }, true);
 
   /* ---------- State ---------- */
   const KEY = 'stableLedger.v1';

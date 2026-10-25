@@ -105,7 +105,7 @@
               return W.tip(el('span', { class: 'mnt' + (ok ? '' : ' locked') }, W.art.mount(k, W.COLORS[k].body[0][0], W.COLORS[k].second[0][0])), why);
             }))));
       });
-      return el('div', { class: 'stack' }, hero,
+      return el('div', { class: 'stack' }, hero, W.badges(d),
         W.win(`Characters (${chars.length})`, el('div', { class: 'chargrid' }, cards),
           el('p', { class: 'hint' }, 'Click a character for its full breakdown. The mount icons show which mounts it can ride; hover them for what is missing.')),
         P.char && chars.find(c => c.id === P.char) ? W.charDetail(chars.find(c => c.id === P.char), d, REF) : null);

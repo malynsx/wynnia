@@ -681,19 +681,6 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 .rsbusy { margin-top: 14px; display: grid; gap: 8px; color: var(--mute); }
 @media (max-width: 700px) { .reclist { grid-template-columns: 1fr; } }
 
-/* net worth */
-.nwhead { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center; }
-.nwtotal { background: var(--navy); border-radius: 5px; padding: 10px 18px; text-align: center; }
-.nwtotal b { display: block; font: 400 34px/1.1 var(--hand); color: var(--gold); } .nwtotal span { font-size: 13px; color: var(--mute); }
-.fields4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.fields4 label { display: grid; gap: 4px; font-size: 14px; font-weight: 700; } .fields4 input { width: 100%; }
-.nwadd { display: grid; grid-template-columns: 1fr 90px auto; gap: 8px; margin-bottom: 8px; } .nwadd input[type=number] { width: 100%; }
-.nwrows { display: grid; gap: 6px; margin-top: 12px; }
-.nwrow { display: grid; grid-template-columns: minmax(0, 1fr) 80px 150px 130px auto; gap: 10px; align-items: center; background: var(--inset); border: 2px solid var(--navy); border-radius: 5px; padding: 6px 10px; }
-.nwrow > b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.nwprice { display: grid; } .nwprice input { width: 100%; } .nwprice small { color: var(--mute); font-size: 12px; }
-.nwval { font: 400 20px var(--hand); color: var(--gold); text-align: right; }
-@media (max-width: 700px) { .nwhead { grid-template-columns: 1fr; } .fields4 { grid-template-columns: 1fr 1fr; } .nwrow { grid-template-columns: 1fr 70px; } }
 .areabanner, .areabanner.gold { background: none; border: 0; box-shadow: none; padding: 0; }   /* the generic .gold button style was painting a strip behind the tab */
 .pricetag { margin-top: 10px; padding-top: 8px; border-top: 2px solid rgba(23, 48, 74, .4); }
 .pricetag .ptop { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; } .pricetag .ptop span { color: var(--mute); font-size: 14px; }
@@ -720,7 +707,7 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 .eltog:disabled { cursor: not-allowed; }
 .emtag { display: inline-flex; align-items: center; gap: 6px; cursor: help; white-space: nowrap; } .emtag img { width: 20px; height: 20px; image-rendering: pixelated; }
 .pdetail { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 2px; } .pdetail small { display: inline-flex; align-items: center; gap: 4px; }
-.pdetail .emtag img { width: 14px; height: 14px; } .nwtotal .emtag { justify-content: center; font: 400 34px/1.1 var(--hand); color: var(--gold); } .nwtotal .emtag img { width: 28px; height: 28px; }
+.pdetail .emtag img { width: 14px; height: 14px; }
 .phead2 { gap: 10px; align-items: baseline; } .phead2 b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .phead2 span { flex: none; white-space: nowrap; }
 /* compare header: item cards keep their tooltip look on hover, single clean outline */
 .crow2.chead:hover > div { background: transparent; }
@@ -732,3 +719,27 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 .lvrow.lvhead { color: var(--mute); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; background: none; }
 .lvrow small { text-align: right; color: var(--mute); } .lvrow small.up { color: var(--ok); } .lvrow small.down { color: var(--bad); }
 .lvrow.same { opacity: .6; }
+/* small tooltip for plain hints (replaces the browser's title popups) */
+.tooltip.hinttip { min-width: 0; max-width: 300px; padding: 5px 10px 6px; font: 600 14px/1.3 var(--ui); background: var(--navy); border: 2px solid var(--gold-d); color: #fff; box-shadow: 0 3px 0 rgba(0,0,0,.35); z-index: 100; }
+
+/* logo: tool emblem in a gold hex, two-tone wordmark, ribbon tagline */
+.brand { gap: 14px; }
+.emblem { position: relative; width: 78px; height: 88px; flex: none; filter: drop-shadow(0 4px 0 rgba(0,0,0,.28)); transition: transform .15s; }
+.emblem svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.emblem .logo { position: absolute; left: 50%; top: 50%; width: 56px; height: auto; transform: translate(-50%, -52%) rotate(-8deg); filter: drop-shadow(2px 2px 0 var(--navy)); }
+.brand:hover .emblem { transform: rotate(-4deg) scale(1.04); }
+.wordmark h1 { display: flex; line-height: .9; }
+.wordmark h1 .w1 { color: #fff; } .wordmark h1 .w2 { color: var(--gold); }
+.wordmark p { display: inline-block; margin: 8px 0 0 4px; padding: 2px 12px 3px; background: var(--navy); color: var(--gold); border-radius: 4px; font: 400 19px var(--hand); letter-spacing: .03em; box-shadow: 0 3px 0 rgba(0,0,0,.25); }
+@media (max-width: 700px) { .emblem { width: 58px; height: 66px; } .emblem .logo { width: 42px; } .wordmark p { font-size: 16px; } }
+
+/* profile badges: pixel hex gems */
+.badgegrid { display: grid; grid-template-columns: repeat(auto-fill, 76px); gap: 10px 12px; }
+.badge { position: relative; width: 76px; height: 84px; cursor: default; }
+.badge .bgem { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; filter: drop-shadow(0 3px 0 rgba(0,0,0,.3)); }
+.badge .bicon { position: absolute; left: 50%; top: 50%; width: 38px; height: 38px; object-fit: contain; transform: translate(-50%, -50%); filter: drop-shadow(2px 2px 0 rgba(0,0,0,.45)); }
+.badge .btier { position: absolute; right: 2px; bottom: 0; font: 700 20px/1 var(--ui); color: #fff; text-shadow: 2px 2px 0 #14213a, -1px -1px 0 #14213a, 1px -1px 0 #14213a, -1px 1px 0 #14213a; }
+.badge.locked { opacity: .45; } .badge.locked .bicon { filter: grayscale(1) brightness(.8); }
+.badge:hover { transform: translateY(-2px); } .badge:hover .bgem { filter: drop-shadow(0 5px 0 rgba(0,0,0,.3)) brightness(1.1); }
+.badgetip { display: grid; gap: 4px; } .badgetip b { color: var(--gold); } .bnext { display: grid; gap: 4px; margin-top: 4px; } .bnext small { color: #b8c4cf; }
+@media (prefers-reduced-motion: reduce) { .badge:hover { transform: none; } }
