@@ -134,27 +134,6 @@
         return box;
       }
 
-      function slotButton(k, label, small) {
-        const g = piece(k);
-        const q = g && g.r ? W.rollQuality(g.item, g.r) : null;
-        return el('button', { class: 'gslot' + (small ? ' small' : '') + (sel === k ? ' on' : '') + (g ? '' : ' empty'), onclick: () => { sel = k; picking = !g; pq = ''; draw(); } },
-          el('div', { class: 'gicon' }, g ? W.art.item(g.item.ic) : W.art.item(null)),
-          el('div', { class: 'gtext' }, el('small', {}, label), g ? el('b', { style: { color: W.tierColor(g.item.r) } }, g.item.n) : el('b', {}, 'Empty'),
-            g ? el('small', {}, `Lv. ${g.item.l}`, q != null ? el('span', { class: 'qual', style: { '--q': q } }, ` · ${q}%`) : '',
-              g.p && g.p.length ? el('span', { class: 'pws' }, g.p.map(([e, t]) => el('img', { src: `img/ui/powder-${e}.webp`, title: `${W.cap(e)} ${t}`, alt: '' }))) : '') : null));
-      }
-
-      function equipWin() {
-        return W.win('Equipment', el('div', { class: 'doll' }, EQUIP.map(([k, label]) => slotButton(k, label))), itemPanel());
-      }
-      function tomesWin() {
-        const filled = eng.tomeSlots.filter((_, i) => LB.s['t' + i]).length;
-        return el('details', { class: 'win tomes', open: filled > 0 || (sel && sel[0] === 't') },
-          el('summary', {}, el('h2', {}, `Mastery tomes · ${filled}/14`)),
-          el('div', { class: 'tomegrid' }, eng.tomeSlots.map(([type, lvl], i) => slotButton('t' + i, `${TOME_NAMES[type]} · Lv. ${lvl}`, true))),
-          sel && sel[0] === 't' ? itemPanel() : null);
-      }
-
       /* item picker + exact roll viewer + powders */
       function itemPanel() {
         const k = sel, g = piece(k);
@@ -240,7 +219,7 @@
       /* ---------- right column ---------- */
       function summary() {
         const res = compute(), ps = pieces();
-        if (!ps.length) return W.win('Build summary', el('p', { class: 'empty' }, 'Add some gear to see the numbers.'));
+        if (!ps.length) return null;
         const has = owner && owner.char && owner.char.skillPoints ? W.SK.map(s => owner.char.skillPoints[s === 'defence' ? 'defense' : s] || 0) : null;
         const scale = (n) => eng.spScale[Math.max(0, Math.min(150, Math.round(n)))] || 0;
         const effect = ['% damage (earth)', '% crit chance (thunder)', '% mana / water', '% less damage taken (fire)', '% dodge chance (air)'];
@@ -326,22 +305,94 @@
 
         const idWin = W.win('Identifications', el('div', { class: 'idlist' }, Object.entries(res.ids).filter(([, v]) => v).sort((a, b) => W.idInfo(a[0]).name.localeCompare(W.idInfo(b[0]).name)).map(([k, v]) =>
           el('div', { class: 'il' }, el('span', { class: W.idGood(k, v) ? 'pos' : 'neg' }, W.fmtId(k, v)), el('span', { class: 'idn' }, W.idInfo(k).name)))));
-        return el('div', { class: 'stack' }, spWin, defWin, dmgWin, manaWin, idWin);
+        return { res, spWin, defWin, dmgWin, manaWin, idWin, fighting, best: dmgSpells[0] };
       }
 
       function treeWin() {
         const c = cls();
         if (!c) return W.win('Ability tree', el('p', { class: 'empty' }, 'Pick a weapon (or a class) to plan the ability tree.'));
         return W.win(`Ability tree · ${W.cap(c)}`, W.atree({ cls: c, level: LB.lvl, selected: LB.t, editable: true, loan: LB.loan,
-          onChange: (ids) => { LB.t = ids; store(); const r = root.querySelector('.lo-right'); if (r) r.replaceChildren(summary()); const b = root.querySelector('.lo-build'); if (b) b.replaceWith(Object.assign(buildWin(), { className: 'win lo-build' })); } }));
+          onChange: (ids) => { LB.t = ids; store(); const k = root.querySelector('.lo-kpi'); if (k) k.replaceWith(kpis(summary())); const b = root.querySelector('.lo-build'); if (b) b.replaceWith(Object.assign(buildWin(), { className: 'win lo-build' })); } }));
+      }
+
+      /* ---------- inventory layout ---------- */
+      let tab = 'stats';
+      /* empty slots show a faded silhouette of what goes there, like the game's empty inventory slots */
+      const GHOST = { h: 'helmet.pale_iron', c: 'chestplate.pale_iron', l: 'leggings.pale_iron', b: 'boots.pale_iron', r1: 'ring.basicIron', r2: 'ring.basicIron',
+        br: 'bracelet.basicIron', n: 'necklace.basicIron', w: 'bow.basicWood', armour_tome: 'tome.armour', weapon_tome: 'tome.weapon', marathon_tome: 'tome.movement',
+        expertise_tome: 'tome.utility', mysticism_tome: 'tome.mana', lootrun_tome: 'tome.lootrun', guild_tome: 'tome.guild' };
+      const TAB_LIST = [['stats', 'Stats'], ['damage', 'Damage'], ['mana', 'Mana'], ['sp', 'Skill points'], ['tree', 'Ability tree']];
+
+      /* one square slot: rarity-coloured frame, the item, powder pips, roll quality when exact */
+      function invSlot(k, label, big) {
+        const g = piece(k);
+        const q = g && g.r ? W.rollQuality(g.item, g.r) : null;
+        const node = el('button', { class: 'islot' + (big ? ' big' : '') + (sel === k ? ' on' : '') + (g ? '' : ' empty'), style: g ? { '--rc': W.tierColor(g.item.r) } : null,
+          'aria-label': g ? `${label}: ${g.item.n}` : `${label}: empty`, onclick: () => { sel = k; picking = !g; pq = ''; draw(); } },
+          g ? W.art.item(g.item.ic) : el('img', { class: 'ighost', src: `img/items/${k === 'w' ? (CLASS_WEAPON[cls()] || 'bow') + '.basicWood' : GHOST[k] || GHOST[eng.tomeSlots[+k.slice(1)] && eng.tomeSlots[+k.slice(1)][0]] || 'tome.utility'}.webp`, alt: '' }),
+          g && g.p && g.p.length ? el('span', { class: 'ipips' }, g.p.map(([e]) => el('i', { class: 'pe-' + e }))) : null,
+          q != null ? el('span', { class: 'iq' }, q + '%') : null);
+        return W.tip(node, () => g ? W.itemCard(g.item) : el('div', {}, el('b', {}, label), el('div', { class: 'tt-sub' }, 'Empty: click to pick an item')));
+      }
+
+      function inventory() {
+        const who = owner && owner.char ? `${owner.name} · ${owner.char.nickname || W.cap(String(owner.char.reskin || owner.char.type).toLowerCase())}` : 'Custom build';
+        const w = piece('w');
+        const body = owner && owner.uuid ? `https://mc-heads.net/body/${owner.uuid}/250` : 'https://mc-heads.net/body/MHF_Steve/250';
+        const tomesOn = eng.tomeSlots.filter((_, i) => LB.s['t' + i]).length;
+        return el('section', { class: 'inv' },
+          el('div', { class: 'invhead' }, el('b', {}, who), el('span', {}, `Lv. ${LB.lvl}${cls() ? ' · ' + W.cap(cls()) : ''}`)),
+          el('div', { class: 'invdoll' },
+            el('div', { class: 'invcol' }, EQUIP.slice(0, 4).map(([k, label]) => invSlot(k, label))),
+            el('div', { class: 'invbody' }, el('img', { src: body, alt: '' })),
+            el('div', { class: 'invcol' }, EQUIP.slice(4, 8).map(([k, label]) => invSlot(k, label)))),
+          el('div', { class: 'invweap' }, invSlot('w', 'Weapon', true),
+            w ? el('div', {}, el('b', { style: { color: w.item.r === 'mythic' ? '#cf5ce8' : W.tierColor(w.item.r) } }, w.item.n),
+              el('small', {}, [w.item.dps ? Math.round(w.item.dps) + ' DPS' : null, w.item.as ? W.words(w.item.as) : null, w.item.ps ? `${(w.p || []).length}/${w.item.ps} powders` : null].filter(Boolean).join(' · ')))
+              : el('div', {}, el('b', {}, 'No weapon'), el('small', {}, 'Pick one to set the class'))),
+          el('div', { class: 'invlab' }, `Mastery tomes · ${tomesOn}/14`),
+          el('div', { class: 'invhot' }, eng.tomeSlots.map(([type, lvl], i) => invSlot('t' + i, `${TOME_NAMES[type]} · Lv. ${lvl}`))));
+      }
+
+      function editor() {
+        if (!sel) return W.win('Selected slot', el('p', { class: 'empty' }, 'Click a slot to pick an item, set exact rolls and add powders.'));
+        const label = sel[0] === 't' ? `${TOME_NAMES[eng.tomeSlots[+sel.slice(1)][0]]} · Lv. ${eng.tomeSlots[+sel.slice(1)][1]}` : (EQUIP.find(e => e[0] === sel) || [0, 'Slot'])[1];
+        return W.win(label, itemPanel());
+      }
+
+      function kpis(sum) {
+        const r = sum && sum.res;
+        const tile = (v, label, cl) => el('div', { class: cl || '' }, el('b', {}, v), el('span', {}, label));
+        const best = sum && sum.best && r.melee ? r.melee.spell(Object.keys(sum.best.parts).length ? sum.best.parts : { neutral: sum.best.total }).expected * sum.best.hits : null;
+        return el('div', { class: 'kpi lo-kpi' },
+          tile(r ? fmt(r.hp) : '—', 'Health'), tile(r ? fmt(r.ehpAgi) : '—', 'EHP with dodge'),
+          tile(r && r.melee ? fmt(r.melee.dps) : '—', 'Main attack DPS'),
+          tile(best != null ? fmt(best) : '—', sum && sum.best ? sum.best.name : 'Best spell'),
+          tile(sum ? W.num(sum.fighting, 1) : '—', 'Mana / s'),
+          tile(r ? `${r.spTotal}/${r.spAvail}` : '—', 'Skill points', r && r.spTotal > r.spAvail ? 'bad' : ''));
+      }
+
+      function side() {
+        const sum = summary();
+        const body = tab === 'tree' ? treeWin()
+          : !sum ? W.win('Nothing to show yet', el('p', { class: 'empty' }, 'Add some gear to see the numbers.'))
+          : tab === 'damage' ? sum.dmgWin : tab === 'mana' ? sum.manaWin : tab === 'sp' ? sum.spWin
+          : el('div', { class: 'stack' }, sum.defWin, sum.idWin);
+        return el('div', { class: 'stack lo-side' },
+          kpis(sum),
+          el('div', { class: 'lotabs', role: 'tablist' }, TAB_LIST.map(([k, label]) => el('button', { class: 'lotab' + (tab === k ? ' on' : ''), role: 'tab', 'aria-selected': tab === k,
+            onclick: () => { tab = k; draw(); } }, label))),
+          body);
       }
 
       const draw = () => {
         ensureTree();
         const b = buildWin(); b.classList.add('lo-build');
-        root.replaceChildren(el('div', { class: 'stack' },
-          el('div', { class: 'cols wide-l' }, el('div', { class: 'stack' }, b, equipWin(), tomesWin(), pasteWin()), el('div', { class: 'lo-right' }, summary())),
-          treeWin()));
+        const y = scrollY;
+        root.replaceChildren(el('div', { class: 'lo-inv' },
+          el('div', { class: 'stack' }, inventory(), editor(), pasteWin()),
+          el('div', { class: 'stack' }, side(), b)));
+        scrollTo(0, y);   // redraws keep your place
       };
       draw();
     });
