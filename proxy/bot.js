@@ -183,13 +183,78 @@ const H = {
       footer: { text: 'Wynncraft only lists events starting in the next 15 minutes' } }] };
   },
 
-  async wynnia() {
-    return { embeds: [{ title: 'Wynnia · Tools for Wynncraft', url: SITE, color: GOLD, thumbnail: { url: SITE + 'brand/wynnia-ring-256.png' },
-      description: [`[Loadout Builder](${SITE}#items/loadout) · [Build Library](${SITE}#items/builds) · [Prices](${SITE}#items/prices)`,
-        `[Next Steps](${SITE}#players/plan) · [Player lookup](${SITE}#players/lookup) · [Guilds](${SITE}#guilds/lookup)`,
-        `[Map](${SITE}#world/map) · [Events](${SITE}#world/events) · [Raids](${SITE}#world/raids) · [Lootruns](${SITE}#world/lootruns)`].join('\n') }] };
-  },
+  async wynnia() { return panel('home'); },
 };
+
+/* ---------- the /wynnia panel ---------- */
+/* One message you can click through: the home card, then a page per site section (its rank colour, its picture,
+   a line about each tool and a button to open it). The menu and Home button edit the same message. */
+const SECTIONS = [
+  { k: 'items', name: 'Items', color: 0x6f8fb8, pic: 'img/wiki/3d-items.webp', blurb: 'Every item, your builds and what they cost.', pages: [
+    ['loadout', 'Loadout Builder', 'Gear, exact rolls, powders, tomes, skill points and the ability tree, with damage worked out like the game.'],
+    ['builds', 'Build Library', 'Save builds with tags and share them as short links.'],
+    ['recommend', 'Recommended Build', 'The best gear for a class and archetype, or for your own character.'],
+    ['prices', 'Prices', 'Trade market prices, price history and alerts when an item gets cheap.'],
+    ['search', 'Search', 'Filter every item by type, level, class and identification.'],
+    ['compare', 'Compare', 'Put items side by side.']] },
+  { k: 'players', name: 'Players', color: 0xd16fa6, pic: 'img/wiki/3d-players.webp', blurb: 'Look anyone up and plan what to do next.', pages: [
+    ['plan', 'Next Steps', 'A to-do list for your character: quests, raids, caves, professions and gear.'],
+    ['lookup', 'Lookup', 'Characters, professions, badges, stats and their mounts.'],
+    ['compare', 'Compare', 'Two players side by side.'],
+    ['leaderboards', 'Leaderboards', 'The top 100 in every category.'],
+    ['quests', 'Quest Checklist', 'What you’ve done and what’s left, by province.'],
+    ['watchlist', 'Watchlist', 'Friends you follow, and who’s online.']] },
+  { k: 'guilds', name: 'Guilds', color: 0xc9a75e, pic: 'img/wiki/3d-guilds.webp', blurb: 'Raiding guilds, war guilds and who holds what.', pages: [
+    ['lookup', 'Lookup', 'Raiding or war guild, seasons, activity, raids by raid and every member.'],
+    ['territories', 'Territories', 'Which guild holds every territory.']] },
+  { k: 'world', name: 'World', color: 0x4fae9f, pic: 'img/guide/thecanyoncolossusicon.png', blurb: 'The map, live events and guides.', pages: [
+    ['map', 'Map', 'World, guild territories and gathering nodes, with routes and share links.'],
+    ['events', 'Events', 'World events starting soon, this week’s loot pools and season timers.'],
+    ['raids', 'Raids', 'Every raid: requirements, rooms, bosses and rewards.'],
+    ['lootruns', 'Lootruns', 'Camps, beacons, challenges, curses and rewards.'],
+    ['caves', 'Caves', 'Every cave by level and difficulty.']] },
+  { k: 'crafting', name: 'Crafting', color: 0x9c7cc4, pic: 'img/wiki/3d-crafting.webp', blurb: 'Plan crafts before you spend the ingredients.', pages: [
+    ['combiner', 'Ingredient Combiner', 'Lay out ingredients and see what the craft rolls.'],
+    ['finder', 'Ingredient Finder', 'The best ingredients for the bonuses you want.'],
+    ['ingredients', 'Ingredients', 'Search every ingredient by bonus, profession and stars.']] },
+  { k: 'professions', name: 'Professions', color: 0xd9894a, pic: 'img/wiki/3d-professions.webp', blurb: 'Level professions faster.', pages: [
+    ['xp', 'XP Calculator', 'How much it takes to reach your next level.'],
+    ['spots', 'Grinding Spots', 'Where to gather at every level.'],
+    ['materials', 'Material Calculator', 'Materials, crafting XP and the level a batch of crafts gets you to.'],
+    ['gathering', 'Gathering', 'What you can gather at your level, and what comes next.']] },
+  { k: 'mounts', name: 'Mounts', color: 0x87b85b, pic: 'img/ui/flute.webp', blurb: 'Breed, feed and train better mounts.', pages: [
+    ['stable', 'Stable', 'Paste mounts from Wynntils and keep them in one place.'],
+    ['pairs', 'Pair Finder', 'Which two mounts make the best foal.'],
+    ['feeder', 'Feeder', 'Pick two parents and see the predicted foal.'],
+    ['lineage', 'Lineage', 'How many generations and how much feeding a goal takes.'],
+    ['training', 'Training', 'A training plan for a mount, and what each powerup does.'],
+    ['market', 'Market', 'Listings by price per Potential, against breeding one yourself.']] },
+];
+function panel(key) {
+  const sec = SECTIONS.find(s => s.k === key);
+  const menu = { type: 1, components: [{ type: 3, custom_id: 'wy:sec', placeholder: 'Browse a section…', options: [
+    { label: 'Home', value: 'home', description: 'Everything Wynnia does', default: !sec },
+    ...SECTIONS.map(s => ({ label: s.name, value: s.k, description: s.blurb.slice(0, 100), default: sec === s }))] }] };
+  const link = (label, url) => ({ type: 2, style: 5, label, url });
+  if (!sec) {
+    return { embeds: [{ author: { name: 'Wynnia', url: SITE, icon_url: SITE + 'brand/wynnia-ring-64.png' }, title: 'Tools for Wynncraft', url: SITE, color: GOLD,
+      thumbnail: { url: SITE + 'brand/wynnia-ring-256.png' },
+      description: 'Builds, prices, players, guilds and the world map, all free and in your browser.\n​',
+      fields: [
+        ...SECTIONS.map(s => ({ name: s.name, value: `${s.blurb}\n${s.pages.slice(0, 3).map(p => `[${p[1]}](${SITE}#${s.k}/${p[0]})`).join(' · ')}`, inline: true })),
+        { name: 'This week', value: `Loot pools change ${ts(nextPoolReset())}`, inline: true },
+        { name: 'In Discord', value: '`/item` `/price` `/player` `/guild` `/build` `/lootpool` `/events`', inline: false },
+      ], footer: { text: 'Pick a section below to see every tool in it', icon_url: SITE + 'brand/wynnia-ring-32.png' } }],
+      components: [menu, { type: 1, components: [link('Open Wynnia', SITE), link('Loadout Builder', SITE + '#items/loadout'), link('Next Steps', SITE + '#players/plan'), link('Prices', SITE + '#items/prices'), link('Map', SITE + '#world/map')] }] };
+  }
+  const rows = [];
+  for (let i = 0; i < sec.pages.length && rows.length < 2; i += 5) rows.push({ type: 1, components: sec.pages.slice(i, i + 5).map(p => link(p[1], `${SITE}#${sec.k}/${p[0]}`)) });
+  rows.push({ type: 1, components: [{ type: 2, style: 2, label: 'Back to Home', custom_id: 'wy:home' }, link('Open Wynnia', SITE)] });
+  return { embeds: [{ author: { name: 'Wynnia', url: SITE, icon_url: SITE + 'brand/wynnia-ring-64.png' }, title: sec.name, url: `${SITE}#${sec.k}`, color: sec.color,
+    thumbnail: { url: SITE + sec.pic }, description: sec.blurb + '\n​',
+    fields: sec.pages.map(p => ({ name: p[1], value: `${p[2]}\n[Open](${SITE}#${sec.k}/${p[0]})`, inline: true })),
+    footer: { text: 'Wynnia · ' + sec.name, icon_url: SITE + 'brand/wynnia-ring-32.png' } }], components: [menu, ...rows] };
+}
 
 /* autocomplete for item names and loot pool names */
 async function autocomplete(i, ctx) {
@@ -276,7 +341,13 @@ export default {
     const i = JSON.parse(body);
     if (i.type === 1) return json({ type: 1 });                                         // Discord checking the endpoint
     if (i.type === 4) return json({ type: 8, data: { choices: await autocomplete(i, ctx).catch(() => []) } });
+    if (i.type === 2 && i.data.name === 'wynnia') return json({ type: 4, data: panel('home') });   // instant, nothing to fetch
     if (i.type === 2) { ctx.waitUntil(runCommand(i, env, ctx)); return json({ type: 5 }); }   // "Wynnia is thinking…", then the answer
+    if (i.type === 3) {                                                                   // the /wynnia menu and Home button: edit that message
+      const id = i.data.custom_id;
+      if (id === 'wy:sec') return json({ type: 7, data: panel((i.data.values || [])[0]) });
+      if (id === 'wy:home') return json({ type: 7, data: panel('home') });
+    }
     return json({ error: 'unknown interaction' }, 400);
   },
 };
