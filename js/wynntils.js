@@ -123,7 +123,8 @@
       else throw new Error('Unsupported data block ' + id);
     }
     if (!ended) throw new Error('Item data is incomplete.');
-    if (itemType !== 0) throw new Error('This is not a gear item.');
+    if (itemType !== 0 && itemType !== 1) throw new Error('This is not gear or a tome.');
+    g.kind = itemType === 1 ? 'tome' : 'gear';   // Wynntils item types: 0 gear, 1 tome (same name/ID/reroll blocks)
     if (!g.name) throw new Error('Item name is missing.');
     return g;
   }

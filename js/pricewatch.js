@@ -109,7 +109,7 @@
           const it = byName[w.n], cur = el('span', { class: 'wcur' }, '…');
           W.marketPrice(w.n).then(p => { cur.replaceChildren(p ? W.emeraldTag(p, 'span') : '—'); if (p && p <= w.below) cur.closest('.wrow').classList.add('hit'); });
           return el('div', { class: 'wrow' },
-            el('button', { class: 'wname', onclick: () => pick(w.n) }, it ? W.art.item(it.ic) : null, w.n),
+            el('button', { class: 'wlname', onclick: () => pick(w.n) }, it ? W.art.item(it.ic) : null, w.n),
             el('div', { class: 'wvals' }, cur, el('small', {}, 'target ', W.emeralds(w.below))),
             el('button', { class: 'mini danger', title: 'Stop watching', onclick: () => { write(KEY, W.watchlist().filter(x => x.n !== w.n)); draw(); } }, '×'));
         }) : el('p', { class: 'empty' }, 'Nothing watched yet. Look up an item and set a price to be alerted.'));

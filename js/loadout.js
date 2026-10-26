@@ -47,11 +47,12 @@
 
   /* A spell with the unlocked tree upgrades that change it applied: signed damage changes ("-20% per arrow"),
      mana cost changes, and extra streams / arrows per stream / hits. Upgrades count when they need the spell
-     or name it; damage lines marked "for X" or "per Y" only apply to the matching spell. */
-  W.treeSpell = (sp, spellId, T, selected) => {
+     or name it; damage lines marked "for X" or "per Y" only apply to the matching spell. Conditional counts
+     ("Hitting 1 flint arrow will make your next Arrow Storm shoot +1 arrow per stream. (Max 40)") use stacks[name]. */
+  W.treeSpell = (sp, spellId, T, selected, stacks = {}) => {
     const parts = Object.assign({}, sp.parts);
     let streams = 1, perStream = sp.perStream, extraHits = 0, costAdj = 0;
-    const applied = [];
+    const applied = [], cond = [];
     const units = (sp.per.match(/per (\w+)/) || [])[1] || '';
     selected.forEach(id => {
       const a = T.abilities[id];
@@ -66,17 +67,24 @@
           const q = d[2], forX = /for ([^,]+)$/.exec(q), perY = /per ([\w/]+)/.exec(q);
           if (forX && forX[1].trim() !== sp.name) return;
           if (perY && !perY[1].split('/').some(u => units.startsWith(u.replace(/s$/, '')))) return;
-          let sum = 0;
-          for (const m of line.matchAll(/\(([✣✤✦❉✹❋])\s*\w+:\s*([+-]?[\d.]+)%\)/g)) { const e = GLYPH_EL[m[1]]; parts[e] = (parts[e] || 0) + +m[2]; sum += +m[2]; }
-          if (Math.abs(sum - +d[1]) > 0.01) parts.neutral = (parts.neutral || 0) + (+d[1] - sum);   // the listed parts don't always add up to the total
+          let listed = 0;
+          for (const m of line.matchAll(/\(([✣✤✦❉✹❋])\s*\w+:\s*([+-]?[\d.]+)%\)/g)) { const e = GLYPH_EL[m[1]]; parts[e] = (parts[e] || 0) + +m[2]; listed++; }
+          /* the listed parts are what applies to this spell; a Total that differs covers other spells too
+             (Nimble String: "-20%" but "(✣ Damage: -10%)" per arrow, the rest is Phantom Ray). Only a bare Total counts as neutral. */
+          if (!listed) parts.neutral = (parts.neutral || 0) + +d[1];
           used = true;
         }
         const c = /Mana Cost:\s*([+-]\d+)/.exec(line);
         if (c) { costAdj += +c[1]; used = true; }
       });
-      /* counts, unless conditional ("Hitting 1 flint arrow ... (Max 40)") */
-      if (!/\(Max \d+\)/.test(txt)) {
-        const st = /\+(\d+) (?:extra |additional )?streams?/i.exec(txt), ps = /\+(\d+) (?:extra |additional )?arrows? per stream/i.exec(txt), h = /\+(\d+) (?:extra |additional )?hits?\b/i.exec(txt);
+      const st = /\+(\d+) (?:extra |additional )?streams?/i.exec(txt), ps = /\+(\d+) (?:extra |additional )?arrows? per stream/i.exec(txt), h = /\+(\d+) (?:extra |additional )?hits?\b/i.exec(txt);
+      const max = /\(Max (\d+)\)/.exec(txt);
+      if (max) {
+        /* conditional: counts as many times as you say it stacked, up to its max */
+        const name = W.treePlain(a.name), n = Math.max(0, Math.min(+max[1], stacks[name] || 0));
+        if (ps && perStream) { cond.push({ name, max: +max[1], n, what: `+${ps[1]} per stream each` }); perStream += n * +ps[1]; if (n) used = true; }
+        else if (h) { cond.push({ name, max: +max[1], n, what: `+${h[1]} hit${h[1] === '1' ? '' : 's'} each` }); extraHits += n * +h[1]; if (n) used = true; }
+      } else {
         if (st) { streams += +st[1]; used = true; }
         if (ps && perStream) { perStream += +ps[1]; used = true; }
         if (h) { extraHits += +h[1]; used = true; }
@@ -87,7 +95,27 @@
     const total = Object.values(parts).reduce((x, y) => x + y, 0);
     const hits = perStream ? streams * perStream + extraHits : sp.hits + extraHits;
     const unit = perStream ? (streams > 1 ? `arrows (${streams} streams × ${perStream})` : sp.unit) : sp.unit || (extraHits ? 'hits' : '');
-    return Object.assign({}, sp, { parts, total: sp.total != null ? total : null, cost: sp.cost != null ? Math.max(1, sp.cost + costAdj) : null, hits, unit, applied });
+    return Object.assign({}, sp, { parts, total: sp.total != null ? total : null, cost: sp.cost != null ? Math.max(1, sp.cost + costAdj) : null, hits, unit, applied, cond });
+  };
+
+  /* Damage from unlocked ability tree nodes that aren't spells: the element masteries ("❋ Air Damage: +3-4",
+     "❋ Air Damage: +15%"). Returns { add: { air: [3, 4] }, pct: { air: 15 } } for W.computeBuild. */
+  const ELEM_WORD = { earth: 'earth', thunder: 'thunder', water: 'water', fire: 'fire', air: 'air' };
+  W.treeBonuses = (T, selected) => {
+    const out = { add: {}, pct: {} };
+    if (!T) return out;
+    (selected || []).forEach(id => {
+      const a = T.abilities[id]; if (!a) return;
+      const txt = W.mcHtml(a.description).textContent.replace(/\s+/g, ' ');
+      if (/Click Combo/.test(txt)) return;
+      for (const m of txt.matchAll(/[✤✦❉✹❋]\s*(Earth|Thunder|Water|Fire|Air) Damage:\s*\+(\d+)-(\d+)(?![\d%])/g)) {
+        const e = ELEM_WORD[m[1].toLowerCase()], v = out.add[e] || [0, 0]; out.add[e] = [v[0] + +m[2], v[1] + +m[3]];
+      }
+      for (const m of txt.matchAll(/[✤✦❉✹❋]\s*(Earth|Thunder|Water|Fire|Air) Damage:\s*\+([\d.]+)%/g)) {
+        const e = ELEM_WORD[m[1].toLowerCase()]; out.pct[e] = (out.pct[e] || 0) + +m[2];
+      }
+    });
+    return out;
   };
 
   W.pages['items/loadout'] = function (root, q) {
@@ -119,7 +147,7 @@
       const piece = (k) => crafted(k) || (LB.s[k] && byName[LB.s[k][0]] ? { key: k, item: byName[LB.s[k][0]], r: LB.s[k][1], p: LB.s[k][2] } : null);
       const pieces = () => W.BUILD_SLOTS.map(piece).filter(Boolean);
       const cls = () => { const w = piece('w'); return w ? WEAPON_CLASS[w.item.t] : (owner && owner.char ? String(owner.char.type).toLowerCase() : LB.cls || null); };
-      const compute = () => W.computeBuild(pieces(), { mode: LB.mode, level: LB.lvl, extra: LB.x }, eng);
+      const compute = () => W.computeBuild(pieces(), { mode: LB.mode, level: LB.lvl, extra: LB.x, tree: W.treeBonuses(T && T.cls === cls() ? T : null, LB.t) }, eng);
 
       const ensureTree = () => {
         const c = cls(); if (!c) { T = null; return; }
@@ -335,23 +363,54 @@
             el('button', { class: 'mini pwbtn', title: 'Add ' + e, onclick: () => add(e, +tierSel.value) }, el('img', { src: `img/ui/powder-${e}.webp`, alt: '' }), W.cap(e)))) : null);
       }
 
+      /* Wynntils item strings -> gear slots or mastery tome slots. Tomes fill the first slot of their kind that is free
+         (or not yet filled by this paste), in the game's slot order. Returns one result row per item. */
+      function importItems(text) {
+        const res = WynntilsDecode.decodeGearText(text, idKeys), usedTome = new Set();
+        const rows = res.map(r => {
+          if (!r.ok) return el('div', { class: 'warn' }, r.error);
+          const it = byName[r.gear.name] || byName[r.gear.name.replace(/[^\x20-\x7e]/g, '').trim()];
+          if (!it) return el('div', { class: 'warn' }, `“${r.gear.name}” isn’t in the item list yet.`);
+          let slot;
+          if (it.g === 'tome') {
+            const fits = eng.tomeSlots.map(([type], i) => [type, 't' + i]).filter(([type, k]) => type === it.t && !usedTome.has(k));
+            slot = (fits.find(([, k]) => !LB.s[k]) || fits[0] || [])[1];
+            if (!slot) return el('div', { class: 'warn' }, `No free ${TOME_NAMES[it.t] || 'tome'} slot for ${it.n}.`);
+            usedTome.add(slot);
+            LB.s[slot] = [it.n, r.gear.ids, null];
+          } else {
+            slot = it.t === 'ring' ? (!LB.s.r1 || LB.s.r1[0] === it.n ? 'r1' : 'r2') : (EQUIP.find(s => s[2].includes(it.t)) || [])[0];
+            if (!slot) return el('div', { class: 'warn' }, `${it.n} can’t go in a gear slot.`);
+            LB.s[slot] = [it.n, r.gear.ids, r.gear.powders.length ? r.gear.powders : null];
+            if (LB.c) delete LB.c[slot];
+          }
+          store();
+          return el('div', { class: 'impRow' }, W.slot(W.art.item(it.ic)), el('div', {}, el('b', { style: { color: W.tierColor(it.r) } }, it.n), el('small', {}, `Added with ${Object.keys(r.gear.ids).length} exact rolls${r.gear.powders.length ? ' and ' + r.gear.powders.length + ' powders' : ''}.`)));
+        });
+        return { rows, any: res.some(r => r.ok) };
+      }
+      /* read Wynntils strings straight from the clipboard (the browser asks for permission the first time) */
+      const pasteClipboard = (btn, out) => {
+        const t = btn.textContent;
+        if (!navigator.clipboard || !navigator.clipboard.readText) { btn.textContent = 'Clipboard not available here'; setTimeout(() => { btn.textContent = t; }, 2000); return; }
+        navigator.clipboard.readText().then(text => {
+          const { rows, any } = importItems(text);
+          if (out) out.replaceChildren(...(rows.length ? rows : [el('div', { class: 'warn' }, 'No Wynntils item strings on the clipboard.')]));
+          btn.textContent = !rows.length ? 'Nothing to import' : any ? 'Imported' : 'Couldn’t import';
+          setTimeout(() => { btn.textContent = t; if (any) draw(); }, 900);
+        }).catch(() => { btn.textContent = 'Clipboard blocked'; setTimeout(() => { btn.textContent = t; }, 2000); });
+      };
+
       function pasteWin() {
-        const ta = el('textarea', { rows: 3, placeholder: 'Paste Wynntils item strings here (one or several)…' });
+        const ta = el('textarea', { rows: 3, placeholder: 'Paste Wynntils item strings here (gear or mastery tomes, one or several)…' });
         const out = el('div', { class: 'imp' });
         ta.addEventListener('input', () => {
-          const res = WynntilsDecode.decodeGearText(ta.value, idKeys);
-          out.replaceChildren(...res.map(r => {
-            if (!r.ok) return el('div', { class: 'warn' }, r.error);
-            const it = byName[r.gear.name];
-            if (!it) return el('div', { class: 'warn' }, `“${r.gear.name}” isn’t in the item list yet.`);
-            const slot = it.t === 'ring' ? (!LB.s.r1 || LB.s.r1[0] === it.n ? 'r1' : 'r2') : (EQUIP.find(s => s[2].includes(it.t)) || [])[0];
-            if (!slot) return el('div', { class: 'warn' }, `${it.n} can’t go in a gear slot.`);
-            LB.s[slot] = [it.n, r.gear.ids, r.gear.powders.length ? r.gear.powders : null]; store();
-            return el('div', { class: 'impRow' }, W.slot(W.art.item(it.ic)), el('div', {}, el('b', { style: { color: W.tierColor(it.r) } }, it.n), el('small', {}, `Added with ${Object.keys(r.gear.ids).length} exact rolls${r.gear.powders.length ? ' and ' + r.gear.powders.length + ' powders' : ''}.`)));
-          }));
-          if (res.some(r => r.ok)) setTimeout(draw, 900);
+          const { rows, any } = importItems(ta.value);
+          out.replaceChildren(...rows);
+          if (any) setTimeout(draw, 900);
         });
-        return W.win('Paste from Wynntils', el('p', { class: 'hint', style: { marginTop: 0 } }, 'Share each piece you wear with Wynntils in-game and paste the strings here. Exact rolls and powders come along.'), ta, out);
+        return W.win('Paste from Wynntils', el('p', { class: 'hint', style: { marginTop: 0 } }, 'Share each piece you wear, and your mastery tomes, with Wynntils in-game and paste the strings here. Exact rolls and powders come along.'),
+          ta, el('div', { class: 'btns', style: { marginTop: '8px' } }, el('button', { class: 'mini', onclick: (e) => pasteClipboard(e.target, out) }, 'Paste from clipboard')), out);
       }
 
       /* ---------- right column ---------- */
@@ -401,7 +460,7 @@
             el('div', {}, el('span', {}, 'Health regen'), el('b', {}, res.hpRegen + ' /4s')),
             el('div', {}, el('span', {}, 'Life steal'), el('b', {}, res.lifeSteal + ' /3s'))));
 
-        const spells = T && T.cls === cls() ? Object.entries(T.abilities).filter(([, a]) => /node(Archer|Warrior|Mage|Assassin|Shaman)/.test(JSON.stringify(a.icon))).map(([id, a]) => { const base = { id, ...W.parseSpell(a), on: LB.t.includes(id) }; return base.on ? W.treeSpell(base, id, T, LB.t) : base; }) : [];
+        const spells = T && T.cls === cls() ? Object.entries(T.abilities).filter(([, a]) => /node(Archer|Warrior|Mage|Assassin|Shaman)/.test(JSON.stringify(a.icon))).map(([id, a]) => { const base = { id, ...W.parseSpell(a), on: LB.t.includes(id) }; return base.on ? W.treeSpell(base, id, T, LB.t, LB.stacks || {}) : base; }) : [];
         const dmgWin = res.melee ? W.win('Damage (estimate)',
           el('div', { class: 'bigstats' },
             el('div', {}, el('b', {}, fmt(res.melee.dps)), el('span', {}, 'Main attack DPS')),
@@ -419,12 +478,15 @@
             const hit = sp.total ? res.melee.spell(Object.keys(sp.parts).length ? sp.parts : { neutral: sp.total }) : null;
             return el('div', { class: 'spell' + (sp.on ? '' : ' off') },
               el('div', {}, el('b', {}, sp.name), el('small', {}, `${sp.combo}${sp.on ? '' : ' · not unlocked'}`),
-                sp.applied && sp.applied.length ? el('small', { class: 'spup' }, 'With ' + sp.applied.join(', ')) : null),
+                sp.applied && sp.applied.length ? el('small', { class: 'spup' }, 'With ' + sp.applied.join(', ')) : null,
+                /* conditional tree bonuses (Feedback Loop): say how many stacks you usually have */
+                (sp.cond || []).map(c => el('label', { class: 'spstack', title: `${c.name}: ${c.what}, up to ${c.max}` }, c.name,
+                  W.numIn(c.n, (v) => { LB.stacks = Object.assign({}, LB.stacks, { [c.name]: Math.max(0, Math.min(c.max, v)) }); store(); draw(); }, 0, c.max), el('small', {}, `/ ${c.max} stacks`)))),
               el('div', { class: 'sv' }, el('b', {}, cost != null ? cost : '—'), el('small', {}, 'mana')),
               el('div', { class: 'sv' }, el('b', {}, !hit ? '—' : sp.hits > 1 ? fmt(hit.expected) : ''), el('small', {}, !hit ? 'no damage' : sp.hits > 1 ? (sp.per || 'per hit') : 'single hit')),
               el('div', { class: 'sv total' }, el('b', {}, hit ? fmt(hit.expected * sp.hits) : '—'), el('small', {}, !hit ? '' : sp.hits > 1 ? `per cast · ${sp.hits} ${sp.unit}` : 'per cast')));
           }),
-          el('p', { class: 'hint' }, 'Estimates. Unlocked tree upgrades that change a spell’s damage, mana cost or arrow/hit count are included (listed under each spell); other effects aren’t. “Per cast” assumes every arrow or hit lands on one target. Crits are averaged in.')) :
+          el('p', { class: 'hint' }, 'Worked out the way WynnBuilder models the game. Unlocked tree upgrades that change a spell’s damage, mana cost or arrow/hit count are included (listed under each spell), and element masteries add their damage. Bonuses that stack in a fight (like Feedback Loop) count the stacks you set. “Per cast” assumes every arrow or hit lands on one target; crits are averaged in.')) :
           W.win('Damage', el('p', { class: 'empty' }, 'Add a weapon to see damage.'));
 
         /* Mana sustain: natural regen (wiki: 5 mana/s, editable) + Mana Regen per 5s, plus Mana Steal per 3s while your attacks land */
@@ -493,7 +555,7 @@
 
         const run = () => {
           UP.busy = true; UP.res = null; UP.key = stateKey; UP.done = 0;
-          const base = pieces(), c = cls();
+          const base = pieces(), c = cls(), treeB = W.treeBonuses(T && T.cls === c ? T : null, LB.t);
           const jobs = [];
           EQUIP.forEach(([k, , types]) => {
             const now = piece(k);
@@ -508,7 +570,7 @@
             for (; UP.done < end; UP.done++) {
               const [k, i, now] = jobs[UP.done];
               const p = { key: k, item: i, r: null, p: now && now.p && i.ps ? now.p.slice(0, i.ps) : null };
-              const r = W.computeBuild(base.filter(x => x.key !== k).concat(p), { mode: LB.mode, level: LB.lvl, extra: LB.x }, eng);
+              const r = W.computeBuild(base.filter(x => x.key !== k).concat(p), { mode: LB.mode, level: LB.lvl, extra: LB.x, tree: treeB }, eng);
               if (r.short.some(x => x) || r.spTotal > r.spAvail) continue;   // couldn't wear it
               const v = metric(r);
               if (v > cur * 1.005) found.push({ k, i, gain: v / (cur || 1) - 1 });
@@ -607,7 +669,10 @@
             w ? el('div', {}, el('b', { style: { color: w.item.r === 'mythic' ? '#cf5ce8' : W.tierColor(w.item.r) } }, w.item.n),
               el('small', {}, [w.item.dps ? Math.round(w.item.dps) + ' DPS' : null, w.item.as ? W.words(w.item.as) : null, w.item.ps ? `${(w.p || []).length}/${w.item.ps} powders` : null].filter(Boolean).join(' · ')))
               : el('div', {}, el('b', {}, 'No weapon'), el('small', {}, 'Pick one to set the class'))),
-          el('div', { class: 'invlab' }, `Mastery tomes · ${tomesOn}/14`),
+          el('div', { class: 'invlab' }, `Mastery tomes · ${tomesOn}/14`,
+            el('span', { class: 'tomebtns' },
+              el('button', { class: 'mini', title: 'Import mastery tomes from Wynntils strings on your clipboard', onclick: (e) => pasteClipboard(e.target, null) }, 'Paste tomes'),
+              tomesOn ? el('button', { class: 'mini danger', title: 'Take every mastery tome out', onclick: () => { eng.tomeSlots.forEach((_, i) => { delete LB.s['t' + i]; }); store(); draw(); } }, 'Reset') : null)),
           el('div', { class: 'invhot' }, eng.tomeSlots.map(([type, lvl], i) => invSlot('t' + i, `${TOME_NAMES[type]} · Lv. ${lvl}`))));
       }
 

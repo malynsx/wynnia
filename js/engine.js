@@ -1,6 +1,6 @@
 /* Build engine: skill point solving, stat totals, defences, health, mana and damage estimates.
-   Values come from the Wynncraft Wiki (skill point curve, powders, attack speeds, mana). The exact in-game
-   damage formula isn't published, so damage numbers are labelled estimates. */
+   Values come from the Wynncraft Wiki (skill point curve, powders, attack speeds, mana). Wynncraft doesn't publish
+   its damage formula; damage follows WynnBuilder's model of it (see the note in computeBuild). */
 (function (W) {
   const SK = ['strength', 'dexterity', 'intelligence', 'defence', 'agility'];
   const SK_ID = { strength: 'rawStrength', dexterity: 'rawDexterity', intelligence: 'rawIntelligence', defence: 'rawDefence', agility: 'rawAgility' };
@@ -109,7 +109,7 @@
     const ehpAgi = hp / ((1 - defPct / 100) * (1 - agiPct / 100 * 0.9));
     const mana = Math.min(eng.manaCap, Math.round(eng.baseMana * (1 + scale(finalSP[2]) / 100) + id('rawMaxMana')));
 
-    /* weapon damage after powders (estimate) */
+    /* weapon damage after powders */
     const w = pieces.find(p => p.item.g === 'weapon');
     let melee = null, base = null, speedKey = null;
     if (w) {
@@ -128,49 +128,67 @@
         base[el] = [base[el][0] + moved[0] + pw.min, base[el][1] + moved[1] + pw.max];
       });
       const order = eng.attackOrder;
-      const idx = Math.max(0, Math.min(order.length - 1, order.indexOf(w.item.as || 'normal') + id('rawAttackSpeed')));
+      const weaponSpeed = order.includes(w.item.as) ? w.item.as : 'normal';
+      const idx = Math.max(0, Math.min(order.length - 1, order.indexOf(weaponSpeed) + id('rawAttackSpeed')));
       speedKey = order[idx];
       const hits = eng.attackSpeed[speedKey];
       const elements = ['neutral', ...ELEM];
       const present = elements.filter(e => base[e][1] > 0);
-      const skillBonus = (e) => e === 'neutral' ? 0 : scale(finalSP[SK.indexOf(Object.keys(SK_ELEM).find(s => SK_ELEM[s] === e))]);
-      const pctFor = (e, kind) => id('damage') + id(kind + 'Damage') + (e === 'neutral' ? id('neutralDamage') + id('neutral' + cap(kind) + 'Damage')
-        : id(e + 'Damage') + id(e + cap(kind) + 'Damage') + id('elementalDamage') + id('elemental' + cap(kind) + 'Damage')) + skillBonus(e) + scale(finalSP[0]) * (e === 'neutral' ? 1 : 0);
-      const rawFor = (e, kind) => (e === 'neutral' ? 0 : id('raw' + cap(e) + 'Damage') + id('raw' + cap(e) + cap(kind) + 'Damage'));
-      const rawShared = (kind) => id('rawDamage') + id('raw' + cap(kind) + 'Damage') + id('rawNeutralDamage') + id('rawNeutral' + cap(kind) + 'Damage');
-      const rawElemShared = (kind) => id('rawElementalDamage') + id('rawElemental' + cap(kind) + 'Damage');
-      const critChance = Math.min(100, scale(finalSP[1])) / 100, critMult = 2 + id('criticalDamageBonus') / 100;
-      /* damage for a map of element -> [min, max] base values */
-      /* rawScale: raw damage IDs count in full on a main attack, but a spell only gets its own % of them
-         (a 40%-per-arrow spell adds 40% of your Raw Spell Damage to each arrow) */
-      const damage = (baseMap, kind, rawScale = 1) => {
+
+      /* Damage, the way WynnBuilder models the game (wynnbuilder.github.io, damage_calc.js):
+         1. a spell's conversions: its neutral % scales every element of the weapon, each elemental % adds that share of
+            the weapon's total damage to that element; spells (not main attacks) also scale by the weapon's attack speed
+         2. flat elemental damage from the ability tree (Air Mastery: +3-4) is added to elements that are present
+         3. % boosts add up: skill points (Strength for earth, Dexterity thunder, Intelligence water, Defence x0.867 fire,
+            Agility x0.951 air), % damage, % spell/main attack damage, the element's own %, and elemental % for elements
+         4. raw damage is added after that, split by each element's share and scaled by the spell's total %
+         5. Strength then multiplies everything, and a crit adds 100% + Critical Damage Bonus on top */
+      const tree = opts.tree || { add: {}, pct: {} };
+      const pctSP = (i) => scale(finalSP[i]) / 100;
+      const skillBoost = { neutral: 0, earth: pctSP(0), thunder: pctSP(1), water: pctSP(2), fire: pctSP(3) * 0.867, air: pctSP(4) * 0.951 };
+      const strBoost = 1 + pctSP(0);
+      const critChance = Math.min(1, pctSP(1)), critMult = 1 + id('criticalDamageBonus') / 100;
+      const wMin = elements.reduce((a, e) => a + base[e][0], 0), wMax = elements.reduce((a, e) => a + base[e][1], 0);
+      /* conv: { neutral: %, fire: %, ... }; kind: 'spell' | 'mainAttack' */
+      const damage = (conv, kind, useSpeed) => {
+        const K = cap(kind), d = {}, here = {};
+        const nConv = (conv.neutral || 0) / 100;
+        elements.forEach(e => { d[e] = [base[e][0] * nConv, base[e][1] * nConv]; here[e] = nConv > 0 && base[e][1] > 0; });
+        ELEM.forEach(e => { const c = (conv[e] || 0) / 100; if (c > 0) { d[e][0] += c * wMin; d[e][1] += c * wMax; here[e] = true; } });
+        const totalConv = elements.reduce((a, e) => a + Math.max(0, conv[e] || 0), 0) / 100;
+        if (useSpeed) elements.forEach(e => { d[e][0] *= eng.attackSpeed[weaponSpeed]; d[e][1] *= eng.attackSpeed[weaponSpeed]; });
+        ELEM.forEach(e => { if (here[e] && tree.add[e]) { d[e][0] += tree.add[e][0]; d[e][1] += tree.add[e][1]; } });
+        const pre = {}; elements.forEach(e => { pre[e] = d[e].slice(); });
+        const sum = (es, k) => es.reduce((a, e) => a + pre[e][k], 0);
+        const tot = [sum(elements, 0), sum(elements, 1)], totE = [sum(ELEM, 0), sum(ELEM, 1)];
+        const flat = id(kind + 'Damage') + id('damage');
+        elements.forEach(e => {
+          let m = 1 + skillBoost[e] + flat / 100 + (id(e + K + 'Damage') + id(e + 'Damage') + (tree.pct[e] || 0)) / 100;
+          if (e !== 'neutral') m += (id('elemental' + K + 'Damage') + id('elementalDamage')) / 100;
+          d[e][0] *= m; d[e][1] *= m;
+        });
+        const propRaw = id('raw' + K + 'Damage') + id('rawDamage'), rainbowRaw = id('rawElemental' + K + 'Damage') + id('rawElementalDamage');
+        elements.forEach(e => {
+          let lo = 0, hi = 0;
+          if (here[e]) { const own = id('raw' + cap(e) + K + 'Damage') + id('raw' + cap(e) + 'Damage'); lo += own; hi += own; }
+          if (tot[1] > 0) { lo += (tot[0] ? pre[e][0] / tot[0] : pre[e][1] / tot[1]) * propRaw; hi += pre[e][1] / tot[1] * propRaw; }
+          if (e !== 'neutral' && totE[1] > 0) { lo += (totE[0] ? pre[e][0] / totE[0] : pre[e][1] / totE[1]) * rainbowRaw; hi += pre[e][1] / totE[1] * rainbowRaw; }
+          d[e][0] += lo * totalConv; d[e][1] += hi * totalConv;
+        });
         const per = {}; let lo = 0, hi = 0;
-        const elems = Object.keys(baseMap).filter(e => baseMap[e][1] > 0);
-        const avgOf = (e) => (baseMap[e][0] + baseMap[e][1]) / 2;
-        const all = elems.reduce((a, e) => a + avgOf(e), 0) || 1, elemOnly = elems.filter(e => e !== 'neutral').reduce((a, e) => a + avgOf(e), 0) || 1;
-        elems.forEach(e => {
-          const raw = rawScale * (rawShared(kind) * avgOf(e) / all + rawFor(e, kind) + (e !== 'neutral' ? rawElemShared(kind) * avgOf(e) / elemOnly : 0));
-          const m = Math.max(0, 1 + pctFor(e, kind) / 100);
-          const a = Math.max(0, (baseMap[e][0] + raw) * m), b = Math.max(0, (baseMap[e][1] + raw) * m);
-          per[e] = [a, b]; lo += a; hi += b;
+        elements.forEach(e => {
+          const a = Math.max(0, d[e][0]) * strBoost, c = Math.max(0, d[e][1]) * strBoost;
+          if (c > 0) per[e] = [a, c];
+          lo += a; hi += c;
         });
         const avg = (lo + hi) / 2;
-        return { per, lo, hi, avg, expected: avg * ((1 - critChance) + critChance * critMult) };
+        return { per, lo, hi, avg, expected: avg * (1 - critChance) + avg * (strBoost + critMult) / strBoost * critChance };
       };
-      const hit = damage(base, 'mainAttack');
+      const hit = damage({ neutral: 100 }, 'mainAttack', false);
       const baseAvg = present.reduce((a, e) => a + (base[e][0] + base[e][1]) / 2, 0);
       melee = { ...hit, hits, speed: speedKey, dps: hit.expected * hits, critChance, baseDps: baseAvg * hits };
-      /* Spells deal a % of the weapon's base DPS. parts: { neutral: %, fire: %, ... } from the ability text.
-         The neutral part follows the weapon's own element split; elemental parts go to that element. */
-      melee.spell = (parts) => {
-        const map = {};
-        Object.entries(parts).forEach(([e, pct]) => {
-          const f = pct / 100 * hits;
-          if (e === 'neutral') present.forEach(x => { map[x] = map[x] || [0, 0]; map[x][0] += base[x][0] * f; map[x][1] += base[x][1] * f; });
-          else { map[e] = map[e] || [0, 0]; map[e][0] += baseAvg * f * 0.9; map[e][1] += baseAvg * f * 1.1; }
-        });
-        return damage(map, 'spell', Object.values(parts).reduce((a, b) => a + b, 0) / 100);
-      };
+      /* a spell part: { neutral: %, fire: %, ... } from the ability text */
+      melee.spell = (parts) => damage(parts, 'spell', true);
     }
     const intCost = scale(finalSP[2]) * 0.5 / 80.8;
     const spellCost = (n, baseCost) => {
