@@ -71,13 +71,18 @@ const RAW_FLAT = new Set(['rawHealth', 'healthRegenRaw', 'manaRegen', 'manaSteal
 const idName = (k) => ID_NAMES[k] || k.replace(/^raw/, '').replace(/([A-Z0-9])/g, ' $1').replace(/^./, c => c.toUpperCase()).trim();
 const idVal = (k, v) => { const unit = PER[k] || (k.startsWith('raw') || RAW_FLAT.has(k) || k.endsWith('Raw') ? '' : '%'); const f = (n) => (n > 0 ? '+' : '') + n + unit; return Array.isArray(v) ? (v[0] === v[1] ? f(v[0]) : `${f(v[0])} to ${f(v[1])}`) : f(v); };
 
+/* { p, low, n } when it has sold lately, null when it hasn't, { err } when the relay couldn't be asked */
 async function price(name, ctx) {
   try {
     const j = await getJSON(`${RELAY}/market/price/${encodeURIComponent(name)}`, 600, ctx), d = j && j.data;
     if (!d) return null;
     const p = ['average_mid_80_percent_price', 'p50_price', 'average_price', 'lowest_price'].map(k => d[k]).find(v => v > 0);
     return p ? { p, low: d.lowest_price, n: d.total_count } : null;
-  } catch (e) { return null; }
+  } catch (e) {
+    if (e.status === 404) return null;   // Wynnventory has no record of it
+    return { err: !(ctx.env && ctx.env.RELAY) ? 'Couldn’t ask for prices: the bot has no RELAY service binding.'
+      : e.status === 503 ? 'Prices are switched off on the relay (no Wynnventory key).' : `Couldn’t reach the price service (${e.message}).` };
+  }
 }
 
 /* ---------- commands ---------- */
@@ -97,7 +102,7 @@ const H = {
     if (bits.length) fields.push({ name: 'Base', value: bits.join('\n'), inline: false });
     if (ids) fields.push({ name: 'Identifications', value: ids.slice(0, 1024), inline: false });
     if (it.m && it.m.length) fields.push({ name: 'Major ID', value: it.m.map(m => typeof m === 'string' ? m : m.n || JSON.stringify(m)).join(', ').slice(0, 1024) });
-    fields.push({ name: 'Trade market', value: pr ? `${emeralds(pr.p)} typical · ${emeralds(pr.low)} cheapest · ${pr.n} listings` : 'Not seen lately', inline: false });
+    fields.push({ name: 'Trade market', value: pr && pr.err ? pr.err : pr ? `${emeralds(pr.p)} typical · ${emeralds(pr.low)} cheapest · ${pr.n} listings` : 'Not seen lately', inline: false });
     return { embeds: [{ title: it.n, url: `${SITE}#items/search?q=${encodeURIComponent(it.n)}`, color: TIER[it.r] || GOLD,
       description: `${cap(it.r)} ${cap(it.t)} · Lv. ${it.l}${req ? '\nRequires ' + req : ''}`, thumbnail: { url: itemIcon(it) }, fields, footer: { text: 'Wynnia · stats from Wynntils, prices from Wynnventory' } }] };
   },
@@ -107,7 +112,7 @@ const H = {
     if (!it) return { content: `No item called “${o.item}”.` };
     const pr = await price(it.n, ctx);
     return { embeds: [{ title: `${it.n} on the trade market`, url: `${SITE}#items/prices?i=${encodeURIComponent(it.n)}`, color: TIER[it.r] || GOLD, thumbnail: { url: itemIcon(it) },
-      description: pr ? `**${emeralds(pr.p)}** typical price\n${emeralds(pr.low)} cheapest listing\n${pr.n} listings` : 'Not seen on the trade market lately.',
+      description: pr && pr.err ? pr.err : pr ? `**${emeralds(pr.p)}** typical price\n${emeralds(pr.low)} cheapest listing\n${pr.n} listings` : 'Not seen on the trade market lately.',
       footer: { text: 'Prices from Wynnventory · open the link for history and alerts' } }] };
   },
 
@@ -341,6 +346,26 @@ export default {
       });
       const t = await r.text();
       return new Response(r.ok ? `Registered ${COMMANDS.length} commands: ${COMMANDS.map(c => '/' + c.name).join(', ')}. They can take a minute to show up in Discord.` : `Discord said ${r.status}: ${t}`, { status: r.ok ? 200 : 500 });
+    }
+
+    /* a quick check of the bot's settings and its connection to the relay: /status?key=<REGISTER_KEY> */
+    if (url.pathname === '/status') {
+      if (!env.REGISTER_KEY || url.searchParams.get('key') !== env.REGISTER_KEY) return new Response('Wrong or missing key.', { status: 403 });
+      const lines = [];
+      ['DISCORD_PUBLIC_KEY', 'DISCORD_APP_ID', 'DISCORD_TOKEN'].forEach(k => lines.push(`${env[k] ? 'OK     ' : 'MISSING'} ${k}`));
+      lines.push(`${env.RELAY ? 'OK     ' : 'MISSING'} RELAY service binding${env.RELAY ? '' : ' (Settings > Bindings > Add > Service binding, variable name RELAY, service = the relay worker)'}`);
+      const probe = async (label, path) => {
+        try {
+          const req = new Request(RELAY + path, { headers: UA });
+          const r = await (env.RELAY ? env.RELAY.fetch(req) : fetch(req));
+          const t = (await r.text()).slice(0, 160).replace(/\s+/g, ' ');
+          lines.push(`${r.ok ? 'OK     ' : 'FAILED '} ${label}: HTTP ${r.status} ${t}`);
+        } catch (e) { lines.push(`FAILED  ${label}: ${e.message}`); }
+      };
+      await probe('relay: Wynncraft API', '/v3/guild/prefix/ESI');
+      await probe('relay: price of Freedom', '/market/price/Freedom');
+      await probe('relay: a short link', '/s/fcDmDsg');
+      return new Response('Wynnia bot status\n\n' + lines.join('\n') + '\n', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
     }
 
     if (url.pathname !== '/interactions' || request.method !== 'POST') return new Response('Wynnia Discord bot. Nothing to see here.', { status: 404 });
