@@ -17,6 +17,7 @@
   const RS = { name: '', data: null, char: '', cls: 'archer', lvl: 106, arch: null, goal: 'spell', elems: ['thunder', 'air'], roll: 0.75,
     mythics: true, ban: [], lock: {}, err: null, busy: false, progress: 0, result: null, T: null, mine: null, token: 0 };
   const yieldUI = () => new Promise(r => setTimeout(r, 0));
+  const tc = (r) => r === 'mythic' ? '#cf5ce8' : W.tierColor(r);   // mythic purple is too dark on the blue panels
 
   /* elements an archetype's abilities deal damage in, most used first */
   function archElements(T, key) {
@@ -26,6 +27,9 @@
     if (!top.length) return ['earth', 'thunder'];
     return top.filter(([, c], i) => i < 2 || (i === 2 && c >= top[1][1] * 0.8)).map(([e]) => e);
   }
+  /* the short tags at the end of an archetype's description, e.g. "Speed, Damage Burst" */
+  const archTags = (T, key) => { const m = /\(([^)]+)\)\s*$/.exec(W.mcHtml(T.tree.archetypes[key].description).textContent.trim()); return m ? m[1] : ''; };
+
   /* spells of the class with their base costs, for mana efficiency */
   const classSpells = (T) => Object.values(T.abilities).map(W.parseSpell).filter(s => s.slot && s.cost);
   const spellSplit = (spells) => {
@@ -192,11 +196,13 @@
       const ctxIds = { ids: itemIds, keyNum: Object.fromEntries(Object.entries(idKeys).map(([n, k]) => [k, +n])) };
       const char = () => RS.data && RS.data.characters && RS.data.characters[RS.char];
       const cname = (c) => { const k = W.cap(String(c.reskin || c.type).toLowerCase()); return c.nickname && c.nickname !== k ? `${c.nickname} · ${k}` : k; };
-      const draw = () => root.replaceChildren(el('div', { class: 'cols wide-l' }, el('div', { class: 'stack' }, form(), result(), compareWin()), el('div', { class: 'stack' }, side())));
+      const draw = () => root.replaceChildren(el('div', { class: 'stack' },
+        el('div', { class: 'cols wide-l' }, form(), el('div', { class: 'stack' }, side())),
+        result(), compareWin()));
 
       /* loads the class tree and picks its first archetype; runs the search unless the caller will */
       async function setClass(cls, andRun) {
-        RS.cls = cls; RS.T = null; draw();
+        RS.cls = cls; RS.T = null; RS.result = null; RS.err = null; RS.token++; draw();   // the old result belongs to the old class
         try {
           const T = await W.loadTree(cls);
           if (RS.cls !== cls) return;
@@ -269,13 +275,19 @@
             RS.data ? el('button', { class: 'mini', onclick: () => { RS.data = null; RS.name = ''; RS.mine = null; draw(); } }, 'Forget') : null),
           chars.length ? el('div', { class: 'fields3', style: { marginTop: '12px' } },
             el('label', {}, 'Character', W.sel(chars.map(([id, c]) => [id, `${cname(c)} · Lv. ${c.level}`]), RS.char, pickChar))) : null,
+          el('div', { class: 'cap left' }, 'Class'),
+          el('div', { class: 'clspick' }, CLASSES.map(c => el('button', { class: 'clsbtn' + (RS.cls === c ? ' on' : ''), 'aria-pressed': RS.cls === c,
+            onclick: () => { if (RS.cls === c) return; RS.mine = null; RS.lock = {}; RS.data = RS.data && String((char() || {}).type).toLowerCase() === c ? RS.data : null; setClass(c, true); } },
+            el('img', { src: `img/wiki/${c}.webp`, alt: '' }), el('span', {}, W.cap(c))))),
           el('div', { class: 'fields3', style: { marginTop: '12px' } },
-            el('label', {}, 'Class', W.sel(CLASSES.map(c => [c, W.cap(c)]), RS.cls, (v) => { RS.mine = null; RS.lock = {}; setClass(v, true); })),
             el('label', {}, 'Level', W.numIn(RS.lvl, (v) => { RS.lvl = Math.max(1, Math.min(120, v)); run(); }, 1, 120)),
             el('label', {}, 'Assume rolls', W.sel([['0.7', '70%'], ['0.75', '75%'], ['0.8', '80%'], ['1', 'Perfect']], String(RS.roll), (v) => { RS.roll = +v; run(); }))),
           T ? el('div', {}, el('div', { class: 'cap left' }, 'Archetype'),
-            el('div', { class: 'archpick' }, T.archetypes.map(a => el('button', { class: 'archbtn' + (RS.arch === a.key ? ' on' : ''), onclick: () => setArch(a.key) },
-              el('img', { src: `img/atree/${a.file}.png`, alt: '' }), el('span', {}, a.name), el('small', {}, W.cap(STYLE[a.name] || 'spell')))))) : el('p', { class: 'empty' }, 'Loading archetypes…'),
+            el('div', { class: 'archpick' }, T.archetypes.map(a => el('button', { class: 'archbtn' + (RS.arch === a.key ? ' on' : ''), 'aria-pressed': RS.arch === a.key, onclick: () => setArch(a.key) },
+              el('span', { class: 'archico' }, el('img', { src: `img/atree/${a.file}.png`, alt: '' })),
+              el('b', {}, a.name),
+              el('small', {}, archTags(T, a.key) || W.cap(STYLE[a.name] || 'spell')),
+              el('span', { class: 'archel' }, archElements(T, a.key).map(e => el('img', { src: `img/ui/powder-${e}.webp`, title: W.cap(e), alt: '' }))))))) : el('p', { class: 'empty' }, 'Loading archetypes…'),
           el('div', { class: 'fields3', style: { marginTop: '12px' } },
             el('label', {}, 'Build for', W.sel(GOALS, RS.goal, (v) => { RS.goal = v; run(); })),
             el('label', { class: 'check', style: { alignSelf: 'end' } }, el('input', { type: 'checkbox', checked: RS.mythics, onchange: (e) => { RS.mythics = e.target.checked; run(); } }), 'Allow mythics')),
@@ -294,7 +306,7 @@
 
       function result() {
         const r = RS.result;
-        if (!r) return null;
+        if (!r || !RS.T) return null;
         const res = r.res, b = r.build, c = char();
         const s = Object.fromEntries(Object.entries(b).filter(([, it]) => it).map(([k, it]) => [k, [it.n, null, r.pw[k] || null]]));
         Object.entries(r.tm).forEach(([k, it]) => { s[k] = [it.n, null, null]; });
@@ -306,25 +318,41 @@
         const pwIcons = (p) => p ? el('span', { class: 'pws' }, p.map(([e, t]) => el('img', { src: `img/ui/powder-${e}.webp`, title: `${W.cap(e)} ${['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'][t - 1]}`, alt: '' }))) : null;
         const row = (k) => {
           const it = b[k], alt = r.alts[k] || [];
-          return el('div', { class: 'recrow' }, W.slot(W.art.item(it ? it.ic : null)),
+          return el('div', { class: 'recrow' }, el('span', { class: 'recico', style: it ? { '--rc': W.tierColor(it.r) } : null }, it ? W.art.item(it.ic) : null),
             el('div', { class: 'recmain' }, el('small', {}, SLOT_NAME[k]),
-              it ? W.tip(el('b', { style: { color: W.tierColor(it.r) } }, it.n), () => W.itemCard(it)) : el('b', {}, 'Nothing better than empty'),
+              it ? W.tip(el('b', { style: { color: tc(it.r) } }, it.n), () => W.itemCard(it)) : el('b', {}, 'Nothing better than empty'),
               it ? el('small', {}, `Lv. ${it.l}`, pwIcons(r.pw[k])) : null,
-              alt.length ? el('small', { class: 'alts' }, 'Or: ', alt.map((a, i) => [i ? ', ' : '', W.tip(el('span', { style: { color: W.tierColor(a.it.r) } }, a.it.n), () => W.itemCard(a.it)), ` (${a.d >= 1 ? '+' : ''}${Math.round((a.d - 1) * 100)}%)`])) : null),
+              alt.length ? el('small', { class: 'alts' }, 'Or: ', alt.map((a, i) => [i ? ', ' : '', W.tip(el('span', { style: { color: tc(a.it.r) } }, a.it.n), () => W.itemCard(a.it)), ` (${a.d >= 1 ? '+' : ''}${Math.round((a.d - 1) * 100)}%)`])) : null),
             it ? el('div', { class: 'recbtns' },
               el('button', { class: 'mini' + (RS.lock[k] ? ' on' : ''), title: 'Keep this item and build around it', onclick: () => { if (RS.lock[k]) delete RS.lock[k]; else RS.lock[k] = it.n; run(); } }, RS.lock[k] ? 'Kept' : 'Keep'),
               el('button', { class: 'mini danger', title: 'Leave this item out', onclick: () => { RS.ban.push(it.n); delete RS.lock[k]; run(); } }, 'Not this')) : null);
         };
         const tomesOn = Object.entries(r.tm);
+        const slotSq = (k, label, big) => {
+          const it = b[k], p = r.pw[k];
+          return W.tip(el('div', { class: 'islot' + (big ? ' big' : '') + (it ? '' : ' empty'), style: it ? { '--rc': W.tierColor(it.r) } : null },
+            it ? W.art.item(it.ic) : el('span', { class: 'islab' }, label),
+            p && p.length ? el('span', { class: 'ipips' }, p.map(([e]) => el('i', { class: 'pe-' + e }))) : null), () => it ? W.itemCard(it) : label);
+        };
+        const body = c && RS.data ? `https://mc-heads.net/body/${RS.data.uuid}/250` : 'https://mc-heads.net/body/MHF_Steve/250';
+        const tile = (v, label) => el('div', {}, el('b', {}, v), el('span', {}, label));
         return el('div', { class: 'stack' },
           W.win(`${c ? cname(c) : W.cap(RS.cls)} · ${arch ? arch.name : ''} · Lv. ${RS.lvl}`,
-            el('div', { class: 'bigstats', style: { marginTop: 0 } },
-              el('div', {}, el('b', {}, W.short(res.hp)), el('span', {}, 'Health')),
-              el('div', {}, el('b', {}, W.short(res.ehpAgi)), el('span', {}, 'Effective HP')),
-              res.melee ? el('div', {}, el('b', {}, W.short(RS.goal === 'melee' ? res.melee.dps : res.melee.spell(spellSplit(classSpells(RS.T))).expected)), el('span', {}, RS.goal === 'melee' ? 'Main attack DPS' : 'Per 100% spell')) : null),
-            el('div', { class: 'reclist' }, ['w', ...ARMOUR.map(a => a[0])].map(row)),
-            tomesOn.length ? el('div', {}, el('div', { class: 'cap left' }, `Tomes (${tomesOn.length})`),
-              el('div', { class: 'tomechips' }, tomesOn.map(([, it]) => W.tip(el('span', { class: 'tchip' }, W.art.item(it.ic), it.n), () => W.itemCard(it))))) : null,
+            el('div', { class: 'kpi lo-kpi' },
+              tile(W.short(res.hp), 'Health'), tile(W.short(res.ehpAgi), 'EHP with dodge'),
+              tile(res.melee ? W.short(RS.goal === 'melee' ? res.melee.dps : res.melee.spell(spellSplit(classSpells(RS.T))).expected) : '—', RS.goal === 'melee' ? 'Main attack DPS' : 'Per 100% spell')),
+            el('div', { class: 'recgrid' },
+              el('section', { class: 'inv' },
+                el('div', { class: 'invhead' }, el('b', {}, arch ? arch.name : W.cap(RS.cls)), el('span', {}, `${Math.round(RS.roll * 100)}% rolls`)),
+                el('div', { class: 'invdoll' },
+                  el('div', { class: 'invcol' }, ARMOUR.slice(0, 4).map(([k]) => slotSq(k, SLOT_NAME[k]))),
+                  el('div', { class: 'invbody' }, el('img', { src: body, alt: '' })),
+                  el('div', { class: 'invcol' }, ARMOUR.slice(4).map(([k]) => slotSq(k, SLOT_NAME[k])))),
+                el('div', { class: 'invweap' }, slotSq('w', 'Weapon', true),
+                  b.w ? el('div', {}, el('b', { style: { color: b.w.r === 'mythic' ? '#cf5ce8' : W.tierColor(b.w.r) } }, b.w.n), el('small', {}, [b.w.dps ? Math.round(b.w.dps) + ' DPS' : null, r.pw.w ? `${r.pw.w.length} powders` : null].filter(Boolean).join(' · '))) : el('div', {}, el('b', {}, 'No weapon'))),
+                tomesOn.length ? el('div', {}, el('div', { class: 'invlab' }, `Tomes · ${tomesOn.length}`),
+                  el('div', { class: 'invhot' }, tomesOn.map(([, it]) => W.tip(el('div', { class: 'islot', style: { '--rc': W.tierColor(it.r) } }, W.art.item(it.ic)), () => W.itemCard(it))))) : null),
+              el('div', { class: 'reclist' }, ['w', ...ARMOUR.map(a => a[0])].map(row))),
             el('div', { class: 'cap left' }, 'Skill points'),
             el('div', { class: 'sptable' },
               el('div', { class: 'sprow rec sphead' }, ['', 'Assign', 'Total', c ? 'Now' : ''].map(h => el('span', {}, h))),
@@ -339,7 +367,7 @@
 
       /* your saved Loadout Builder build next to the recommendation */
       function compareWin() {
-        const r = RS.result; if (!r) return null;
+        const r = RS.result; if (!r || !RS.T) return null;
         let mine = null;
         try { mine = JSON.parse(localStorage.getItem('wt.loadout2')); } catch (e) { /* storage blocked */ }
         const byName = (n) => items.find(i => i.n === n) || tomes.find(i => i.n === n);
@@ -358,7 +386,7 @@
         const wCls = (minePieces.find(p => p.k === 'w') || {}).item;
         const clash = wCls && wCls.t !== CLASS_WEAPON[RS.cls];
         const slotName = (k) => SLOT_NAME[k] || (k[0] === 't' ? 'Tome' : k);
-        const itemCell = (it) => it ? W.tip(el('b', { style: { color: W.tierColor(it.r) } }, it.n), () => W.itemCard(it)) : el('span', { class: 'hint' }, 'Empty');
+        const itemCell = (it) => it ? W.tip(el('b', { style: { color: tc(it.r) } }, it.n), () => W.itemCard(it)) : el('span', { class: 'hint' }, 'Empty');
         return W.win('Your loadout vs recommended',
           a.spTotal > a.spAvail ? el('div', { class: 'warn' }, `Your loadout needs ${a.spTotal} skill points but level ${mine.lvl || RS.lvl} only gives ${a.spAvail}, so it can’t be fully worn.`) : null,
           clash ? el('div', { class: 'warn' }, `Your loadout uses a ${wCls.t}, so it’s for a different class than this ${W.cap(RS.cls)} recommendation.`) : null,
