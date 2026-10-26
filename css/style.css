@@ -977,3 +977,105 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 .ingcard .ingact { margin-top: auto; }
 .ingcard .ingmods { gap: 5px; }
 .igrid > .icard.ingcard { display: flex; }
+
+/* =====================================================================
+   WYNNIA: Store ranks look. Charcoal panels, Ubuntu everywhere, and each
+   section wears a rank colour (VIP green, VIP+ blue, HERO purple, HERO+ pink,
+   CHAMPION gold) on its tab, panel headers and main buttons.
+   ===================================================================== */
+:root, [data-theme="charcoal"] {
+  --page: #1b1918; --main: #232120; --card: #2e2a27; --card2: #38332f; --inset: #1d1b19; --navy: #0d0c0b; --navy2: #45403a;
+  --gold: #e0c27a; --gold-d: #b8984f; --text: #ffffff; --mute: #cfc8bc; --dark: #1f1d1b; --ring: #3a3531;
+  --ok: #8fd17a; --bad: #ef7f7f; --blue: #8fb0dc;
+  --logo: 'Ubuntu', 'Segoe UI', system-ui, sans-serif; --hand: 'Ubuntu', 'Segoe UI', system-ui, sans-serif; --ui: 'Ubuntu', 'Segoe UI', system-ui, sans-serif;
+  --r-vip: #87b85b; --r-vipp: #6f8fb8; --r-hero: #9c7cc4; --r-herop: #d16fa6; --r-champ: #c9a75e; --r-amber: #d9894a; --r-stone: #a39c90;
+  --acc: var(--r-stone); --acc-ink: #1f1d1b;
+}
+[data-theme="midnight"] { --page: #0e1220; --main: #141a2b; --card: #1b2236; --card2: #232c44; --inset: #10162a; --navy: #070a14; --navy2: #2f3a57; --mute: #c3cbe0; --ring: #222b44; --dark: #0e1220; }
+[data-theme="parchment"] { --page: #3d3025; --main: #e9dcc0; --card: #f6eedb; --card2: #e3d3b0; --inset: #fffaf0; --navy: #3d2e1e; --navy2: #c9b48a; --text: #2b2116; --mute: #6b5a44; --ring: #5a4632; --dark: #2b2116; }
+[data-theme="parchment"] .shell, [data-theme="parchment"] .win, [data-theme="parchment"] button, [data-theme="parchment"] input, [data-theme="parchment"] select, [data-theme="parchment"] textarea { color: #2b2116; }
+[data-theme="parchment"] input::placeholder { color: #8a7a62; }
+/* section colours */
+body[data-sec="home"] { --acc: var(--r-stone); } body[data-sec="mounts"] { --acc: var(--r-vip); } body[data-sec="items"] { --acc: var(--r-vipp); }
+body[data-sec="crafting"] { --acc: var(--r-hero); } body[data-sec="professions"] { --acc: var(--r-amber); } body[data-sec="players"] { --acc: var(--r-herop); }
+body[data-sec="guilds"] { --acc: var(--r-champ); }
+
+body { font-family: var(--ui); font-weight: 400; font-size: 17px; background: var(--page); }
+html { background: var(--page); }
+/* header and logo: rank ring + wordmark in a pill */
+.top { padding: 18px 28px 14px; }
+.brand { gap: 0; }
+.wlogo { display: inline-flex; align-items: center; gap: 12px; background: #1f1c1a; border: 2px solid #3d3833; border-radius: 99px; padding: 7px 22px 7px 8px; box-shadow: 0 4px 0 #0d0c0b; transition: transform .12s; }
+.brand:hover .wlogo { transform: translateY(-1px); }
+.wring { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; flex: none;
+  background: conic-gradient(var(--r-vip) 0 20%, var(--r-vipp) 0 40%, var(--r-hero) 0 60%, var(--r-herop) 0 80%, var(--r-champ) 0); }
+.wring i { width: 28px; height: 28px; border-radius: 50%; background: #1f1c1a; display: grid; place-items: center; font: 700 16px var(--logo); font-style: normal; color: #fff; }
+.wname { display: block; font: 700 31px/1 var(--logo); color: #fff; letter-spacing: .01em; }
+.wsub { display: block; font: 700 10.5px var(--ui); color: #a39c90; letter-spacing: .18em; text-transform: uppercase; margin-top: 4px; }
+.brand:hover .wring { animation: wspin 1.2s ease-in-out; }
+@keyframes wspin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .brand:hover .wring { animation: none; } }
+.theme-pick { font: 700 13px var(--ui); text-transform: uppercase; letter-spacing: .08em; color: #a39c90; }
+.qs input { background: #1f1c1a; border: 2px solid #3d3833; border-radius: 99px; padding-left: 16px; color: #fff; }
+/* frame */
+.shell { background: var(--main); border: 3px solid var(--navy); box-shadow: none; border-radius: 10px; }
+/* tabs: every section in its rank colour, like the store's rank columns */
+.tab { font: 700 15px var(--ui); text-transform: uppercase; letter-spacing: .05em; color: #fff; border: 0; border-radius: 4px; padding: 8px 14px 8px 10px;
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,.25), 0 3px 0 var(--navy); background: var(--tc, var(--r-stone)); filter: saturate(.7) brightness(.82); text-shadow: 0 1px 0 rgba(0,0,0,.35); }
+.tab .sprite { width: 26px; height: 26px; }
+.tab:hover { filter: none; }
+.tab.on { filter: none; box-shadow: inset 0 -4px 0 rgba(0,0,0,.25), 0 0 0 3px #fff, 0 3px 0 3px var(--navy); color: #fff; background: var(--tc); }
+.subtabs { border-bottom: 2px solid var(--navy2); padding: 12px 0 14px; }
+.sub { color: var(--mute); font: 700 15px var(--ui); border-radius: 4px; border: 2px solid transparent; text-transform: uppercase; letter-spacing: .04em; }
+.sub:hover { border-color: var(--navy2); color: var(--text); }
+.sub.on { background: var(--acc); color: var(--acc-ink); }
+/* panels: dark with a rank-coloured cap */
+.win { background: var(--card); border: 3px solid var(--navy); border-radius: 8px; box-shadow: 0 4px 0 var(--navy); }
+.win h2 { font: 700 24px var(--hand); color: var(--text); background: var(--card2); border-bottom: 3px solid var(--navy); box-shadow: inset 0 4px 0 var(--acc); border-radius: 5px 5px 0 0; padding: 14px 22px 9px; letter-spacing: 0; }
+.cap { font: 700 15px var(--ui); text-transform: uppercase; letter-spacing: .06em; color: var(--mute); }
+/* buttons and inputs */
+button { font: 700 15px var(--ui); background: var(--card2); border: 2px solid var(--navy); border-radius: 4px; box-shadow: inset 0 -3px 0 rgba(0,0,0,.25), 0 2px 0 var(--navy); padding: 7px 16px 8px; }
+button.mini { font-size: 13.5px; padding: 3px 10px 4px; box-shadow: inset 0 -2px 0 rgba(0,0,0,.25), 0 2px 0 var(--navy); }
+.btns button:first-child, .btnlink { background: var(--acc); color: var(--acc-ink); }
+.btnlink { font: 700 15px var(--ui); border: 2px solid var(--navy); border-radius: 4px; box-shadow: inset 0 -3px 0 rgba(0,0,0,.2), 0 2px 0 var(--navy); padding: 8px 16px; }
+button.mini.on, .tog.on, .prof.on, .pchip.on, .lotab.on, .wweight .on, .tabsmall .on { background: var(--acc); color: var(--acc-ink); }
+input[type=number], input[type=text], input[type=search], select, textarea { background: var(--inset); border: 2px solid var(--navy); border-radius: 4px; font-size: 16px; }
+input::placeholder, textarea::placeholder { color: #8f887c; }
+input:focus, select:focus, textarea:focus, button:focus-visible { outline: 2px solid var(--acc); }
+.warn { background: #3a2f1d; color: #f3d9a4; border: 2px solid #6b5432; }
+/* text that used to sit on a light page */
+.resbar, .resbar a, .lbt .lbname { color: var(--text); font-family: var(--ui); }
+.quickb small { color: var(--mute); }
+.tbl td { background: var(--card2); color: var(--text); } .tbl td small { color: var(--mute); }
+.tbl td .chip { background: var(--inset); color: var(--text); border-color: var(--navy); }
+.tbl th { font: 700 13px var(--ui); text-transform: uppercase; letter-spacing: .05em; color: var(--mute); }
+.hint, .empty { color: var(--mute); }
+/* home cards in the rank colours */
+.hcard { border: 3px solid var(--navy); box-shadow: inset 0 -6px 0 rgba(0,0,0,.2), 0 4px 0 var(--navy); border-radius: 8px; }
+.htitle { font: 700 32px/1 var(--logo); text-shadow: 0 2px 0 rgba(0,0,0,.35); }
+.c-mounts { background: var(--r-vip); } .c-items { background: var(--r-vipp); } .c-craft { background: var(--r-hero); }
+.c-prof { background: var(--r-amber); } .c-players { background: var(--r-herop); } .c-guilds { background: var(--r-champ); }
+/* big numbers and accents */
+.bigstats b, .lo-kpi b, .kpi b, .rtnum b, .spell .sv b { font-family: var(--ui); font-weight: 700; color: var(--gold); }
+.bigstats > div, .lo-kpi > div { background: var(--inset); border: 2px solid var(--navy); }
+.foot a { color: var(--gold); }
+/* tooltips */
+.tooltip { background: #171514; border: 2px solid #3d3833; }
+.tooltip.hinttip { background: #0d0c0b; border-color: var(--acc); }
+/* item cards, item-guide style: Wynncraft's emblem frame behind the icon, rarity edge on a charcoal card */
+.icard { background: #1d1a18; border: 3px solid var(--navy); border-left: 7px solid var(--rc, #888); border-radius: 8px; outline: 0; box-shadow: 0 4px 0 var(--navy); color: #fff; font-family: var(--ui); }
+.iframe { width: 60px; height: 60px; background: center / contain no-repeat; image-rendering: pixelated; }
+.iframe::before, .ingcard .iframe::before { content: none; }
+.iframe .iicon, .ingcard .iframe .iicon { width: 32px; height: 32px; }
+.icard .iname { font: 700 21px/1.15 var(--ui); }
+.itags span { font: 700 10.5px/1 var(--ui); border-radius: 3px; }
+.itype { color: #d8d2c8; box-shadow: inset 0 0 0 2px #45403a; }
+.ibig b { font: 700 30px/1 var(--ui); }
+.idiv i { background: #3d3833; } .idiv { color: #6b645a; }
+.icard .il .idn { color: #e8e2d6; } .imeta .il span:first-child, .ispeed { color: #b8b0a3; }
+.isk .gem { background: #2a2623; border-color: #45403a; } .isk { color: #6b645a; }
+.icard .imajor { background: #2a2623; }
+.icard .ifoot, .icard .pricetag, .ingact { border-top-color: #3d3833; }
+.ingeff, .ingeff b, .ingeff span { border-top-color: #3d3833; }
+.effgrid i { background: #2a2623; border-color: #3d3833; }
+.ingmods span { background: #2a2623; }

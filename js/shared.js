@@ -5,11 +5,8 @@
 
   /* ---------- Themes (named after Wynn's provinces) ---------- */
   W.themes = {
-    list: [
-      ['wynn', 'Wynn', '#86a9bf'], ['gavel', 'Gavel', '#d9b98a'], ['corkus', 'Corkus', '#8fb5ae'],
-      ['fruma', 'Fruma', '#dbe7ef'], ['expanse', 'Silent Expanse', '#3a2f4d'],
-    ],
-    get() { try { return localStorage.getItem('wt.theme') || 'wynn'; } catch (e) { return 'wynn'; } },
+    list: [['charcoal', 'Charcoal', '#2e2a27'], ['midnight', 'Midnight', '#1b2236'], ['parchment', 'Parchment', '#f6eedb']],
+    get() { try { const t = localStorage.getItem('wt.theme'); return W.themes.list.some(x => x[0] === t) ? t : 'charcoal'; } catch (e) { return 'charcoal'; } },
     set(t) {
       document.documentElement.dataset.theme = t;
       try { localStorage.setItem('wt.theme', t); } catch (e) { /* storage blocked */ }
@@ -38,10 +35,10 @@
 
   /* ---------- Wynncraft API ---------- */
   /* Browsers can't call api.wynncraft.com directly from another site (it sends no CORS headers),
-     so live lookups go through the Wynntools relay in proxy/worker.js. Put its address here once deployed. */
+     so live lookups go through the Wynnia relay in proxy/worker.js. Put its address here once deployed. */
   W.API_RELAY = 'https://api-wynntools.connormaltren.workers.dev';
   W.api = async (path) => {
-    if (!W.API_RELAY) throw new Error('Live player and guild lookups aren’t switched on yet: the Wynncraft API only answers other websites through the Wynntools relay, which hasn’t been set up.');
+    if (!W.API_RELAY) throw new Error('Live player and guild lookups aren’t switched on yet: the Wynncraft API only answers other websites through the Wynnia relay, which hasn’t been set up.');
     let r;
     try { r = await fetch(W.API_RELAY.replace(/\/$/, '') + '/v3/' + path); }
     catch (e) { throw new Error('Could not reach the lookup service. Check your connection and try again.'); }
@@ -117,6 +114,15 @@
   /* major ID descriptions, loaded once in the background so item cards can show what each one does */
   W.MAJOR = {};
   setTimeout(() => W.data('majorids').then(m => { W.MAJOR = m; }).catch(() => {}), 0);
+  /* Wynncraft's item-guide frame for an item: shield for armour, diamond for weapons, sticker for accessories,
+     square for tomes and ingredients; the number (1-6) climbs every 20 levels, as on wynncraft.com */
+  const EMBLEM_SHAPE = { helmet: 'shield', chestplate: 'shield', leggings: 'shield', boots: 'shield', ring: 'sticker', bracelet: 'sticker', necklace: 'sticker',
+    bow: 'diamond', spear: 'diamond', wand: 'diamond', dagger: 'diamond', relik: 'diamond' };
+  W.emblem = (it) => {
+    const tier = Math.min(6, Math.max(1, Math.ceil((it.l || 1) / 20)));
+    const shape = EMBLEM_SHAPE[it.t] || (it.g === 'tome' || /_tome$/.test(it.t || '') ? 'square' : null);
+    return `https://cdn.wynncraft.com/nextgen/items/v2/emblem/${shape ? shape + '_' + tier : 'square'}.png`;
+  };
   W.itemCard = (it, opts = {}) => {
     const col = W.tierColor(it.r), b = it.b || {}, tier = (W.TIERS[it.r] || ['Item'])[0];
     const text = it.r === 'mythic' ? '#cf5ce8' : col;   // mythic purple is too dark to read on the card
@@ -140,7 +146,7 @@
     const ids = it.i ? Object.entries(it.i).map(([k, v]) => el('div', { class: 'il' }, el('span', { class: 'idn' }, W.idInfo(k).name), el('span', { class: W.idGood(k, v) ? 'pos' : 'neg' }, W.fmtId(k, v)))) : [];
     return el('div', { class: 'icard' + (opts.compact ? ' compact' : ''), style: { '--rc': col } },
       el('div', { class: 'ihead' },
-        el('div', { class: 'iframe' }, el('div', { class: 'iicon' }, W.art.item(it.ic))),
+        el('div', { class: 'iframe', style: { backgroundImage: `url(${W.emblem(it)})` } }, el('div', { class: 'iicon' }, W.art.item(it.ic))),
         el('div', { class: 'ititle' }, el('div', { class: 'iname', style: { color: text } }, it.n),
           el('div', { class: 'itags' }, el('span', { class: 'itier' }, tier.toUpperCase()), el('span', { class: 'itype' }, cap(it.t).replace('_', ' ').toUpperCase()),
             opts.action ? el('span', { class: 'iact' }, opts.action) : null))),

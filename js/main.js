@@ -30,6 +30,8 @@
     return { sec, pk, q: new URLSearchParams(q || '') };
   }
 
+  /* each section wears a Wynncraft rank colour: VIP, VIP+, HERO, HERO+, CHAMPION (plus stone and amber) */
+  const SEC_COLOR = { home: 'var(--r-stone)', mounts: 'var(--r-vip)', items: 'var(--r-vipp)', crafting: 'var(--r-hero)', professions: 'var(--r-amber)', players: 'var(--r-herop)', guilds: 'var(--r-champ)' };
   let last = null;   // where we were, so the new page can slide in from the side of the tab you clicked
   function route() {
     cleanup.forEach(f => { try { f(); } catch (e) { /* ignore */ } }); cleanup = [];
@@ -47,7 +49,8 @@
     const newSec = !last || si !== last.si, newPage = newSec || pi !== last.pi;
     last = { si, pi };
     document.getElementById('tabs').replaceChildren(...W.SECTIONS.map(s =>
-      el('a', { href: '#' + s.k, class: 'tab' + (s === sec ? ' on' + (newSec ? ' pop' : '') : '') }, s.icon(), el('span', {}, s.name))));
+      el('a', { href: '#' + s.k, class: 'tab' + (s === sec ? ' on' + (newSec ? ' pop' : '') : ''), style: { '--tc': SEC_COLOR[s.k] } }, s.icon(), el('span', {}, s.name))));
+    document.body.dataset.sec = sec.k;   // panels, sub-tabs and main buttons take this section's rank colour
     const sub = document.getElementById('subtabs');
     sub.replaceChildren(...(sec.pages.length > 1 ? sec.pages.map(([k, label]) =>
       el('a', { href: `#${sec.k}/${k}`, class: 'sub' + (k === pk ? ' on' + (newPage ? ' pop' : '') : '') }, label)) : []));
@@ -58,7 +61,7 @@
     const fn = W.pages[`${sec.k}/${pk}`] || W.pages[pk];
     fn(page, q);
     const label = sec.pages.find(p => p[0] === pk)[1];
-    document.title = sec.k === 'home' ? 'Wynntools' : `${label} · ${sec.name} · Wynntools`;
+    document.title = sec.k === 'home' ? 'Wynnia' : `${label} · ${sec.name} · Wynnia`;
     window.scrollTo(0, 0);
   }
 

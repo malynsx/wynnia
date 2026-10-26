@@ -1,4 +1,4 @@
-# Wynntools
+# Wynnia
 
 Handy tools for Wynncraft, made by Malyns. A static site: open `index.html` or serve the folder. Live at https://malynsx.github.io/wynntools/
 
@@ -10,7 +10,7 @@ Handy tools for Wynncraft, made by Malyns. A static site: open `index.html` or s
 - **Guilds**: lookup with banner, members, top contributors and newest members; territory snapshot.
 - **Quick search** in the header (press `/`), five themes, works on phones.
 
-## Wynntools API
+## Wynnia API
 
 Static, CORS-open JSON at `https://malynsx.github.io/wynntools/api/v1/` (items, ingredients, materials, recipes, quests, spots, Olinus10's spots, territories, profession XP). Docs on the site under Home › API.
 

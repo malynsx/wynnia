@@ -1,17 +1,17 @@
-/* Wynntools API relay (Cloudflare Worker).
+/* Wynnia API relay (Cloudflare Worker).
    The Wynncraft API does not send CORS headers, so browsers block it on other sites.
    This worker forwards player, guild, ability-tree and leaderboard requests only, adds CORS for
-   the Wynntools site, and caches each answer for two minutes to stay well under Wynncraft's rate limit.
+   the Wynnia site, and caches each answer for two minutes to stay well under Wynncraft's rate limit.
    /market/price/{item} asks Wynnventory for trade market prices with the key stored as the worker secret
    WYNNVENTORY_KEY (never sent to browsers); answers are cached for ten minutes.
-   POST /s stores a Wynntools share link (loadout, stable, showcase) in the KV namespace bound as LINKS and
+   POST /s stores a Wynnia share link (loadout, stable, showcase) in the KV namespace bound as LINKS and
    answers with a short id; GET /s/{id} gives the link back. Ids come from a hash of the link, so the same
    build always gets the same id. */
 const ALLOWED = ['https://malynsx.github.io', 'http://localhost:8765', 'http://localhost:8766'];
 const PATHS = /^\/v3\/(player|guild|ability|leaderboards)(\/[^/]+){0,4}$/;
 const MARKET = /^\/market\/price\/([^/]{1,80})$/;
 const SHORT = /^\/s\/([A-Za-z0-9]{4,12})$/;
-/* only Wynntools pages that carry shared data can be shortened */
+/* only Wynnia pages that carry shared data can be shortened */
 const SHAREABLE = /^#(items\/loadout|mounts\/stable|mounts\/want|players\/lookup)\?[A-Za-z0-9_\-=&%.~+]{1,6000}$/;
 const B62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
@@ -59,7 +59,7 @@ export default {
     if (market && !env.WYNNVENTORY_KEY) return Response.json({ error: 'no-key' }, { status: 503, headers: cors });
     if (!market && !PATHS.test(url.pathname)) return new Response('Not found', { status: 404, headers: cors });
     const target = market ? `https://wynnventory.com/api/v2/market/items/${market[1]}/price` : 'https://api.wynncraft.com' + url.pathname + url.search;
-    const headers = { 'User-Agent': 'Wynntools relay (github.com/malynsx/wynntools)' };
+    const headers = { 'User-Agent': 'Wynnia relay (github.com/malynsx/wynntools)' };
     if (market) headers.Authorization = 'Api-Key ' + env.WYNNVENTORY_KEY;
 
     const cache = caches.default;

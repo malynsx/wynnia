@@ -79,7 +79,7 @@
     const extra = Object.entries({ ...(g.io || {}), ...(g.co || {}) });
     return el('div', { class: 'icard ingcard', style: { '--rc': col } },
       el('div', { class: 'ihead' },
-        el('div', { class: 'iframe' }, el('div', { class: 'iicon' }, W.art.ing(g.ic))),
+        el('div', { class: 'iframe', style: { backgroundImage: 'url(https://cdn.wynncraft.com/nextgen/items/v2/emblem/square.png)' } }, el('div', { class: 'iicon' }, W.art.ing(g.ic))),
         el('div', { class: 'ititle' }, el('div', { class: 'iname', style: { color: col } }, g.n),
           el('div', { class: 'itags' }, el('span', { class: 'itier' }, g.tr ? '✫'.repeat(g.tr) : 'NO STARS'), el('span', { class: 'itype' }, 'LV. ' + g.l),
             el('span', { class: 'ingprofs' }, g.sk.map(p => el('img', { src: `img/wiki/${p}.webp`, alt: W.cap(p), title: W.cap(p) })))))),

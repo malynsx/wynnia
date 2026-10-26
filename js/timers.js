@@ -45,14 +45,14 @@
           el('div', { class: 'tclock' }, ms ? clock(ms) : 'Ready'),
           el('div', { class: 'bar' }, el('i', { class: 'bcur', style: { width: (100 - ms / t.total * 100) + '%', '--c': 'var(--gold)' } })),
           el('button', { class: 'mini', onclick: () => { timers = timers.filter(x => x.id !== t.id); store(timers); draw(); } }, 'Remove'));
-      })), el('p', { class: 'hint' }, 'Timers keep running when you close the page. Notifications only fire while a Wynntools tab is open.'));
+      })), el('p', { class: 'hint' }, 'Timers keep running when you close the page. Notifications only fire while a Wynnia tab is open.'));
     }
     const tick = setInterval(() => {
       let changed = false;
       timers.forEach(t => {
         if (!t.done && left(t) === 0) {
           t.done = changed = true;
-          try { if (Notification.permission === 'granted') new Notification('Wynntools', { body: t.label + ' is ready', icon: 'img/wynntools-logo.png' }); } catch (e) { /* unsupported */ }
+          try { if (Notification.permission === 'granted') new Notification('Wynnia', { body: t.label + ' is ready', icon: 'brand/wynnia-ring-128.png' }); } catch (e) { /* unsupported */ }
         }
       });
       if (changed) store(timers);

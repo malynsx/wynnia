@@ -1,31 +1,24 @@
 <!doctype html>
-<html lang="en" data-theme="wynn">
+<html lang="en" data-theme="charcoal">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wynntools</title>
+<title>Wynnia</title>
 <meta name="description" content="Wynncraft tools: mount breeding, item search and compare, ingredient combiner, profession XP, player and guild lookups.">
-<script>try { document.documentElement.dataset.theme = localStorage.getItem('wt.theme') || 'wynn'; } catch (e) {}</script>
+<script>try { const t = localStorage.getItem('wt.theme'); document.documentElement.dataset.theme = ['charcoal', 'midnight', 'parchment'].includes(t) ? t : 'charcoal'; } catch (e) {}</script>
+<link rel="icon" href="brand/wynnia-ring-64.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=38">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,500;0,700;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=41">
 </head>
 <body>
 <header class="top">
   <a class="brand" href="#home">
-    <span class="emblem" aria-hidden="true">
-      <svg viewBox="0 0 100 116">
-        <path d="M50 4 L94 18 L94 58 C94 86 74 102 50 112 C26 102 6 86 6 58 L6 18 Z" fill="var(--gold-d)" stroke="var(--navy)" stroke-width="6" stroke-linejoin="round"/>
-        <path d="M50 13 L86 25 L86 58 C86 80 70 94 50 103 C30 94 14 80 14 58 L14 25 Z" fill="var(--gold)"/>
-        <path d="M50 21 L78 31 L78 58 C78 75 66 86 50 94 C34 86 22 75 22 58 L22 31 Z" fill="var(--navy2)" stroke="var(--navy)" stroke-width="3"/>
-      </svg>
-      <img class="logo" src="img/wynntools-logo.png" alt="">
+    <span class="wlogo">
+      <span class="wring" aria-hidden="true"><i>W</i></span>
+      <span><span class="wname">Wynnia</span><span class="wsub">Tools for Wynncraft</span></span>
     </span>
-    <div class="wordmark">
-      <h1>Wynntools</h1>
-      <p>Handy tools for Wynncraft</p>
-    </div>
   </a>
   <div class="qs" id="qs"></div>
   <div class="theme-pick"><span>Theme</span><div id="themes"></div></div>
@@ -40,42 +33,42 @@
     <img src="img/malyns.png" alt="" width="44" height="44">
     <div>Made by <b>Malyns</b><small>Fan-made and not affiliated with Wynncraft or Mojang.</small></div>
   </div>
-  <div class="credits">Game data from <a href="https://github.com/Wynntils/Wynntils" target="_blank" rel="noopener">Wynntils</a>, the <a href="https://wynncraft.wiki.gg" target="_blank" rel="noopener">Wynncraft Wiki</a> and the <a href="https://docs.wynncraft.com" target="_blank" rel="noopener">Wynncraft API</a>. Build your own tools with the <a href="#home/api">Wynntools API</a>. Icons belong to Wynncraft and the wiki's contributors.</div>
+  <div class="credits">Game data from <a href="https://github.com/Wynntils/Wynntils" target="_blank" rel="noopener">Wynntils</a>, the <a href="https://wynncraft.wiki.gg" target="_blank" rel="noopener">Wynncraft Wiki</a> and the <a href="https://docs.wynncraft.com" target="_blank" rel="noopener">Wynncraft API</a>. Build your own tools with the <a href="#home/api">Wynnia API</a>. Icons belong to Wynncraft and the wiki's contributors.</div>
 </footer>
-<script src="js/data.js?v=38"></script>
-<script src="js/art.js?v=38"></script>
-<script src="js/wynntils.js?v=38"></script>
-<script src="js/core.js?v=38"></script>
-<script src="js/shared.js?v=38"></script>
-<script src="js/home.js?v=38"></script>
-<script src="js/apidocs.js?v=38"></script>
-<script src="js/stable.js?v=38"></script>
-<script src="js/feeder.js?v=38"></script>
-<script src="js/pairs.js?v=38"></script>
-<script src="js/lineage.js?v=38"></script>
-<script src="js/cookbook.js?v=38"></script>
-<script src="js/training.js?v=38"></script>
-<script src="js/timers.js?v=38"></script>
-<script src="js/market.js?v=38"></script>
-<script src="js/want.js?v=38"></script>
-<script src="js/almanac.js?v=38"></script>
-<script src="js/ledger.js?v=38"></script>
-<script src="js/items.js?v=38"></script>
-<script src="js/buildcode.js?v=38"></script>
-<script src="js/loadout.js?v=38"></script>
-<script src="js/recommend.js?v=38"></script>
-<script src="js/crafting.js?v=38"></script>
-<script src="js/professions.js?v=38"></script>
-<script src="js/engine.js?v=38"></script>
-<script src="js/atree.js?v=38"></script>
-<script src="js/character.js?v=38"></script>
-<script src="js/prices.js?v=38"></script>
-<script src="js/badges.js?v=38"></script>
-<script src="js/player.js?v=38"></script>
-<script src="js/players.js?v=38"></script>
-<script src="js/social.js?v=38"></script>
-<script src="js/guilds.js?v=38"></script>
-<script src="js/search.js?v=38"></script>
-<script src="js/main.js?v=38"></script>
+<script src="js/data.js?v=41"></script>
+<script src="js/art.js?v=41"></script>
+<script src="js/wynntils.js?v=41"></script>
+<script src="js/core.js?v=41"></script>
+<script src="js/shared.js?v=41"></script>
+<script src="js/home.js?v=41"></script>
+<script src="js/apidocs.js?v=41"></script>
+<script src="js/stable.js?v=41"></script>
+<script src="js/feeder.js?v=41"></script>
+<script src="js/pairs.js?v=41"></script>
+<script src="js/lineage.js?v=41"></script>
+<script src="js/cookbook.js?v=41"></script>
+<script src="js/training.js?v=41"></script>
+<script src="js/timers.js?v=41"></script>
+<script src="js/market.js?v=41"></script>
+<script src="js/want.js?v=41"></script>
+<script src="js/almanac.js?v=41"></script>
+<script src="js/ledger.js?v=41"></script>
+<script src="js/items.js?v=41"></script>
+<script src="js/buildcode.js?v=41"></script>
+<script src="js/loadout.js?v=41"></script>
+<script src="js/recommend.js?v=41"></script>
+<script src="js/crafting.js?v=41"></script>
+<script src="js/professions.js?v=41"></script>
+<script src="js/engine.js?v=41"></script>
+<script src="js/atree.js?v=41"></script>
+<script src="js/character.js?v=41"></script>
+<script src="js/prices.js?v=41"></script>
+<script src="js/badges.js?v=41"></script>
+<script src="js/player.js?v=41"></script>
+<script src="js/players.js?v=41"></script>
+<script src="js/social.js?v=41"></script>
+<script src="js/guilds.js?v=41"></script>
+<script src="js/search.js?v=41"></script>
+<script src="js/main.js?v=41"></script>
 </body>
 </html>

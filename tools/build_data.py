@@ -20,7 +20,7 @@ import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, 'data')
-UA = {'User-Agent': 'Mozilla/5.0 (Wynntools data builder; github.com/fuller-i/wynntools)'}
+UA = {'User-Agent': 'Mozilla/5.0 (Wynnia data builder; github.com/fuller-i/wynntools)'}
 ITEM_CDN = 'https://cdn.wynncraft.com/nextgen/itemguide/3.3/'
 MC_ASSETS = 'https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.20.2/'
 LEGACY = 'https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/pc/common/legacy.json'
@@ -422,7 +422,7 @@ def build_api():
     write('profession-xp.json', data('profxp.json'))
     write('major-ids.json', data('majorids.json'))
     write('index.json', {
-        'name': 'Wynntools API', 'version': 1, 'updated': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M UTC'),
+        'name': 'Wynnia API', 'version': 1, 'updated': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M UTC'),
         'docs': 'https://malynsx.github.io/wynntools/#home/api',
         'endpoints': ['items.json', 'item/{slug}.json', 'ingredients.json', 'ingredient/{slug}.json', 'materials.json', 'recipes.json',
                       'quests.json', 'spots.json', 'olinus-spots.json', 'territories.json', 'profession-xp.json', 'major-ids.json'],

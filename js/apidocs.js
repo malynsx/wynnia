@@ -1,4 +1,4 @@
-/* Documentation for the static Wynntools API (api/v1, rebuilt weekly by tools/build_data.py). */
+/* Documentation for the static Wynnia API (api/v1, rebuilt weekly by tools/build_data.py). */
 (function (W) {
   const { el } = W;
   const BASE = 'https://malynsx.github.io/wynntools/api/v1/';
@@ -32,7 +32,7 @@
     };
     root.replaceChildren(el('div', { class: 'cols wide-l' },
       el('div', {},
-        W.win('Wynntools API',
+        W.win('Wynnia API',
           el('p', {}, 'Free, read-only JSON for your own tools, bots and sites. It’s plain files on GitHub Pages, so you can call it from a browser or a server with no key, and CORS is open.'),
           el('div', { class: 'cap left' }, 'Base URL'), el('code', { class: 'apibase' }, BASE),
           el('div', { class: 'apilist' }, ENDPOINTS.map(([p, d]) => el('div', { class: 'apirow' },

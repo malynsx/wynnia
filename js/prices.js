@@ -1,4 +1,4 @@
-/* Trade market prices from Wynnventory (through the Wynntools relay) and emerald formatting. */
+/* Trade market prices from Wynnventory (through the Wynnia relay) and emerald formatting. */
 (function (W) {
   const { el } = W;
   const prices = {};   // item name -> Promise of the Wynnventory answer, shared across the session
