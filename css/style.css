@@ -964,3 +964,16 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 /* ranked lists read left to right, row by row */
 .igrid.ranked { display: grid; columns: auto; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 18px; align-items: start; }
 .igrid.ranked > .icard { margin: 0; }
+/* ingredient cards: a square slot frame (block textures fill their whole square, so a diamond would crop them) */
+.ingcard .iframe { width: 56px; height: 56px; }
+.ingcard .iframe::before { transform: none; inset: 0; border-radius: 6px; }
+.ingcard .iframe .iicon { width: 40px; height: 40px; }
+.ingcard .iframe .iicon img { image-rendering: pixelated; object-fit: contain; }
+/* even spacing: equal-height cards in a row, sections 10px apart, actions pinned to the bottom */
+.igrid.ranked { align-items: stretch; }
+.ingcard { display: flex; flex-direction: column; gap: 10px; }
+.ingcard .ihead { margin-bottom: 0; }
+.ingcard .ingeff, .ingcard .ingmods { margin-top: 0; }
+.ingcard .ingact { margin-top: auto; }
+.ingcard .ingmods { gap: 5px; }
+.igrid > .icard.ingcard { display: flex; }
