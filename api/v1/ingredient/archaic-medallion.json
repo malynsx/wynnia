@@ -1,1 +1,1 @@
-{"name":"Archaic Medallion","stars":3,"level":45,"professions":["jeweling"],"icon":"https://malynsx.github.io/wynntools/img/ing/368_0.png","identifications":{"healthRegen":[3,5],"spellDamage":[-5,-4]},"itemOnlyIds":{"durabilityModifier":-79000},"slug":"archaic-medallion"}
+{"name":"Archaic Medallion","stars":3,"level":45,"professions":["jeweling"],"icon":"https://malynsx.github.io/wynnia/img/ing/368_0.png","identifications":{"healthRegen":[3,5],"spellDamage":[-5,-4]},"itemOnlyIds":{"durabilityModifier":-79000},"slug":"archaic-medallion"}

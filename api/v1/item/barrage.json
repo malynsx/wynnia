@@ -1,1 +1,1 @@
-{"name":"Barrage","type":"ring","category":"accessory","rarity":"unique","level":28,"icon":"https://malynsx.github.io/wynntools/img/items/ring.thunder1.webp","skillRequirements":{"dexterity":10},"identifications":{"manaSteal":[1,4],"rawDexterity":2,"thunderDamage":[1,4]},"slug":"barrage"}
+{"name":"Barrage","type":"ring","category":"accessory","rarity":"unique","level":28,"icon":"https://malynsx.github.io/wynnia/img/items/ring.thunder1.webp","skillRequirements":{"dexterity":10},"identifications":{"manaSteal":[1,4],"rawDexterity":2,"thunderDamage":[1,4]},"slug":"barrage"}

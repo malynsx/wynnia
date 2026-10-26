@@ -1,1 +1,1 @@
-{"name":"Antivenom","type":"ring","category":"accessory","rarity":"unique","level":67,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire2.webp","base":{"baseHealth":150},"identifications":{"healingEfficiency":7,"healthRegenRaw":70,"poison":-50},"slug":"antivenom"}
+{"name":"Antivenom","type":"ring","category":"accessory","rarity":"unique","level":67,"icon":"https://malynsx.github.io/wynnia/img/items/ring.fire2.webp","base":{"baseHealth":150},"identifications":{"healingEfficiency":7,"healthRegenRaw":70,"poison":-50},"slug":"antivenom"}

@@ -1,1 +1,1 @@
-{"name":"Featherweight","type":"boots","category":"armour","rarity":"rare","level":8,"icon":"https://malynsx.github.io/wynntools/img/items/boots.pale_leather.webp","base":{"baseHealth":18},"identifications":{"rawAgility":4,"walkSpeed":[3,14]},"slug":"featherweight"}
+{"name":"Featherweight","type":"boots","category":"armour","rarity":"rare","level":8,"icon":"https://malynsx.github.io/wynnia/img/items/boots.pale_leather.webp","base":{"baseHealth":18},"identifications":{"rawAgility":4,"walkSpeed":[3,14]},"slug":"featherweight"}

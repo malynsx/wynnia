@@ -1,1 +1,1 @@
-{"name":"Float Stone","stars":2,"level":98,"professions":["tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/155_2.png","identifications":{"airDamage":[10,12],"jumpHeight":[1,1]},"itemOnlyIds":{"agilityRequirement":22,"durabilityModifier":-105000},"slug":"float-stone"}
+{"name":"Float Stone","stars":2,"level":98,"professions":["tailoring"],"icon":"https://malynsx.github.io/wynnia/img/ing/155_2.png","identifications":{"airDamage":[10,12],"jumpHeight":[1,1]},"itemOnlyIds":{"agilityRequirement":22,"durabilityModifier":-105000},"slug":"float-stone"}

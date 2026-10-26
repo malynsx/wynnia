@@ -1,1 +1,1 @@
-{"name":"Sunken Scales","stars":0,"level":90,"professions":["scribing"],"icon":"https://malynsx.github.io/wynntools/img/ing/410_0.png","identifications":{"waterDamage":[2,3],"waterDefence":[6,8]},"consumableOnlyIds":{"duration":-90},"slug":"sunken-scales"}
+{"name":"Sunken Scales","stars":0,"level":90,"professions":["scribing"],"icon":"https://malynsx.github.io/wynnia/img/ing/410_0.png","identifications":{"waterDamage":[2,3],"waterDefence":[6,8]},"consumableOnlyIds":{"duration":-90},"slug":"sunken-scales"}

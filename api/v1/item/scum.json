@@ -1,1 +1,1 @@
-{"name":"Scum","type":"ring","category":"accessory","rarity":"unique","level":74,"icon":"https://malynsx.github.io/wynntools/img/items/ring.water2.webp","skillRequirements":{"intelligence":30},"base":{"baseWaterDefence":20},"identifications":{"poison":120,"waterDamage":8},"slug":"scum"}
+{"name":"Scum","type":"ring","category":"accessory","rarity":"unique","level":74,"icon":"https://malynsx.github.io/wynnia/img/items/ring.water2.webp","skillRequirements":{"intelligence":30},"base":{"baseWaterDefence":20},"identifications":{"poison":120,"waterDamage":8},"slug":"scum"}

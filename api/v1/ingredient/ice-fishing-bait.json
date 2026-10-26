@@ -1,1 +1,1 @@
-{"name":"Ice Fishing Bait","stars":1,"level":41,"professions":["cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/349_0.png","identifications":{"airDamage":[3,5],"walkSpeed":[3,5],"waterDamage":[3,5]},"consumableOnlyIds":{"duration":-250},"slug":"ice-fishing-bait"}
+{"name":"Ice Fishing Bait","stars":1,"level":41,"professions":["cooking"],"icon":"https://malynsx.github.io/wynnia/img/ing/349_0.png","identifications":{"airDamage":[3,5],"walkSpeed":[3,5],"waterDamage":[3,5]},"consumableOnlyIds":{"duration":-250},"slug":"ice-fishing-bait"}

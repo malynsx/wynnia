@@ -1,1 +1,1 @@
-{"name":"Soulbound Cinders","stars":2,"level":93,"professions":["scribing"],"icon":"https://malynsx.github.io/wynntools/img/ing/377_0.png","identifications":{"fireDamage":[6,8],"manaSteal":[4,4],"rawSpellDamage":[45,55]},"consumableOnlyIds":{"duration":-180},"slug":"soulbound-cinders"}
+{"name":"Soulbound Cinders","stars":2,"level":93,"professions":["scribing"],"icon":"https://malynsx.github.io/wynnia/img/ing/377_0.png","identifications":{"fireDamage":[6,8],"manaSteal":[4,4],"rawSpellDamage":[45,55]},"consumableOnlyIds":{"duration":-180},"slug":"soulbound-cinders"}

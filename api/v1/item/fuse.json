@@ -1,1 +1,1 @@
-{"name":"Fuse","type":"ring","category":"accessory","rarity":"rare","level":75,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire2.webp","base":{"baseFireDefence":50},"identifications":{"exploding":[4,16],"healthRegenRaw":[21,91]},"slug":"fuse"}
+{"name":"Fuse","type":"ring","category":"accessory","rarity":"rare","level":75,"icon":"https://malynsx.github.io/wynnia/img/items/ring.fire2.webp","base":{"baseFireDefence":50},"identifications":{"exploding":[4,16],"healthRegenRaw":[21,91]},"slug":"fuse"}

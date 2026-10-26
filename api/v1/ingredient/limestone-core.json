@@ -1,1 +1,1 @@
-{"name":"Limestone Core","stars":3,"level":37,"professions":["armouring"],"icon":"https://malynsx.github.io/wynntools/img/ing/6_4.png","identifications":{"rawDefence":[6,8],"waterDefence":[-12,-8]},"itemOnlyIds":{"defenceRequirement":18,"durabilityModifier":-91000},"slug":"limestone-core"}
+{"name":"Limestone Core","stars":3,"level":37,"professions":["armouring"],"icon":"https://malynsx.github.io/wynnia/img/ing/6_4.png","identifications":{"rawDefence":[6,8],"waterDefence":[-12,-8]},"itemOnlyIds":{"defenceRequirement":18,"durabilityModifier":-91000},"slug":"limestone-core"}

@@ -1,1 +1,1 @@
-{"name":"Truffle","stars":1,"level":20,"professions":["cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/39_0.png","identifications":{"healthRegen":[4,6],"rawHealth":[30,40]},"consumableOnlyIds":{"duration":-200},"slug":"truffle"}
+{"name":"Truffle","stars":1,"level":20,"professions":["cooking"],"icon":"https://malynsx.github.io/wynnia/img/ing/39_0.png","identifications":{"healthRegen":[4,6],"rawHealth":[30,40]},"consumableOnlyIds":{"duration":-200},"slug":"truffle"}

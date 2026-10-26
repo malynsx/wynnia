@@ -1,1 +1,1 @@
-{"name":"Haleva Plant","stars":2,"level":23,"professions":["alchemism","scribing"],"icon":"https://malynsx.github.io/wynntools/img/ing/38_3.png","identifications":{"manaRegen":[4,6],"manaSteal":[2,3]},"consumableOnlyIds":{"duration":-98},"slug":"haleva-plant"}
+{"name":"Haleva Plant","stars":2,"level":23,"professions":["alchemism","scribing"],"icon":"https://malynsx.github.io/wynnia/img/ing/38_3.png","identifications":{"manaRegen":[4,6],"manaSteal":[2,3]},"consumableOnlyIds":{"duration":-98},"slug":"haleva-plant"}

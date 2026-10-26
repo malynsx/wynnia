@@ -1,1 +1,1 @@
-{"name":"Bottled Decay","stars":2,"level":57,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/437_0.png","identifications":{"earthDamage":[12,18],"healthRegenRaw":[-63,-56],"thunderDamage":[12,18]},"consumableOnlyIds":{"duration":-140},"slug":"bottled-decay"}
+{"name":"Bottled Decay","stars":2,"level":57,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynnia/img/ing/437_0.png","identifications":{"earthDamage":[12,18],"healthRegenRaw":[-63,-56],"thunderDamage":[12,18]},"consumableOnlyIds":{"duration":-140},"slug":"bottled-decay"}

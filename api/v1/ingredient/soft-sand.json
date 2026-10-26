@@ -1,1 +1,1 @@
-{"name":"Soft Sand","stars":0,"level":30,"professions":["weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/12_0.png","identifications":{"mainAttackDamage":[1,1],"walkSpeed":[-3,-2]},"itemOnlyIds":{"durabilityModifier":-24000},"slug":"soft-sand"}
+{"name":"Soft Sand","stars":0,"level":30,"professions":["weaponsmithing"],"icon":"https://malynsx.github.io/wynnia/img/ing/12_0.png","identifications":{"mainAttackDamage":[1,1],"walkSpeed":[-3,-2]},"itemOnlyIds":{"durabilityModifier":-24000},"slug":"soft-sand"}

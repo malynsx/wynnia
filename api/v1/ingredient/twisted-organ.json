@@ -1,1 +1,1 @@
-{"name":"Twisted Organ","stars":2,"level":43,"professions":["cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/432_0.png","identifications":{"manaRegen":[-6,-6],"spellDamage":[11,13]},"consumableOnlyIds":{"duration":-370},"slug":"twisted-organ"}
+{"name":"Twisted Organ","stars":2,"level":43,"professions":["cooking"],"icon":"https://malynsx.github.io/wynnia/img/ing/432_0.png","identifications":{"manaRegen":[-6,-6],"spellDamage":[11,13]},"consumableOnlyIds":{"duration":-370},"slug":"twisted-organ"}

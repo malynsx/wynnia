@@ -1,1 +1,1 @@
-{"name":"Goblin Trinket","stars":1,"level":42,"professions":["jeweling"],"icon":"https://malynsx.github.io/wynntools/img/ing/379_0.png","identifications":{"combatExperience":[3,3],"gatherXpBonus":[1,1],"stealing":[3,4]},"itemOnlyIds":{"durabilityModifier":-45000},"slug":"goblin-trinket"}
+{"name":"Goblin Trinket","stars":1,"level":42,"professions":["jeweling"],"icon":"https://malynsx.github.io/wynnia/img/ing/379_0.png","identifications":{"combatExperience":[3,3],"gatherXpBonus":[1,1],"stealing":[3,4]},"itemOnlyIds":{"durabilityModifier":-45000},"slug":"goblin-trinket"}

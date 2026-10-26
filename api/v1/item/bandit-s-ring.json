@@ -1,1 +1,1 @@
-{"name":"Bandit's Ring","type":"ring","category":"accessory","rarity":"rare","level":32,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicIron.webp","base":{"baseHealth":-20},"identifications":{"lootBonus":[2,9],"stealing":[1,4]},"slug":"bandit-s-ring"}
+{"name":"Bandit's Ring","type":"ring","category":"accessory","rarity":"rare","level":32,"icon":"https://malynsx.github.io/wynnia/img/items/ring.basicIron.webp","base":{"baseHealth":-20},"identifications":{"lootBonus":[2,9],"stealing":[1,4]},"slug":"bandit-s-ring"}

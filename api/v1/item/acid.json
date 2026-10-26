@@ -1,1 +1,1 @@
-{"name":"Acid","type":"ring","category":"accessory","rarity":"unique","level":99,"icon":"https://malynsx.github.io/wynntools/img/items/ring.earth2.webp","base":{"baseEarthDefence":20,"baseHealth":-250},"identifications":{"poison":[240,1040],"rawAttackSpeed":-1},"slug":"acid"}
+{"name":"Acid","type":"ring","category":"accessory","rarity":"unique","level":99,"icon":"https://malynsx.github.io/wynnia/img/items/ring.earth2.webp","base":{"baseEarthDefence":20,"baseHealth":-250},"identifications":{"poison":[240,1040],"rawAttackSpeed":-1},"slug":"acid"}

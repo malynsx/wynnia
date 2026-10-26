@@ -1,1 +1,1 @@
-{"name":"Cleaned Saccharum","stars":2,"level":3,"professions":["alchemism","scribing"],"icon":"https://malynsx.github.io/wynntools/img/ing/338_0.png","identifications":{"healthRegenRaw":[3,4],"rawHealth":[16,20]},"consumableOnlyIds":{"duration":-75},"slug":"cleaned-saccharum"}
+{"name":"Cleaned Saccharum","stars":2,"level":3,"professions":["alchemism","scribing"],"icon":"https://malynsx.github.io/wynnia/img/ing/338_0.png","identifications":{"healthRegenRaw":[3,4],"rawHealth":[16,20]},"consumableOnlyIds":{"duration":-75},"slug":"cleaned-saccharum"}

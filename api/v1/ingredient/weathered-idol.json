@@ -1,1 +1,1 @@
-{"name":"Weathered Idol","stars":3,"level":36,"professions":["scribing"],"icon":"https://malynsx.github.io/wynntools/img/ing/145_0.png","identifications":{"airDamage":[10,14],"rawSpellDamage":[30,36],"walkSpeed":[6,8]},"consumableOnlyIds":{"duration":-170},"slug":"weathered-idol"}
+{"name":"Weathered Idol","stars":3,"level":36,"professions":["scribing"],"icon":"https://malynsx.github.io/wynnia/img/ing/145_0.png","identifications":{"airDamage":[10,14],"rawSpellDamage":[30,36],"walkSpeed":[6,8]},"consumableOnlyIds":{"duration":-170},"slug":"weathered-idol"}

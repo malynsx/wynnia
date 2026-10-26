@@ -1,1 +1,1 @@
-{"name":"Set Spear","type":"spear","category":"weapon","rarity":"rare","level":1,"icon":"https://malynsx.github.io/wynntools/img/items/spear.basicWood.webp","classRequirement":"warrior","base":{"baseDamage":[0,1]},"attackSpeed":"slow","averageDps":1,"slug":"set-spear"}
+{"name":"Set Spear","type":"spear","category":"weapon","rarity":"rare","level":1,"icon":"https://malynsx.github.io/wynnia/img/items/spear.basicWood.webp","classRequirement":"warrior","base":{"baseDamage":[0,1]},"attackSpeed":"slow","averageDps":1,"slug":"set-spear"}

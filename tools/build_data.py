@@ -20,7 +20,7 @@ import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, 'data')
-UA = {'User-Agent': 'Mozilla/5.0 (Wynnia data builder; github.com/fuller-i/wynntools)'}
+UA = {'User-Agent': 'Mozilla/5.0 (Wynnia data builder; github.com/malynsx/wynnia)'}
 ITEM_CDN = 'https://cdn.wynncraft.com/nextgen/itemguide/3.3/'
 MC_ASSETS = 'https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.20.2/'
 LEGACY = 'https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/pc/common/legacy.json'
@@ -396,7 +396,7 @@ def build_api():
     def readable(o):
         r = {API_FIELDS.get(k, k): v for k, v in o.items()}
         if r.get('icon'):
-            r['icon'] = ('https://malynsx.github.io/wynntools/img/items/' if 'stars' not in r else 'https://malynsx.github.io/wynntools/img/ing/') + r['icon']
+            r['icon'] = ('https://malynsx.github.io/wynnia/img/items/' if 'stars' not in r else 'https://malynsx.github.io/wynnia/img/ing/') + r['icon']
         return r
 
     def write(path, obj):
@@ -423,7 +423,7 @@ def build_api():
     write('major-ids.json', data('majorids.json'))
     write('index.json', {
         'name': 'Wynnia API', 'version': 1, 'updated': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M UTC'),
-        'docs': 'https://malynsx.github.io/wynntools/#home/api',
+        'docs': 'https://malynsx.github.io/wynnia/#home/api',
         'endpoints': ['items.json', 'item/{slug}.json', 'ingredients.json', 'ingredient/{slug}.json', 'materials.json', 'recipes.json',
                       'quests.json', 'spots.json', 'olinus-spots.json', 'territories.json', 'profession-xp.json', 'major-ids.json'],
     })

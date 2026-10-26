@@ -1,1 +1,1 @@
-{"name":"Shiny Mask","type":"helmet","category":"armour","rarity":"unique","level":26,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.gold.webp","base":{"baseHealth":115},"identifications":{"combatExperience":15,"lootBonus":15,"rawSpellDamage":30},"slug":"shiny-mask"}
+{"name":"Shiny Mask","type":"helmet","category":"armour","rarity":"unique","level":26,"icon":"https://malynsx.github.io/wynnia/img/items/helmet.gold.webp","base":{"baseHealth":115},"identifications":{"combatExperience":15,"lootBonus":15,"rawSpellDamage":30},"slug":"shiny-mask"}

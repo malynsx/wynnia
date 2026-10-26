@@ -1,1 +1,1 @@
-{"name":"Pykrete","stars":2,"level":47,"professions":["woodworking","scribing"],"icon":"https://malynsx.github.io/wynntools/img/ing/168_0.png","identifications":{"waterDefence":[3,5]},"itemOnlyIds":{"durabilityModifier":47000},"consumableOnlyIds":{"duration":90},"slug":"pykrete"}
+{"name":"Pykrete","stars":2,"level":47,"professions":["woodworking","scribing"],"icon":"https://malynsx.github.io/wynnia/img/ing/168_0.png","identifications":{"waterDefence":[3,5]},"itemOnlyIds":{"durabilityModifier":47000},"consumableOnlyIds":{"duration":90},"slug":"pykrete"}

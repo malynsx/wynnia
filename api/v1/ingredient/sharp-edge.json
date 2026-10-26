@@ -1,1 +1,1 @@
-{"name":"Sharp Edge","stars":1,"level":35,"professions":["weaponsmithing"],"icon":"https://malynsx.github.io/wynntools/img/ing/318_0.png","identifications":{"mainAttackDamage":[8,9],"spellDamage":[-9,-8]},"itemOnlyIds":{"durabilityModifier":-40000},"slug":"sharp-edge"}
+{"name":"Sharp Edge","stars":1,"level":35,"professions":["weaponsmithing"],"icon":"https://malynsx.github.io/wynnia/img/ing/318_0.png","identifications":{"mainAttackDamage":[8,9],"spellDamage":[-9,-8]},"itemOnlyIds":{"durabilityModifier":-40000},"slug":"sharp-edge"}

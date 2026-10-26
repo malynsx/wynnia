@@ -1,1 +1,1 @@
-{"name":"Toxic Spores","stars":1,"level":16,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/362_0.png","identifications":{"mainAttackDamage":[4,7],"poison":[3,5]},"consumableOnlyIds":{"duration":-63},"slug":"toxic-spores"}
+{"name":"Toxic Spores","stars":1,"level":16,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynnia/img/ing/362_0.png","identifications":{"mainAttackDamage":[4,7],"poison":[3,5]},"consumableOnlyIds":{"duration":-63},"slug":"toxic-spores"}

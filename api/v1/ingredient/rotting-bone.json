@@ -1,1 +1,1 @@
-{"name":"Rotting Bone","stars":2,"level":20,"professions":["armouring"],"icon":"https://malynsx.github.io/wynntools/img/ing/352_0.png","identifications":{"poison":[4,5],"waterDamage":[3,4]},"itemOnlyIds":{"durabilityModifier":-48000},"slug":"rotting-bone"}
+{"name":"Rotting Bone","stars":2,"level":20,"professions":["armouring"],"icon":"https://malynsx.github.io/wynnia/img/ing/352_0.png","identifications":{"poison":[4,5],"waterDamage":[3,4]},"itemOnlyIds":{"durabilityModifier":-48000},"slug":"rotting-bone"}

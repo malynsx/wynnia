@@ -1,1 +1,1 @@
-{"name":"Okit","type":"ring","category":"accessory","rarity":"unique","level":42,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire1.webp","base":{"baseFireDefence":10,"baseHealth":55,"baseWaterDefence":-2},"identifications":{"fireDamage":[2,8]},"slug":"okit"}
+{"name":"Okit","type":"ring","category":"accessory","rarity":"unique","level":42,"icon":"https://malynsx.github.io/wynnia/img/items/ring.fire1.webp","base":{"baseFireDefence":10,"baseHealth":55,"baseWaterDefence":-2},"identifications":{"fireDamage":[2,8]},"slug":"okit"}

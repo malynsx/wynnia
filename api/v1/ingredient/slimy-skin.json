@@ -1,1 +1,1 @@
-{"name":"Slimy Skin","stars":2,"level":78,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/433_0.png","identifications":{"manaRegen":[5,5],"manaSteal":[-3,-3],"waterDamage":[5,10]},"consumableOnlyIds":{"duration":-160},"slug":"slimy-skin"}
+{"name":"Slimy Skin","stars":2,"level":78,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynnia/img/ing/433_0.png","identifications":{"manaRegen":[5,5],"manaSteal":[-3,-3],"waterDamage":[5,10]},"consumableOnlyIds":{"duration":-160},"slug":"slimy-skin"}

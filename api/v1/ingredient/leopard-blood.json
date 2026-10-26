@@ -1,1 +1,1 @@
-{"name":"Leopard Blood","stars":2,"level":66,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/437_0.png","identifications":{"rawMainAttackDamage":[85,110],"rawSpellDamage":[-110,-85]},"consumableOnlyIds":{"duration":-200},"slug":"leopard-blood"}
+{"name":"Leopard Blood","stars":2,"level":66,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynnia/img/ing/437_0.png","identifications":{"rawMainAttackDamage":[85,110],"rawSpellDamage":[-110,-85]},"consumableOnlyIds":{"duration":-200},"slug":"leopard-blood"}

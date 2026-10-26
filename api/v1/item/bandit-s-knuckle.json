@@ -1,1 +1,1 @@
-{"name":"Bandit's Knuckle","type":"ring","category":"accessory","rarity":"rare","level":34,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicGem.webp","base":{"baseHealth":-25},"identifications":{"lootBonus":[1,4],"stealing":[2,8]},"slug":"bandit-s-knuckle"}
+{"name":"Bandit's Knuckle","type":"ring","category":"accessory","rarity":"rare","level":34,"icon":"https://malynsx.github.io/wynnia/img/items/ring.basicGem.webp","base":{"baseHealth":-25},"identifications":{"lootBonus":[1,4],"stealing":[2,8]},"slug":"bandit-s-knuckle"}

@@ -1,1 +1,1 @@
-{"name":"Soft Helmet","type":"helmet","category":"armour","rarity":"unique","level":4,"icon":"https://malynsx.github.io/wynntools/img/items/helmet.pale_leather.webp","base":{"baseHealth":10},"identifications":{"rawAgility":1,"walkSpeed":[1,5]},"powderSlots":1,"slug":"soft-helmet"}
+{"name":"Soft Helmet","type":"helmet","category":"armour","rarity":"unique","level":4,"icon":"https://malynsx.github.io/wynnia/img/items/helmet.pale_leather.webp","base":{"baseHealth":10},"identifications":{"rawAgility":1,"walkSpeed":[1,5]},"powderSlots":1,"slug":"soft-helmet"}

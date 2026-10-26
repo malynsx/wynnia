@@ -1,1 +1,1 @@
-{"name":"Ice Silver","stars":1,"level":42,"professions":["woodworking","tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/42_0.png","identifications":{"lootBonus":[2,5],"rawAgility":[2,4]},"itemOnlyIds":{"agilityRequirement":7,"durabilityModifier":-45000},"slug":"ice-silver"}
+{"name":"Ice Silver","stars":1,"level":42,"professions":["woodworking","tailoring"],"icon":"https://malynsx.github.io/wynnia/img/ing/42_0.png","identifications":{"lootBonus":[2,5],"rawAgility":[2,4]},"itemOnlyIds":{"agilityRequirement":7,"durabilityModifier":-45000},"slug":"ice-silver"}

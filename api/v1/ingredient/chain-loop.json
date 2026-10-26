@@ -1,1 +1,1 @@
-{"name":"Chain Loop","stars":1,"level":35,"professions":["armouring"],"icon":"https://malynsx.github.io/wynntools/img/ing/101_0.png","identifications":{"rawHealth":[50,70],"waterDefence":[-6,-4]},"itemOnlyIds":{"defenceRequirement":15,"durabilityModifier":-38000},"slug":"chain-loop"}
+{"name":"Chain Loop","stars":1,"level":35,"professions":["armouring"],"icon":"https://malynsx.github.io/wynnia/img/ing/101_0.png","identifications":{"rawHealth":[50,70],"waterDefence":[-6,-4]},"itemOnlyIds":{"defenceRequirement":15,"durabilityModifier":-38000},"slug":"chain-loop"}

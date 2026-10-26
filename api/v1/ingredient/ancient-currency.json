@@ -1,1 +1,1 @@
-{"name":"Ancient Currency","stars":2,"level":102,"professions":["tailoring"],"icon":"https://malynsx.github.io/wynntools/img/ing/400_0.png","identifications":{"lootBonus":[5,7],"lootQuality":[4,5]},"itemOnlyIds":{"durabilityModifier":-150000},"slug":"ancient-currency"}
+{"name":"Ancient Currency","stars":2,"level":102,"professions":["tailoring"],"icon":"https://malynsx.github.io/wynnia/img/ing/400_0.png","identifications":{"lootBonus":[5,7],"lootQuality":[4,5]},"itemOnlyIds":{"durabilityModifier":-150000},"slug":"ancient-currency"}

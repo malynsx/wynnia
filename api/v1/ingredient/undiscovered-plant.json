@@ -1,1 +1,1 @@
-{"name":"Undiscovered Plant","stars":2,"level":100,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/31_2.png","identifications":{"gatherXpBonus":[5,5],"rawHealth":[1400,1550]},"consumableOnlyIds":{"duration":-220},"slug":"undiscovered-plant"}
+{"name":"Undiscovered Plant","stars":2,"level":100,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynnia/img/ing/31_2.png","identifications":{"gatherXpBonus":[5,5],"rawHealth":[1400,1550]},"consumableOnlyIds":{"duration":-220},"slug":"undiscovered-plant"}

@@ -1,1 +1,1 @@
-{"name":"Fairy Powder","stars":2,"level":99,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/353_0.png","identifications":{"manaRegen":[3,4],"rawSpellDamage":[45,60],"spellDamage":[10,13]},"consumableOnlyIds":{"duration":-190},"slug":"fairy-powder"}
+{"name":"Fairy Powder","stars":2,"level":99,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynnia/img/ing/353_0.png","identifications":{"manaRegen":[3,4],"rawSpellDamage":[45,60],"spellDamage":[10,13]},"consumableOnlyIds":{"duration":-190},"slug":"fairy-powder"}

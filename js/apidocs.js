@@ -1,7 +1,7 @@
 /* Documentation for the static Wynnia API (api/v1, rebuilt weekly by tools/build_data.py). */
 (function (W) {
   const { el } = W;
-  const BASE = 'https://malynsx.github.io/wynntools/api/v1/';
+  const BASE = 'https://malynsx.github.io/wynnia/api/v1/';
   const ENDPOINTS = [
     ['index.json', 'Lists every endpoint and when the data was last rebuilt.'],
     ['items.json', 'Every gear item: name, type, rarity, level, class, skill requirements, base stats, identifications (fixed number or [min, max]), major IDs, powder slots, icon URL.'],

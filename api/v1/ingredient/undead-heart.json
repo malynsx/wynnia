@@ -1,1 +1,1 @@
-{"name":"Undead Heart","stars":1,"level":15,"professions":["armouring","woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/434_0.png","identifications":{"rawDefence":[1,2],"rawHealth":[10,15]},"itemOnlyIds":{"durabilityModifier":-31000},"slug":"undead-heart"}
+{"name":"Undead Heart","stars":1,"level":15,"professions":["armouring","woodworking"],"icon":"https://malynsx.github.io/wynnia/img/ing/434_0.png","identifications":{"rawDefence":[1,2],"rawHealth":[10,15]},"itemOnlyIds":{"durabilityModifier":-31000},"slug":"undead-heart"}

@@ -1,1 +1,1 @@
-{"name":"Drain","type":"necklace","category":"accessory","rarity":"rare","level":85,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.basicIron.webp","base":{"baseHealth":375},"identifications":{"combatExperience":10,"lifeSteal":230},"restriction":"untradable","slug":"drain"}
+{"name":"Drain","type":"necklace","category":"accessory","rarity":"rare","level":85,"icon":"https://malynsx.github.io/wynnia/img/items/necklace.basicIron.webp","base":{"baseHealth":375},"identifications":{"combatExperience":10,"lifeSteal":230},"restriction":"untradable","slug":"drain"}

@@ -1,1 +1,1 @@
-{"name":"Quartron's Eye","type":"ring","category":"accessory","rarity":"rare","level":49,"icon":"https://malynsx.github.io/wynntools/img/items/ring.fire1.webp","base":{"baseHealth":-60},"identifications":{"elementalDamage":[2,9],"exploding":[3,13],"manaRegen":[1,5]},"slug":"quartron-s-eye"}
+{"name":"Quartron's Eye","type":"ring","category":"accessory","rarity":"rare","level":49,"icon":"https://malynsx.github.io/wynnia/img/items/ring.fire1.webp","base":{"baseHealth":-60},"identifications":{"elementalDamage":[2,9],"exploding":[3,13],"manaRegen":[1,5]},"slug":"quartron-s-eye"}

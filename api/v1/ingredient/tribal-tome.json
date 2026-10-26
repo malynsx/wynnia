@@ -1,1 +1,1 @@
-{"name":"Tribal Tome","stars":2,"level":65,"professions":["woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/340_0.png","identifications":{"healingEfficiency":[3,4],"healthRegen":[-5,-4],"spellDamage":[3,4]},"itemOnlyIds":{"durabilityModifier":-80000},"slug":"tribal-tome"}
+{"name":"Tribal Tome","stars":2,"level":65,"professions":["woodworking"],"icon":"https://malynsx.github.io/wynnia/img/ing/340_0.png","identifications":{"healingEfficiency":[3,4],"healthRegen":[-5,-4],"spellDamage":[3,4]},"itemOnlyIds":{"durabilityModifier":-80000},"slug":"tribal-tome"}

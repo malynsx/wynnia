@@ -1,1 +1,1 @@
-{"name":"Mysterious Mist","stars":2,"level":25,"professions":["scribing"],"icon":"https://malynsx.github.io/wynntools/img/ing/437_0.png","identifications":{"gatherXpBonus":[2,2],"rawAgility":[4,4],"spellDamage":[4,4]},"consumableOnlyIds":{"duration":-100},"slug":"mysterious-mist"}
+{"name":"Mysterious Mist","stars":2,"level":25,"professions":["scribing"],"icon":"https://malynsx.github.io/wynnia/img/ing/437_0.png","identifications":{"gatherXpBonus":[2,2],"rawAgility":[4,4],"spellDamage":[4,4]},"consumableOnlyIds":{"duration":-100},"slug":"mysterious-mist"}

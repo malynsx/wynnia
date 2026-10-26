@@ -1,1 +1,1 @@
-{"name":"Simple Coin","type":"necklace","category":"accessory","rarity":"unique","level":18,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.basicGold.webp","base":{"baseHealth":10},"identifications":{"lootBonus":[2,8]},"slug":"simple-coin"}
+{"name":"Simple Coin","type":"necklace","category":"accessory","rarity":"unique","level":18,"icon":"https://malynsx.github.io/wynnia/img/items/necklace.basicGold.webp","base":{"baseHealth":10},"identifications":{"lootBonus":[2,8]},"slug":"simple-coin"}

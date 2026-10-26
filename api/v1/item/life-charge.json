@@ -1,1 +1,1 @@
-{"name":"Life Charge","type":"bracelet","category":"accessory","rarity":"unique","level":30,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.multi1.webp","base":{"baseHealth":80},"identifications":{"healthRegenRaw":[3,14],"manaRegen":-1},"slug":"life-charge"}
+{"name":"Life Charge","type":"bracelet","category":"accessory","rarity":"unique","level":30,"icon":"https://malynsx.github.io/wynnia/img/items/bracelet.multi1.webp","base":{"baseHealth":80},"identifications":{"healthRegenRaw":[3,14],"manaRegen":-1},"slug":"life-charge"}

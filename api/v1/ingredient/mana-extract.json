@@ -1,1 +1,1 @@
-{"name":"Mana Extract","stars":3,"level":7,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/169_0.png","identifications":{"gatherXpBonus":[2,3],"rawSpellDamage":[10,12]},"consumableOnlyIds":{"duration":-120},"slug":"mana-extract"}
+{"name":"Mana Extract","stars":3,"level":7,"professions":["alchemism"],"icon":"https://malynsx.github.io/wynnia/img/ing/169_0.png","identifications":{"gatherXpBonus":[2,3],"rawSpellDamage":[10,12]},"consumableOnlyIds":{"duration":-120},"slug":"mana-extract"}

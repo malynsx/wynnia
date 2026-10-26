@@ -1,1 +1,1 @@
-{"name":"Vital","type":"ring","category":"accessory","rarity":"rare","level":67,"icon":"https://malynsx.github.io/wynntools/img/items/ring.basicGem.webp","base":{"baseHealth":-220},"identifications":{"healthRegen":[1,5],"healthRegenRaw":[19,83]},"slug":"vital"}
+{"name":"Vital","type":"ring","category":"accessory","rarity":"rare","level":67,"icon":"https://malynsx.github.io/wynnia/img/items/ring.basicGem.webp","base":{"baseHealth":-220},"identifications":{"healthRegen":[1,5],"healthRegenRaw":[19,83]},"slug":"vital"}

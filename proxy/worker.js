@@ -59,7 +59,7 @@ export default {
     if (market && !env.WYNNVENTORY_KEY) return Response.json({ error: 'no-key' }, { status: 503, headers: cors });
     if (!market && !PATHS.test(url.pathname)) return new Response('Not found', { status: 404, headers: cors });
     const target = market ? `https://wynnventory.com/api/v2/market/items/${market[1]}/price` : 'https://api.wynncraft.com' + url.pathname + url.search;
-    const headers = { 'User-Agent': 'Wynnia relay (github.com/malynsx/wynntools)' };
+    const headers = { 'User-Agent': 'Wynnia relay (github.com/malynsx/wynnia)' };
     if (market) headers.Authorization = 'Api-Key ' + env.WYNNVENTORY_KEY;
 
     const cache = caches.default;

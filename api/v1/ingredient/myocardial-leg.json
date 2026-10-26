@@ -1,1 +1,1 @@
-{"name":"Myocardial Leg","stars":2,"level":92,"professions":["cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/350_1.png","identifications":{"healthRegen":[-7,-5],"mainAttackDamage":[6,8],"manaSteal":[2,3]},"consumableOnlyIds":{"duration":-540},"slug":"myocardial-leg"}
+{"name":"Myocardial Leg","stars":2,"level":92,"professions":["cooking"],"icon":"https://malynsx.github.io/wynnia/img/ing/350_1.png","identifications":{"healthRegen":[-7,-5],"mainAttackDamage":[6,8],"manaSteal":[2,3]},"consumableOnlyIds":{"duration":-540},"slug":"myocardial-leg"}

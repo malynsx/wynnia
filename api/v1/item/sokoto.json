@@ -1,1 +1,1 @@
-{"name":"Sokoto","type":"leggings","category":"armour","rarity":"rare","level":4,"icon":"https://malynsx.github.io/wynntools/img/items/leggings.pale_leather.webp","base":{"baseHealth":15},"identifications":{"rawAgility":3,"walkSpeed":[2,10]},"powderSlots":1,"slug":"sokoto"}
+{"name":"Sokoto","type":"leggings","category":"armour","rarity":"rare","level":4,"icon":"https://malynsx.github.io/wynnia/img/items/leggings.pale_leather.webp","base":{"baseHealth":15},"identifications":{"rawAgility":3,"walkSpeed":[2,10]},"powderSlots":1,"slug":"sokoto"}

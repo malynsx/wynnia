@@ -1,1 +1,1 @@
-{"name":"Iron Bracer","type":"bracelet","category":"accessory","rarity":"unique","level":10,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.basicIron.webp","base":{"baseHealth":10},"identifications":{"rawDefence":4,"walkSpeed":[-4,-2]},"slug":"iron-bracer"}
+{"name":"Iron Bracer","type":"bracelet","category":"accessory","rarity":"unique","level":10,"icon":"https://malynsx.github.io/wynnia/img/items/bracelet.basicIron.webp","base":{"baseHealth":10},"identifications":{"rawDefence":4,"walkSpeed":[-4,-2]},"slug":"iron-bracer"}

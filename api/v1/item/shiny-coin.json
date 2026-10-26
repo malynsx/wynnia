@@ -1,1 +1,1 @@
-{"name":"Shiny Coin","type":"necklace","category":"accessory","rarity":"unique","level":56,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.basicGold.webp","base":{"baseHealth":120},"identifications":{"combatExperience":[3,13],"lootBonus":[3,13]},"slug":"shiny-coin"}
+{"name":"Shiny Coin","type":"necklace","category":"accessory","rarity":"unique","level":56,"icon":"https://malynsx.github.io/wynnia/img/items/necklace.basicGold.webp","base":{"baseHealth":120},"identifications":{"combatExperience":[3,13],"lootBonus":[3,13]},"slug":"shiny-coin"}

@@ -1,1 +1,1 @@
-{"name":"Active Fireball","stars":1,"level":4,"professions":["scribing","cooking","alchemism"],"icon":"https://malynsx.github.io/wynntools/img/ing/377_0.png","identifications":{"fireDamage":[2,4]},"consumableOnlyIds":{"duration":-160},"slug":"active-fireball"}
+{"name":"Active Fireball","stars":1,"level":4,"professions":["scribing","cooking","alchemism"],"icon":"https://malynsx.github.io/wynnia/img/ing/377_0.png","identifications":{"fireDamage":[2,4]},"consumableOnlyIds":{"duration":-160},"slug":"active-fireball"}

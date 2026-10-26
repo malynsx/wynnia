@@ -1,1 +1,1 @@
-{"name":"Ancient Spring Water","stars":3,"level":62,"professions":["alchemism","scribing","cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/326_0.png","consumableOnlyIds":{"duration":40},"positionModifiers":{"notTouching":10,"touching":20},"slug":"ancient-spring-water"}
+{"name":"Ancient Spring Water","stars":3,"level":62,"professions":["alchemism","scribing","cooking"],"icon":"https://malynsx.github.io/wynnia/img/ing/326_0.png","consumableOnlyIds":{"duration":40},"positionModifiers":{"notTouching":10,"touching":20},"slug":"ancient-spring-water"}

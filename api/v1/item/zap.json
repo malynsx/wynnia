@@ -1,1 +1,1 @@
-{"name":"Zap","type":"ring","category":"accessory","rarity":"unique","level":20,"icon":"https://malynsx.github.io/wynntools/img/items/ring.thunder1.webp","base":{"baseThunderDefence":4,"baseWaterDefence":-4},"identifications":{"manaSteal":[1,4],"spellDamage":[1,4]},"slug":"zap"}
+{"name":"Zap","type":"ring","category":"accessory","rarity":"unique","level":20,"icon":"https://malynsx.github.io/wynnia/img/items/ring.thunder1.webp","base":{"baseThunderDefence":4,"baseWaterDefence":-4},"identifications":{"manaSteal":[1,4],"spellDamage":[1,4]},"slug":"zap"}

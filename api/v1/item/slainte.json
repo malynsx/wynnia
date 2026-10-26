@@ -1,1 +1,1 @@
-{"name":"Slainte","type":"necklace","category":"accessory","rarity":"rare","level":30,"icon":"https://malynsx.github.io/wynntools/img/items/necklace.basicIron.webp","base":{"baseHealth":100},"identifications":{"combatExperience":10,"lootBonus":5},"restriction":"untradable","slug":"slainte"}
+{"name":"Slainte","type":"necklace","category":"accessory","rarity":"rare","level":30,"icon":"https://malynsx.github.io/wynnia/img/items/necklace.basicIron.webp","base":{"baseHealth":100},"identifications":{"combatExperience":10,"lootBonus":5},"restriction":"untradable","slug":"slainte"}

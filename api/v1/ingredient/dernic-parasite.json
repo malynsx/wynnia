@@ -1,1 +1,1 @@
-{"name":"Dernic Parasite","stars":2,"level":104,"professions":["cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/263_1.png","identifications":{"gatherSpeed":[-4,-3],"gatherXpBonus":[3,4],"manaSteal":[4,5]},"consumableOnlyIds":{"duration":-590},"slug":"dernic-parasite"}
+{"name":"Dernic Parasite","stars":2,"level":104,"professions":["cooking"],"icon":"https://malynsx.github.io/wynnia/img/ing/263_1.png","identifications":{"gatherSpeed":[-4,-3],"gatherXpBonus":[3,4],"manaSteal":[4,5]},"consumableOnlyIds":{"duration":-590},"slug":"dernic-parasite"}

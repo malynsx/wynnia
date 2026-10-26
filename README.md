@@ -1,6 +1,6 @@
 # Wynnia
 
-Handy tools for Wynncraft, made by Malyns. A static site: open `index.html` or serve the folder. Live at https://malynsx.github.io/wynntools/
+Handy tools for Wynncraft, made by Malyns. A static site: open `index.html` or serve the folder. Live at https://malynsx.github.io/wynnia/
 
 - **Mounts**: stable with Wynntils import and share links, breeding predictions, pair finder, lineage planner, feed planner, training, timers, market maths, "wanted" posters, breed ledger (paste a breed from Wynntils) and almanac.
 - **Items**: search and compare every item; loadout builder with Wynntils paste (exact rolls and powders), skill point check and share links.
@@ -12,7 +12,7 @@ Handy tools for Wynncraft, made by Malyns. A static site: open `index.html` or s
 
 ## Wynnia API
 
-Static, CORS-open JSON at `https://malynsx.github.io/wynntools/api/v1/` (items, ingredients, materials, recipes, quests, spots, Olinus10's spots, territories, profession XP). Docs on the site under Home › API.
+Static, CORS-open JSON at `https://malynsx.github.io/wynnia/api/v1/` (items, ingredients, materials, recipes, quests, spots, Olinus10's spots, territories, profession XP). Docs on the site under Home › API.
 
 ## Data
 

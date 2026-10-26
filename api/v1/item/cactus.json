@@ -1,1 +1,1 @@
-{"name":"Cactus","type":"ring","category":"accessory","rarity":"unique","level":36,"icon":"https://malynsx.github.io/wynntools/img/items/ring.earth1.webp","base":{"baseEarthDefence":5,"baseHealth":50},"identifications":{"lifeSteal":[-16,-8],"thorns":[4,16]},"slug":"cactus"}
+{"name":"Cactus","type":"ring","category":"accessory","rarity":"unique","level":36,"icon":"https://malynsx.github.io/wynnia/img/items/ring.earth1.webp","base":{"baseEarthDefence":5,"baseHealth":50},"identifications":{"lifeSteal":[-16,-8],"thorns":[4,16]},"slug":"cactus"}

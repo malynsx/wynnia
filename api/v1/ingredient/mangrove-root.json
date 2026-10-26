@@ -1,1 +1,1 @@
-{"name":"Mangrove Root","stars":3,"level":56,"professions":["cooking"],"icon":"https://malynsx.github.io/wynntools/img/ing/6_5.png","identifications":{"gatherXpBonus":[2,2],"mainAttackDamage":[5,9],"rawStrength":[5,6]},"consumableOnlyIds":{"duration":-620},"slug":"mangrove-root"}
+{"name":"Mangrove Root","stars":3,"level":56,"professions":["cooking"],"icon":"https://malynsx.github.io/wynnia/img/ing/6_5.png","identifications":{"gatherXpBonus":[2,2],"mainAttackDamage":[5,9],"rawStrength":[5,6]},"consumableOnlyIds":{"duration":-620},"slug":"mangrove-root"}

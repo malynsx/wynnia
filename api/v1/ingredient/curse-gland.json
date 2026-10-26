@@ -1,1 +1,1 @@
-{"name":"Curse Gland","stars":2,"level":66,"professions":["woodworking"],"icon":"https://malynsx.github.io/wynntools/img/ing/433_0.png","identifications":{"earthDamage":[10,13],"waterDefence":[-9,-6]},"itemOnlyIds":{"durabilityModifier":-78000,"strengthRequirement":12},"slug":"curse-gland"}
+{"name":"Curse Gland","stars":2,"level":66,"professions":["woodworking"],"icon":"https://malynsx.github.io/wynnia/img/ing/433_0.png","identifications":{"earthDamage":[10,13],"waterDefence":[-9,-6]},"itemOnlyIds":{"durabilityModifier":-78000,"strengthRequirement":12},"slug":"curse-gland"}

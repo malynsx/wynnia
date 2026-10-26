@@ -1,1 +1,1 @@
-{"name":"Echo","type":"ring","category":"accessory","rarity":"unique","level":22,"icon":"https://malynsx.github.io/wynntools/img/items/ring.air1.webp","skillRequirements":{"agility":8},"base":{"baseAirDefence":4},"identifications":{"airDamage":[2,9],"rawAgility":3},"slug":"echo"}
+{"name":"Echo","type":"ring","category":"accessory","rarity":"unique","level":22,"icon":"https://malynsx.github.io/wynnia/img/items/ring.air1.webp","skillRequirements":{"agility":8},"base":{"baseAirDefence":4},"identifications":{"airDamage":[2,9],"rawAgility":3},"slug":"echo"}

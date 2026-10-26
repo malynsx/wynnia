@@ -1,1 +1,1 @@
-{"name":"Asher's Relic","type":"bracelet","category":"accessory","rarity":"rare","level":17,"icon":"https://malynsx.github.io/wynntools/img/items/bracelet.multi1.webp","base":{"baseHealth":-20},"identifications":{"healthRegenRaw":[2,8],"manaRegen":[1,5]},"slug":"asher-s-relic"}
+{"name":"Asher's Relic","type":"bracelet","category":"accessory","rarity":"rare","level":17,"icon":"https://malynsx.github.io/wynnia/img/items/bracelet.multi1.webp","base":{"baseHealth":-20},"identifications":{"healthRegenRaw":[2,8],"manaRegen":[1,5]},"slug":"asher-s-relic"}
