@@ -923,3 +923,44 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 @media (max-width: 600px) { .clspick { grid-template-columns: repeat(3, minmax(0, 1fr)); } .archpick { grid-template-columns: minmax(0, 1fr); } .archbtn { grid-template-columns: 52px minmax(0, 1fr); justify-items: start; text-align: left; } .archbtn .archico { grid-row: 1 / 4; } }
 .icard .imajor b { color: #55ffff; } .imdesc { margin-top: 3px; color: #c9bfdc; font-size: 13.5px; line-height: 1.4; }
 .cval.cmajor { display: grid; gap: 6px; } .cval.cmajor b { color: #55ffff; } .cval.cmajor .imdesc { color: var(--mute); }
+
+/* ---------- ingredients ---------- */
+.ingcard .itier { background: var(--rc); color: #120c1c; letter-spacing: .02em; }
+.ingprofs { display: inline-flex; gap: 3px; margin-left: 2px; } .itags .ingprofs { padding: 0; box-shadow: none; }
+.ingprofs img { width: 18px; height: 18px; object-fit: contain; }
+.icard .il.hit { background: rgba(247, 210, 94, .12); box-shadow: inset 3px 0 0 var(--gold); margin: 0 -6px; padding: 0 6px; border-radius: 2px; }
+.ingeff { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 2px solid #2f2445; font-size: 13.5px; }
+.ingeff b { display: block; color: #c9bfdc; font-size: 13px; margin-bottom: 2px; } .ingeff span { color: #c9bfdc; }
+.effgrid { display: grid; grid-template-columns: repeat(3, 30px); grid-template-rows: repeat(3, 30px); gap: 3px; }
+.effgrid i { display: grid; place-items: center; background: #1d1430; border: 2px solid #2f2445; border-radius: 3px; font: 800 10px var(--ui); font-style: normal; color: #fff; }
+.effgrid i.me { background: var(--rc); border-color: var(--rc); opacity: .85; }
+.effgrid i.up { background: rgba(85, 255, 85, calc(.15 + .5 * var(--a, .5))); border-color: #3c9c4c; }
+.effgrid i.down { background: rgba(255, 85, 85, calc(.15 + .5 * var(--a, .5))); border-color: #9c3c3c; }
+.ingmods { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.ingmods span { font: 700 12px var(--ui); padding: 3px 7px; border-radius: 3px; background: #1d1430; }
+.ingmods .up { color: #7fe08f; } .ingmods .down { color: #ff8d80; }
+.ingact { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 2px solid #2f2445; }
+.ingact .pricetag { margin: 0; padding: 0; border: 0; flex: 1 1 auto; }
+.ingact .rank { color: var(--gold); font: 800 14px var(--hand); margin-right: auto; }
+.profchips { display: flex; flex-wrap: wrap; gap: 6px; }
+.pchip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 6px; background: var(--card2); color: #fff; border: 3px solid var(--navy); border-radius: 6px; font: 700 15px var(--hand); box-shadow: 0 3px 0 var(--navy); }
+.pchip img { width: 24px; height: 24px; object-fit: contain; } .pchip.on { background: var(--gold); color: var(--dark); }
+.fchips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.fchip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 6px 2px 10px; background: var(--navy); color: #fff; border: 0; border-radius: 99px; font: 700 13px var(--ui); box-shadow: none; }
+.fchip b { color: var(--gold); font-size: 15px; } .fchip:hover b { color: var(--bad); }
+.resbar { flex-wrap: wrap; gap: 10px; }
+.bonusrows { display: grid; gap: 6px; }
+.bonusrow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; background: var(--inset); border: 2px solid var(--navy); border-radius: 6px; padding: 6px 10px; }
+.bonusrow b { color: var(--gold); } .bonusrow label { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--mute); }
+.bonusrow input { width: 80px; padding: 3px 6px; }
+.bonusrows > select { justify-self: start; }
+.quickb { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; } .quickb small { color: var(--navy); font-weight: 700; }
+.starchips { display: flex; gap: 4px; } .starchips .mini { color: var(--sc); min-width: 44px; } .starchips .mini.on { background: var(--navy); }
+.wantlist { display: grid; gap: 6px; }
+.wantrow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: center; }
+.wweight { display: flex; gap: 4px; } .wweight .on { background: var(--gold); color: var(--dark); }
+.wantlist > .mini { justify-self: start; }
+@media (max-width: 600px) { .bonusrow, .wantrow { grid-template-columns: minmax(0, 1fr); } .pchip span { display: none; } }
+/* ranked lists read left to right, row by row */
+.igrid.ranked { display: grid; columns: auto; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 18px; align-items: start; }
+.igrid.ranked > .icard { margin: 0; }
