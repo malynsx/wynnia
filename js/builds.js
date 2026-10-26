@@ -1,6 +1,6 @@
 /* Build Library: builds saved from the Loadout Builder, kept in this browser. Each entry keeps the build code,
    a name, your own tags and a snapshot of its numbers (class, archetype, elements, health, damage), so the
-   library can sort and filter without loading the game data. Shared builds get a link with a chat embed. */
+   library can sort and filter without loading the game data. */
 (function (W) {
   const { el } = W;
   const KEY = 'wynnia.builds';
@@ -29,22 +29,6 @@
   /* tags the build earns by itself: class, archetype and its main damage elements */
   W.buildAutoTags = (s) => [s && s.cls && W.cap(s.cls), s && s.arch, ...((s && s.elems) || []).map(W.cap)].filter(Boolean);
   const fmt = (n) => n == null ? '—' : Math.abs(n) >= 10000 ? W.short(n) : Math.round(n).toLocaleString('en-US');
-
-  /* the chat-app preview for a build: title, a few lines of numbers, the weapon's icon, its rarity colour */
-  W.buildMeta = (name, s) => {
-    if (!s) return null;
-    const who = [s.cls && W.cap(s.cls), s.arch, s.lvl && 'Lv. ' + s.lvl].filter(Boolean).join(' · ');
-    const lines = [
-      who,
-      s.hp != null ? `${fmt(s.hp)} health · ${fmt(s.ehp)} effective HP` : null,
-      s.dps != null ? `${fmt(s.dps)} main attack DPS` + (s.spell ? ` · ${s.spell} ${fmt(s.spellDmg)} per cast` : '') : null,
-      s.elems && s.elems.length ? 'Elements: ' + s.elems.map(W.cap).join(', ') : null,
-      s.weapon ? 'Weapon: ' + s.weapon : null,
-      s.gear && s.gear.length ? 'Gear: ' + s.gear.join(', ') : null,
-    ].filter(Boolean);
-    return { t: (name || `${s.arch || W.cap(s.cls || 'Custom')} build`).slice(0, 120), d: lines.join('\n').slice(0, 400),
-      i: s.ic ? SITE + 'img/items/' + s.ic : undefined, c: s.rar ? W.tierColor(s.rar) : '#ffd65a' };
-  };
 
   const LF = { q: '', cls: '', tag: '', sort: 'updated' };
   W.pages['items/builds'] = function (root) {
@@ -100,7 +84,7 @@
           el('small', {}, 'Saved ' + W.ago(b.updated)),
           el('div', { class: 'libbtns' },
             el('a', { class: 'btnlink mini', href: open }, 'Open'),
-            el('button', { class: 'mini', title: 'Copy a short link that shows this build as an embed in Discord', onclick: (e) => W.copyShort(W.buildLink(b, true), e.target, null, W.buildMeta(b.name, s)) }, 'Share'),
+            el('button', { class: 'mini', title: 'Copy a short link to this build', onclick: (e) => W.copyShort(W.buildLink(b, true), e.target) }, 'Share'),
             el('button', { class: 'mini danger', title: 'Delete from the library', onclick: () => { if (confirm(`Delete "${b.name || 'Untitled build'}" from your library?`)) { W.builds.remove(b.id); draw(); } } }, 'Delete'))));
     }
 

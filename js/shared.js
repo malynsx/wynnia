@@ -260,22 +260,17 @@
   /* Short share links: the relay stores the long link and returns a 7-character id (#s/Ab3dE9x).
      Falls back to the long link if the relay can't store it. */
   const shortCache = {};
-  /* With `meta` ({ t: title, d: description, i: image URL, c: '#hex' }) the link becomes a relay /b/ link that
-     Discord and other chat apps show as an embed; a relay without embeds falls back to a plain short link. */
-  W.shortLink = (url, meta) => {
-    const [base, hash] = url.split('#'), key = url + (meta ? '\n' + JSON.stringify(meta) : '');
-    const post = (json) => fetch(W.API_RELAY + '/s', json
-      ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ link: '#' + hash, meta }) }
-      : { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: '#' + hash }).then(r => r.ok ? r.json() : Promise.reject());
-    return shortCache[key] || (shortCache[key] = (meta ? post(true).catch(() => post(false)) : post(false))
-      .then(j => j.embed ? `${W.API_RELAY}/b/${j.id}` : `${base}#s/${j.id}`).catch(() => { delete shortCache[key]; return url; }));
+  W.shortLink = (url) => {
+    const [base, hash] = url.split('#');
+    return shortCache[url] || (shortCache[url] = fetch(W.API_RELAY + '/s', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: '#' + hash })
+      .then(r => r.ok ? r.json() : Promise.reject()).then(j => `${base}#s/${j.id}`).catch(() => { delete shortCache[url]; return url; }));
   };
   W.resolveShort = (id) => fetch(`${W.API_RELAY}/s/${id}`).then(r => r.ok ? r.json() : Promise.reject(new Error('This short link doesn’t exist (or has expired).')))
     .then(j => j.link);
   /* Copy button for a share link: shortens it first, shows the result in `input` if given. */
-  W.copyShort = (url, btn, input, meta) => {
+  W.copyShort = (url, btn, input) => {
     const t = btn.textContent; btn.textContent = 'Shortening…'; btn.disabled = true;
-    W.shortLink(url, meta).then(short => {
+    W.shortLink(url).then(short => {
       if (input) { if ('value' in input) { input.value = short; input.select(); } else input.textContent = short; }
       btn.disabled = false; btn.textContent = t;
       W.copyText(short, btn);

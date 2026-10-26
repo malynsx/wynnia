@@ -190,8 +190,8 @@
             el('button', { onclick: (e) => saveToLibrary(e.target) }, LB.lib && W.builds.get(LB.lib) ? 'Update in library' : 'Save to library')),
           el('p', { class: 'hint' }, 'Class, archetype and main elements are tagged for you. ', el('a', { href: '#items/builds' }, 'Open your build library'), '.'),
           el('div', { class: 'cap left' }, 'Share this build'),
-          el('div', { class: 'search' }, box, el('button', { onclick: (e) => W.copyShort(shareLink(), e.target, box, W.buildMeta(LB.name, snapshot())) }, 'Copy link')),
-          el('p', { class: 'hint' }, 'Copy link makes a short link that keeps every item, exact roll, powder, tome, skill point and ability. Pasted in Discord, it shows the build’s name, numbers and weapon.'),
+          el('div', { class: 'search' }, box, el('button', { onclick: (e) => W.copyShort(shareLink(), e.target, box) }, 'Copy link')),
+          el('p', { class: 'hint' }, 'Copy link makes a short link that keeps every item, exact roll, powder, tome, skill point and ability.'),
           buildValue(),
           el('div', { class: 'btns' }, el('a', { class: 'btnlink', href: '#items/recommend' + (LB.u ? '?u=' + encodeURIComponent(LB.u) : '') }, 'Recommended build'),
             el('button', { class: 'danger', onclick: () => { if (confirm('Clear the whole build?')) { LB = blank(); owner = null; T = null; store(); draw(); } } }, 'Clear build')));
