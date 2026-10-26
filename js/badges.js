@@ -99,8 +99,7 @@
           : el('small', {}, 'Highest tier reached.')));
     };
     const box = W.win(`Badges · ${earned.length} of ${BADGES.length}`,
-      el('div', { class: 'badgegrid' }, list.map(badge)),
-      el('p', { class: 'hint' }, 'Earned from public Wynncraft stats. Each badge has five tiers: the pips and the gem colour show how far you are, from green (I) to mythic purple (V). Hover one for the details.'));
+      el('div', { class: 'badgegrid' }, list.map(badge)));
     return box;
   };
 })(window.W);
