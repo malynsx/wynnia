@@ -6,12 +6,12 @@
     { k: 'mounts', name: 'Mounts', icon: mountIcon, pages: [
       ['stable', 'Stable'], ['feeder', 'Feeder'], ['pairs', 'Pair Finder'], ['lineage', 'Lineage'], ['cookbook', 'Cookbook'],
       ['training', 'Training'], ['timers', 'Timers'], ['market', 'Market'], ['want', 'Wanted'], ['ledger', 'Ledger'], ['almanac', 'Almanac']] },
-    { k: 'items', name: 'Items', icon: () => W.art.wiki('weaponsmithing'), pages: [['search', 'Search'], ['compare', 'Compare'], ['loadout', 'Loadout Builder'], ['recommend', 'Recommended Build']] },
+    { k: 'items', name: 'Items', icon: () => W.art.wiki('weaponsmithing'), pages: [['search', 'Search'], ['compare', 'Compare'], ['loadout', 'Loadout Builder'], ['builds', 'Build Library'], ['recommend', 'Recommended Build']] },
     { k: 'crafting', name: 'Crafting', icon: () => W.art.wiki('alchemism'), pages: [['combiner', 'Ingredient Combiner'], ['finder', 'Ingredient Finder'], ['ingredients', 'Ingredients']] },
     { k: 'professions', name: 'Professions', icon: () => W.art.wiki('mining'), pages: [['xp', 'XP Calculator'], ['spots', 'Grinding Spots'], ['materials', 'Material Calculator'], ['gathering', 'Gathering']] },
     { k: 'players', name: 'Players', icon: () => W.art.wiki('warrior'), pages: [['lookup', 'Lookup'], ['compare', 'Compare'], ['watchlist', 'Watchlist'], ['leaderboards', 'Leaderboards'], ['quests', 'Quest Checklist']] },
     { k: 'guilds', name: 'Guilds', icon: () => W.art.wiki('guild-banner-tier-3'), pages: [['lookup', 'Lookup'], ['territories', 'Territories']] },
-    { k: 'world', name: 'World', icon: () => W.art.wiki('scribing'), pages: [['map', 'Map'], ['raids', 'Raids'], ['lootruns', 'Lootruns'], ['caves', 'Caves']] },
+    { k: 'world', name: 'World', icon: () => W.art.wiki('scribing'), pages: [['map', 'Map'], ['events', 'Events'], ['raids', 'Raids'], ['lootruns', 'Lootruns'], ['caves', 'Caves']] },
   ];
   /* Old Paddock links (#stable, #want?…, #player?…) keep working. */
   const LEGACY = { player: 'players/lookup' };

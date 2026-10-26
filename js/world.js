@@ -41,7 +41,7 @@
 
   /* map state: kept between visits, and in the URL so a view can be shared */
   const MS = { mode: 'world', on: new Set(['prov', 'city', 'raids', 'camps', 'caves', 'Fast Travel', 'Trade Market']), sel: new Set(), pins: [], view: null,
-    lvl: [1, 132], colorBy: 'guild', guild: '', tool: '' };
+    lvl: [1, 132], colorBy: 'guild', guild: '', tool: '', route: [], rres: '', rstops: 10, rspeed: 0, rgather: 4 };
   const DEFAULT_ON = { world: ['prov', 'city', 'raids', 'camps', 'caves', 'Fast Travel', 'Trade Market'], territories: ['terr', 'routes', 'hq'], professions: ['p:mining', 'p:woodcutting', 'p:farming', 'p:fishing'] };
 
   function fromQuery(q) {
@@ -49,6 +49,7 @@
     MS.mode = q.get('m');
     MS.on = new Set((q.get('l') || DEFAULT_ON[MS.mode].join(',')).split(',').filter(Boolean));
     MS.sel = new Set((q.get('s') || '').split(',').filter(Boolean));
+    MS.route = (q.get('r') || '').split(',').filter(Boolean);
     MS.pins = (q.get('p') || '').split(';').filter(Boolean).map(s => { const [x, z, ...n] = s.split('_'); return [+x, +z, decodeURIComponent(n.join('_')) || 'Pin']; });
     const v = (q.get('v') || '').split(',').map(Number); MS.view = v.length === 3 && v.every(isFinite) ? v : null;
     if (q.get('g')) MS.guild = q.get('g');
@@ -76,7 +77,7 @@
         const reg = new Map();
         const groups = {};
         const group = (k) => groups[k] || (groups[k] = L.layerGroup());
-        const selLayer = L.layerGroup().addTo(map), pinLayer = L.layerGroup().addTo(map);
+        const routeLayer = L.layerGroup().addTo(map), selLayer = L.layerGroup().addTo(map), pinLayer = L.layerGroup().addTo(map);
         const icon = (src, cls) => L.divIcon({ className: 'wicon ' + (cls || ''), html: `<img src="${src}" alt="">`, iconSize: [24, 24], iconAnchor: [12, 12] });
         const add = (key, id, item, layer) => {
           reg.set(id, item);
@@ -168,7 +169,37 @@
             if (!inRange) map.removeLayer(g);
           });
           if (MS.mode === 'territories') loadTerritories();
-          drawSel(); drawPins(); drawSide();
+          drawSel(); drawPins(); drawRoute(); drawSide();
+        }
+
+        /* gathering route: a loop through the stops, nearest-first and then untangled (2-opt), as the crow flies */
+        const dist = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
+        function orderLoop(pts) {
+          if (pts.length < 4) return pts;
+          const left = pts.slice(1), out = [pts[0]];
+          while (left.length) { const last = out[out.length - 1]; let bi = 0; left.forEach((p, i) => { if (dist(last, p) < dist(last, left[bi])) bi = i; }); out.push(left.splice(bi, 1)[0]); }
+          const n = out.length;
+          for (let pass = 0, better = true; better && pass < 60; pass++) {
+            better = false;
+            for (let i = 0; i < n - 2; i++) for (let j = i + 2; j < n - (i === 0 ? 1 : 0); j++) {
+              const a = out[i], b = out[i + 1], c = out[j], d = out[(j + 1) % n];
+              if (dist(a, c) + dist(b, d) < dist(a, b) + dist(c, d) - 0.01) { out.splice(i + 1, j - i, ...out.slice(i + 1, j + 1).reverse()); better = true; }
+            }
+          }
+          return out;
+        }
+        const routePts = () => MS.route.map(id => reg.get(id) && Object.assign({ id }, reg.get(id))).filter(Boolean);
+        const loopLength = (pts) => pts.length < 2 ? 0 : pts.reduce((a, p, i) => a + dist(p, pts[(i + 1) % pts.length]), 0);
+        function planRoute(ids) {
+          MS.route = orderLoop(ids.map(id => reg.get(id) && Object.assign({ id }, reg.get(id))).filter(Boolean)).map(p => p.id); drawRoute(); drawSide();
+          if (innerWidth <= 900) mapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });   // on phones the controls sit below the map
+        }
+        function drawRoute() {
+          routeLayer.clearLayers();
+          const pts = routePts(); if (pts.length < 2) return;
+          routeLayer.addLayer(L.polyline([...pts, pts[0]].map(p => ll(p.x, p.z)), { color: '#0d0c0b', weight: 6, opacity: .55, interactive: false }));
+          routeLayer.addLayer(L.polyline([...pts, pts[0]].map(p => ll(p.x, p.z)), { color: '#ffd65a', weight: 3, dashArray: '8 6', interactive: false }));
+          pts.forEach((p, i) => routeLayer.addLayer(L.marker(ll(p.x, p.z), { interactive: false, icon: L.divIcon({ className: 'wstop', html: `<b>${i + 1}</b>`, iconSize: [20, 20], iconAnchor: [10, 24] }) })));
         }
 
         /* selection: gold rings, listed in the sidebar */
@@ -207,6 +238,7 @@
             if (MS.pins.length) p.set('p', MS.pins.map(([x, z, n]) => `${x}_${z}_${encodeURIComponent(n)}`).join(';'));
             if (MS.mode === 'territories') { p.set('c', MS.colorBy); if (MS.guild) p.set('g', MS.guild); }
             if (MS.mode === 'professions') p.set('lv', MS.lvl.join('-'));
+            if (MS.route.length) p.set('r', MS.route.join(','));
             return location.href.split('#')[0] + '#world/map?' + p.toString();
           };
           const search = el('input', { type: 'search', placeholder: 'Find a place, cave, raid, service or territory…' });
@@ -249,6 +281,7 @@
             ];
           } else {
             body = [
+              routeBox(),
               el('div', { class: 'wgrp' }, el('div', { class: 'wgt' }, 'Node level'),
                 el('div', { class: 'range2' }, W.numIn(MS.lvl[0], (v) => { MS.lvl[0] = v; render(); }, 1, 132), el('span', {}, 'to'), W.numIn(MS.lvl[1], (v) => { MS.lvl[1] = v; render(); }, 1, 132))),
               ...Object.entries(nodes).map(([prof, res]) => el('details', { class: 'wgrp', open: true },
@@ -279,6 +312,36 @@
                 el('button', { class: 'mini', onclick: (e) => W.copyText(`${p[0]} ${p[1]}`, e.target) }, 'Copy'),
                 el('button', { class: 'mini danger', onclick: () => { MS.pins.splice(i, 1); drawPins(); drawSide(); } }, '×')))) : el('p', { class: 'hint wselhint' }, 'Click anything on the map to select it. Selected points and pins go into the share link.'),
             ...body.filter(Boolean));
+        }
+        function routeBox() {
+          const opts = Object.entries(nodes).flatMap(([prof, res]) => Object.entries(res).sort((a, b) => a[1].l - b[1].l).map(([r, d]) => [`${prof}:${r}`, `${W.cap(r)} · ${W.cap(prof)} · Lv. ${d.l}`]));
+          if (!MS.rres) MS.rres = opts[0][0];
+          const nearest = () => {
+            const [prof, r] = MS.rres.split(':'), d = nodes[prof][r], c = map.getCenter(), at = { x: c.lng, z: -c.lat };
+            const ids = []; for (let i = 0; i < d.p.length; i += 2) ids.push([`n:${prof}:${r}:${i / 2}`, Math.hypot(d.p[i] - at.x, d.p[i + 1] - at.z)]);
+            ids.sort((a, b) => a[1] - b[1]);
+            MS.on.add('p:' + prof); MS.on.delete(`x:n:${prof}:${r}`);
+            planRoute(ids.slice(0, MS.rstops).map(x => x[0]));
+            render();
+            const pts = routePts(); if (pts.length) map.fitBounds(pts.map(p => ll(p.x, p.z)), { padding: [40, 40], maxZoom: 1 });
+          };
+          const pts = routePts(), len = loopLength(pts);
+          const speed = 5.612 * (1 + MS.rspeed / 100), lap = len / speed + pts.length * MS.rgather;
+          return el('div', { class: 'wgrp wroute' }, el('div', { class: 'wgt' }, 'Gathering route', MS.route.length ? el('button', { class: 'mini', onclick: () => { MS.route = []; drawRoute(); drawSide(); } }, 'Clear') : null),
+            el('label', { class: 'wfield' }, 'Resource', W.sel(opts, MS.rres, (v) => { MS.rres = v; })),
+            el('div', { class: 'wfrow' },
+              el('label', { class: 'wfield' }, 'Stops', W.numIn(MS.rstops, (v) => { MS.rstops = Math.max(3, Math.min(40, v)); }, 3, 40)),
+              el('button', { class: 'mini', onclick: nearest, title: 'Take the nearest nodes of that resource to the middle of the map' }, 'Route nearest')),
+            MS.sel.size >= 3 ? el('button', { class: 'mini', onclick: () => planRoute([...MS.sel]) }, `Route my ${MS.sel.size} selected points`) : null,
+            pts.length >= 2 ? el('div', { class: 'wroutestats' },
+              el('div', {}, el('b', {}, pts.length), el('span', {}, 'stops')),
+              el('div', {}, el('b', {}, Math.round(len).toLocaleString()), el('span', {}, 'blocks a lap')),
+              el('div', {}, el('b', {}, `${Math.floor(lap / 60)}m ${String(Math.round(lap % 60)).padStart(2, '0')}s`), el('span', {}, 'per lap'))) : null,
+            pts.length >= 2 ? el('div', { class: 'wfrow' },
+              el('label', { class: 'wfield' }, 'Walk speed %', W.numIn(MS.rspeed, (v) => { MS.rspeed = Math.max(-50, Math.min(200, v)); drawSide(); }, -50, 200)),
+              el('label', { class: 'wfield' }, 'Seconds per node', W.numIn(MS.rgather, (v) => { MS.rgather = Math.max(0, Math.min(60, v)); drawSide(); }, 0, 60))) : null,
+            el('p', { class: 'hint' }, pts.length >= 2 ? 'Straight lines at sprinting speed (5.6 blocks/s, plus your Walk Speed), so hills, water and walls add time. The route goes into the share link.'
+              : 'Pick a resource, move the map to where you want to farm, and press Route nearest. Or select three or more points and route through those.'));
         }
         render();
         const startView = MS.view && MS.view.slice();

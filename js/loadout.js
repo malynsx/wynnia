@@ -102,6 +102,10 @@
         try {
           if (b.startsWith('ey')) { const o = JSON.parse(decodeURIComponent(escape(atob(b.replace(/-/g, '+').replace(/_/g, '/'))))); LB = Object.assign(blank(), { s: o.s || {} }); }
           else { const d = W.decodeBuild(b, ctx); LB = Object.assign(blank(), { lvl: d.lvl, mode: d.mode, s: d.s, x: d.x, t: [], tIdx: d.tIdx }); }
+          if (q.get('n')) LB.name = q.get('n').slice(0, 60);
+          /* opened from the library: keep its tags and notes, and update that entry when saved */
+          const lib = q.get('lib') && W.builds.get(q.get('lib'));
+          if (lib) Object.assign(LB, { lib: lib.id, tags: lib.tags || [], notes: lib.notes || '' });
           store();
           history.replaceState(null, '', '#items/loadout');   // later edits shouldn't be undone by a reload
         } catch (e) { ownerErr = 'That build link is broken: ' + e.message; }
@@ -140,7 +144,31 @@
         }).catch(e => { ownerErr = e.message; draw(); });
       }
 
-      const shareLink = () => location.href.split('#')[0] + '#items/loadout?b=' + W.encodeBuild(LB, { ...ctx, treeIds: T && T.cls === cls() ? T.ids : null });
+      const code = () => W.encodeBuild(LB, { ...ctx, treeIds: T && T.cls === cls() ? T.ids : null });
+      const shareLink = () => W.buildLink({ code: code(), name: LB.name }, true);
+      /* the archetype with the most unlocked abilities */
+      const archetype = () => {
+        if (!T || T.cls !== cls()) return null;
+        const n = {}; LB.t.forEach(id => { const a = T.abilities[id]; if (a && a._arch) n[a._arch] = (n[a._arch] || 0) + 1; });
+        const top = Object.entries(n).sort((a, b) => b[1] - a[1])[0], a = top && T.archetypes.find(x => x.key === top[0]);
+        return a ? a.name : null;
+      };
+      /* the numbers the library and chat embeds show */
+      const snapshot = () => {
+        const sum = summary(), r = sum && sum.res, w = piece('w');
+        const best = sum && sum.best && r.melee ? r.melee.spell(Object.keys(sum.best.parts).length ? sum.best.parts : { neutral: sum.best.total }).expected * sum.best.hits : null;
+        const per = r && r.melee ? Object.entries(r.melee.per).map(([e, [a, b]]) => [e, (a + b) / 2]) : [], tot = per.reduce((a, x) => a + x[1], 0) || 1;
+        return { cls: cls(), arch: archetype(), lvl: LB.lvl, weapon: w ? w.item.n : null, ic: w ? w.item.ic : null, rar: w ? w.item.r : null,
+          elems: per.filter(([e, v]) => e !== 'neutral' && v / tot >= 0.15).sort((a, b) => b[1] - a[1]).map(x => x[0]),
+          gear: pieces().filter(p => p.key !== 'w' && p.item.g !== 'tome').map(p => p.item.n),
+          hp: r ? Math.round(r.hp) : null, ehp: r ? Math.round(r.ehpAgi) : null, dps: r && r.melee ? Math.round(r.melee.dps) : null,
+          spell: sum && sum.best ? sum.best.name : null, spellDmg: best != null ? Math.round(best) : null };
+      };
+      const saveToLibrary = (btn) => {
+        const e = W.builds.save({ id: LB.lib && W.builds.get(LB.lib) ? LB.lib : undefined, name: LB.name || '', tags: LB.tags || [], notes: LB.notes || '', code: code(), snap: snapshot() });
+        LB.lib = e.id; store();
+        btn.textContent = 'Saved'; setTimeout(() => draw(), 900);
+      };
 
       /* ---------- left column ---------- */
       function buildWin() {
@@ -153,12 +181,20 @@
             el('label', {}, 'Unknown rolls use', W.sel(W.ROLL_MODES, String(LB.mode), (v) => { LB.mode = isNaN(+v) ? v : +v; store(); draw(); })),
             el('label', {}, 'Rank AP loan', W.sel([[0, 'None'], [2, 'VIP+ (+2)'], [4, 'HERO+ (+4)']], LB.loan, (v) => { LB.loan = +v; store(); draw(); }))),
           !piece('w') ? el('div', { class: 'fields3' }, el('label', {}, 'Class', W.sel([['', 'Pick a weapon or class'], ['archer', 'Archer'], ['warrior', 'Warrior'], ['mage', 'Mage'], ['assassin', 'Assassin'], ['shaman', 'Shaman']], LB.cls || '', (v) => { LB.cls = v || null; store(); draw(); }))) : null,
+          el('div', { class: 'cap left' }, 'Name and library'),
+          el('div', { class: 'libsave' },
+            el('input', { type: 'text', value: LB.name || '', maxlength: 60, placeholder: 'Build name, e.g. Boltslinger raid build', 'aria-label': 'Build name',
+              onchange: (e) => { LB.name = e.target.value.trim(); store(); box.value = shareLink(); } }),
+            el('input', { type: 'text', value: (LB.tags || []).join(', '), maxlength: 120, placeholder: 'Your tags: raid, budget, lootrun…', 'aria-label': 'Tags',
+              onchange: (e) => { LB.tags = [...new Set(e.target.value.split(',').map(t => t.trim()).filter(Boolean))].slice(0, 8); store(); } }),
+            el('button', { onclick: (e) => saveToLibrary(e.target) }, LB.lib && W.builds.get(LB.lib) ? 'Update in library' : 'Save to library')),
+          el('p', { class: 'hint' }, 'Class, archetype and main elements are tagged for you. ', el('a', { href: '#items/builds' }, 'Open your build library'), '.'),
           el('div', { class: 'cap left' }, 'Share this build'),
-          el('div', { class: 'search' }, box, el('button', { onclick: (e) => W.copyShort(link, e.target, box) }, 'Copy link')),
-          el('p', { class: 'hint' }, 'Copy link makes a short link (like …/#s/Ab3dE9x) that keeps every item, exact roll, powder, tome, skill point and ability.'),
+          el('div', { class: 'search' }, box, el('button', { onclick: (e) => W.copyShort(shareLink(), e.target, box, W.buildMeta(LB.name, snapshot())) }, 'Copy link')),
+          el('p', { class: 'hint' }, 'Copy link makes a short link that keeps every item, exact roll, powder, tome, skill point and ability. Pasted in Discord, it shows the build’s name, numbers and weapon.'),
           buildValue(),
           el('div', { class: 'btns' }, el('a', { class: 'btnlink', href: '#items/recommend' + (LB.u ? '?u=' + encodeURIComponent(LB.u) : '') }, 'Recommended build'),
-            el('button', { class: 'danger', onclick: () => { if (confirm('Clear the whole build?')) { LB = blank(); owner = null; store(); draw(); } } }, 'Clear build')));
+            el('button', { class: 'danger', onclick: () => { if (confirm('Clear the whole build?')) { LB = blank(); owner = null; T = null; store(); draw(); } } }, 'Clear build')));
       }
 
       /* what the gear would cost on the trade market, looked up only when asked */

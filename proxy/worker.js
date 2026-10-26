@@ -6,11 +6,39 @@
    WYNNVENTORY_KEY (never sent to browsers); answers are cached for ten minutes.
    POST /s stores a Wynnia share link (loadout, stable, showcase) in the KV namespace bound as LINKS and
    answers with a short id; GET /s/{id} gives the link back. Ids come from a hash of the link, so the same
-   build always gets the same id. */
+   build always gets the same id. A link may carry a small preview (title, description, image, colour),
+   stored beside it as m:{id}; GET /b/{id} then answers with a page Discord and other chat apps turn into
+   an embed, and sends people on to the link itself. */
 const ALLOWED = ['https://malynsx.github.io', 'http://localhost:8765', 'http://localhost:8766'];
-const PATHS = /^\/v3\/(player|guild|ability|leaderboards)(\/[^/]+){0,4}$/;
+const PATHS = /^\/v3\/(player|guild|ability|leaderboards|map)(\/[^/]+){0,4}$/;
 const MARKET = /^\/market\/price\/([^/]{1,80})$/;
 const SHORT = /^\/s\/([A-Za-z0-9]{4,12})$/;
+const EMBED = /^\/b\/([A-Za-z0-9]{4,12})$/;
+const SITE = 'https://malynsx.github.io/wynnia/';
+/* preview images may only come from the site itself or Minecraft head renders */
+const IMG_OK = /^https:\/\/(malynsx\.github\.io\/wynnia\/img\/|mc-heads\.net\/)[A-Za-z0-9_\-./]{1,200}$/;
+const escHtml = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+
+/* tidy a preview from the site: short plain text, a known image host, a hex colour */
+function cleanMeta(m) {
+  if (!m || typeof m !== 'object') return null;
+  const text = (v, n) => typeof v === 'string' ? v.replace(/[\u0000-\u0008\u000b-\u001f]/g, '').slice(0, n) : '';
+  const out = { t: text(m.t, 120), d: text(m.d, 400) };
+  if (typeof m.i === 'string' && IMG_OK.test(m.i)) out.i = m.i;
+  if (typeof m.c === 'string' && /^#[0-9a-fA-F]{6}$/.test(m.c)) out.c = m.c;
+  return out.t ? out : null;
+}
+
+function embedPage(id, meta) {
+  const go = SITE + '#s/' + id, t = meta ? meta.t : 'Wynnia', d = meta ? meta.d : 'Wynncraft tools';
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${escHtml(t)}</title>
+<meta property="og:site_name" content="Wynnia"><meta property="og:type" content="website">
+<meta property="og:title" content="${escHtml(t)}"><meta property="og:description" content="${escHtml(d)}">
+<meta property="og:url" content="${escHtml(go)}"><meta property="og:image" content="${escHtml((meta && meta.i) || SITE + 'brand/wynnia-ring-256.png')}">
+<meta name="twitter:card" content="summary"><meta name="theme-color" content="${(meta && meta.c) || '#ffd65a'}">
+<meta http-equiv="refresh" content="0;url=${escHtml(go)}"></head>
+<body style="background:#1f1c1a;color:#fff;font-family:sans-serif"><a href="${escHtml(go)}" style="color:#ffd65a">Open ${escHtml(t)} on Wynnia</a></body></html>`;
+}
 /* only Wynnia pages that carry shared data can be shortened */
 const SHAREABLE = /^#(items\/loadout|mounts\/stable|mounts\/want|players\/lookup|world\/map|crafting\/ingredients)\?[A-Za-z0-9_\-=&%.~+,:;]{1,6000}$/;
 const B62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -38,12 +66,19 @@ export default {
     if (url.pathname === '/s' || SHORT.test(url.pathname)) {
       if (!env.LINKS) return Response.json({ error: 'no-kv' }, { status: 503, headers: cors });
       if (request.method === 'POST' && url.pathname === '/s') {
-        const link = (await request.text()).trim();
+        /* plain text is just the link; JSON is { link, meta } with a preview for embeds */
+        const raw = (await request.text()).trim();
+        let link = raw, meta = null;
+        if ((request.headers.get('Content-Type') || '').includes('application/json')) {
+          try { const j = JSON.parse(raw); link = String(j.link || '').trim(); meta = cleanMeta(j.meta); } catch (e) { link = ''; }
+        }
         if (link.length > 6100 || !SHAREABLE.test(link)) return Response.json({ error: 'not-shareable' }, { status: 400, headers: cors });
         for (const len of [7, 10]) {
           const id = await shortId(link, len), have = await env.LINKS.get(id);
-          if (have === link) return Response.json({ id }, { headers: cors });
-          if (have == null) { await env.LINKS.put(id, link); return Response.json({ id }, { headers: cors }); }
+          if (have != null && have !== link) continue;
+          if (have == null) await env.LINKS.put(id, link);
+          if (meta && (await env.LINKS.get('m:' + id)) == null) await env.LINKS.put('m:' + id, JSON.stringify(meta));   // first preview stays, so nobody can re-title someone else's link
+          return Response.json({ id, embed: !!meta || (await env.LINKS.get('m:' + id)) != null }, { headers: cors });
         }
         return Response.json({ error: 'collision' }, { status: 500, headers: cors });
       }
@@ -52,6 +87,15 @@ export default {
         if (!link) return Response.json({ error: 'not-found' }, { status: 404, headers: cors });
         return Response.json({ link }, { headers: { ...cors, 'Cache-Control': 'public, max-age=86400' } });
       }
+    }
+    /* embed page for a short link that has a preview */
+    const embed = EMBED.exec(url.pathname);
+    if (embed && request.method === 'GET') {
+      if (!env.LINKS) return Response.redirect(SITE, 302);
+      const id = embed[1];
+      if (!(await env.LINKS.get(id))) return Response.redirect(SITE, 302);
+      let meta = null; try { meta = JSON.parse(await env.LINKS.get('m:' + id)); } catch (e) { /* no preview */ }
+      return new Response(embedPage(id, meta), { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=600' } });
     }
     if (request.method !== 'GET') return new Response('Method not allowed', { status: 405, headers: cors });
 
