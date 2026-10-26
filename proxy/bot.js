@@ -9,6 +9,8 @@
      DISCORD_APP_ID      text    General Information > Application ID
      DISCORD_TOKEN       secret  Bot > Reset Token
      REGISTER_KEY        secret  any password you make up; opening /register?key=<it> (re)creates the slash commands
+   and a service binding (Settings > Bindings > Service binding) named RELAY to the relay worker: Cloudflare won't let
+   one worker fetch another on the same workers.dev address, so short links and prices go through that binding.
 
    Routes: POST /interactions (set as the Interactions Endpoint URL), GET /register?key=… */
 const SITE = 'https://malynsx.github.io/wynnia/';
@@ -46,7 +48,9 @@ async function getJSON(url, ttl, ctx) {
   const cache = caches.default, key = new Request(url);
   let res = await cache.match(key);
   if (!res) {
-    const up = await fetch(url, { headers: UA });
+    /* the relay is reached through the RELAY service binding when there is one (see the note at the top) */
+    const viaBinding = url.startsWith(RELAY) && ctx.env && ctx.env.RELAY;
+    const up = await (viaBinding ? ctx.env.RELAY.fetch(new Request(url, { headers: UA })) : fetch(url, { headers: UA }));
     if (!up.ok) { const e = new Error(up.status === 404 ? 'not found' : 'HTTP ' + up.status); e.status = up.status; throw e; }
     res = new Response(up.body, up);
     res.headers.set('Cache-Control', 'public, max-age=' + ttl);
@@ -139,7 +143,10 @@ const H = {
     const m = /#s\/([A-Za-z0-9]{4,12})/.exec(o.link) || /\/b\/([A-Za-z0-9]{4,12})/.exec(o.link);
     let hash = /#(items\/loadout\?\S+)/.exec(o.link);
     hash = hash ? '#' + hash[1] : null;
-    if (!hash && m) { try { hash = (await getJSON(`${RELAY}/s/${m[1]}`, 86400, ctx)).link; } catch (e) { hash = null; } }
+    if (!hash && m) {
+      try { hash = (await getJSON(`${RELAY}/s/${m[1]}`, 86400, ctx)).link; }
+      catch (e) { return { content: e.status === 404 ? 'That short link doesn’t exist.' : ctx.env && ctx.env.RELAY ? 'Couldn’t reach the Wynnia relay. Try again in a moment.' : 'Couldn’t open the short link: the bot needs a RELAY service binding to the relay worker (see the note at the top of bot.js).' }; }
+    }
     if (!hash || !/^#items\/loadout\?/.test(hash)) return { content: 'That isn’t a Wynnia build link.' };
     const q = new URLSearchParams(hash.split('?')[1]);
     const [list, ids, keys] = await Promise.all([items(ctx), getJSON(SITE + 'data/itemids.json', 3600, ctx), getJSON(SITE + 'data/idkeys.json', 3600, ctx)]);
@@ -313,7 +320,8 @@ async function verify(request, body, env) {
 async function runCommand(i, env, ctx) {
   const o = Object.fromEntries((i.data.options || []).map(x => [x.name, x.value]));
   let msg;
-  try { msg = H[i.data.name] ? await H[i.data.name](o, ctx) : { content: 'Unknown command.' }; }
+  const c = { waitUntil: (p) => ctx.waitUntil(p), env };   // handlers reach the relay binding through c.env
+  try { msg = H[i.data.name] ? await H[i.data.name](o, c) : { content: 'Unknown command.' }; }
   catch (e) { msg = { content: 'Something went wrong: ' + e.message }; }
   await fetch(`https://discord.com/api/v10/webhooks/${i.application_id}/${i.token}/messages/@original`, {
     method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ allowed_mentions: { parse: [] } }, msg)),
