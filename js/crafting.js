@@ -34,6 +34,52 @@
     return eff;
   };
 
+  /* ---------- crafted gear as a build item ---------- */
+  /* def: { t: item type, l: recipe bracket (index, lowest level first), m: [tier, tier] of the two materials (1–3),
+     g: six ingredient names or null, as: 'slow' | 'normal' | 'fast' for weapons }.
+     Game rules (as WynnBuilder and the wiki describe them): material tiers scale health/damage by 1, 1.25 or 1.4,
+     weighted by how many of each material the recipe uses; a weapon's damage is spread so every attack speed gives
+     the same DPS; ingredient IDs and skill requirements scale with each slot's effectiveness (IDs round down). */
+  const TIER_MULT = [0, 1, 1.25, 1.4];
+  const CRAFT_ICON = { helmet: 'helmet.pale_iron', chestplate: 'chestplate.pale_iron', leggings: 'leggings.pale_iron', boots: 'boots.pale_iron',
+    ring: 'ring.basicIron', bracelet: 'bracelet.basicIron', necklace: 'necklace.basicIron', bow: 'bow.basicWood', spear: 'spear.basicWood', wand: 'wand.basicWood', dagger: 'dagger.basicWood', relik: 'relik.basicWood' };
+  const GROUP = { helmet: 'armour', chestplate: 'armour', leggings: 'armour', boots: 'armour', ring: 'accessory', bracelet: 'accessory', necklace: 'accessory' };
+  W.CRAFT_SPEEDS = [['slow', 'Slow'], ['normal', 'Normal'], ['fast', 'Fast']];
+  W.craftRecipes = (recipes, t) => recipes.filter(r => r.t === t).sort((a, b) => a.l[0] - b.l[0]);
+  W.craftItem = (def, recipes, ingByName, eng) => {
+    const rs = W.craftRecipes(recipes, def.t), r = rs[Math.max(0, Math.min(def.l || 0, rs.length - 1))];
+    if (!r) return null;
+    const slots = (def.g || []).concat(Array(6).fill(null)).slice(0, 6).map(n => (n && ingByName[n]) || null);
+    const eff = W.craftEffect(slots);
+    const amt = r.m.map(x => x[0]), tiers = (def.m || [1, 1]).map(x => Math.max(1, Math.min(3, x || 1)));
+    const mult = (TIER_MULT[tiers[0]] * amt[0] + TIER_MULT[tiers[1]] * amt[1]) / (amt[0] + amt[1]);
+    const ids = {}, req = {};
+    slots.forEach((g, n) => {
+      if (!g) return;
+      const e = +(eff[n] / 100).toFixed(2);
+      Object.entries(g.i || {}).forEach(([k, v]) => {
+        const [a, b] = Array.isArray(v) ? v : [v, v], x = [Math.floor(a * e + 1e-9), Math.floor(b * e + 1e-9)].sort((p, q) => p - q), s = ids[k] || [0, 0];
+        ids[k] = [s[0] + x[0], s[1] + x[1]];
+      });
+      Object.entries(g.io || {}).forEach(([k, v]) => { const m = /^(\w+)Requirement$/.exec(k); if (m) req[m[1]] = (req[m[1]] || 0) + Math.round(v * e + 1e-9); });
+    });
+    const group = GROUP[def.t] || 'weapon', b = {};
+    if (group === 'armour' && r.h) b.baseHealth = [Math.floor(r.h[0] * mult), Math.floor(r.h[1] * mult)];
+    let as = null;
+    if (group === 'weapon' && r.h) {
+      as = W.CRAFT_SPEEDS.some(s => s[0] === def.as) ? def.as : 'normal';
+      const ratio = eng.attackSpeed.normal / eng.attackSpeed[as];
+      const H = Math.floor(Math.floor(r.h[1] * mult) * ratio);
+      b.baseDamage = [Math.floor(H * 0.9), Math.floor(H * 1.1)];
+    }
+    const q = Object.fromEntries(Object.entries(req).filter(([, v]) => v > 0));
+    return { n: 'Crafted ' + W.cap(def.t), t: def.t, g: group, r: 'crafted', l: r.l[1], ic: CRAFT_ICON[def.t] + '.webp', b, as, i: ids, q,
+      ps: group === 'accessory' ? 0 : r.l[0] < 30 ? 1 : r.l[0] < 70 ? 2 : 3, crafted: true, recipe: r, eff };
+  };
+  /* crafted builds travel in links as base64url JSON */
+  W.packCrafts = (c) => { const keys = Object.keys(c || {}); if (!keys.length) return ''; return btoa(unescape(encodeURIComponent(JSON.stringify(c)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+  W.unpackCrafts = (s) => { try { const o = JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/'))))); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } };
+
   const st = { prof: 'armouring', type: 'helmet', lvl: 0, slots: Array(6).fill(null), active: 0, q: '' };
 
   /* ---------- shared ingredient helpers ---------- */
@@ -137,11 +183,13 @@
         const ids = {}, io = {}, co = {};
         slots.forEach((g, i) => {
           if (!g) return;
+          const e = +(eff[i] / 100).toFixed(2);
           Object.entries(g.i || {}).forEach(([k, v]) => {
-            const [a, b] = Array.isArray(v) ? v : [v, v], s = ids[k] || [0, 0];
-            ids[k] = [s[0] + Math.round(a * eff[i] / 100), s[1] + Math.round(b * eff[i] / 100)];
+            const [a, b] = Array.isArray(v) ? v : [v, v], x = [Math.floor(a * e + 1e-9), Math.floor(b * e + 1e-9)].sort((p, q) => p - q), s = ids[k] || [0, 0];
+            ids[k] = [s[0] + x[0], s[1] + x[1]];
           });
-          Object.entries(g.io || {}).forEach(([k, v]) => { io[k] = (io[k] || 0) + v; });
+          /* skill requirements scale with effectiveness too; durability doesn't */
+          Object.entries(g.io || {}).forEach(([k, v]) => { io[k] = (io[k] || 0) + (k === 'durabilityModifier' ? v : Math.round(v * e + 1e-9)); });
           Object.entries(g.co || {}).forEach(([k, v]) => { co[k] = (co[k] || 0) + v; });
         });
         const filled = slots.filter(Boolean).length;

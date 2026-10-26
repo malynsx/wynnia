@@ -3,7 +3,8 @@
    This worker forwards player, guild, ability-tree and leaderboard requests only, adds CORS for
    the Wynnia site, and caches each answer for two minutes to stay well under Wynncraft's rate limit.
    /market/price/{item} asks Wynnventory for trade market prices with the key stored as the worker secret
-   WYNNVENTORY_KEY (never sent to browsers); answers are cached for ten minutes.
+   WYNNVENTORY_KEY (never sent to browsers); answers are cached for ten minutes. /market/history/{item}?start_date=&end_date=
+   (YYYY-MM-DD) gives its daily price history, cached for an hour.
    POST /s stores a Wynnia share link (loadout, stable, showcase) in the KV namespace bound as LINKS and
    answers with a short id; GET /s/{id} gives the link back. Ids come from a hash of the link, so the same
    build always gets the same id. A link may carry a small preview (title, description, image, colour),
@@ -11,7 +12,7 @@
    an embed, and sends people on to the link itself. */
 const ALLOWED = ['https://malynsx.github.io', 'http://localhost:8765', 'http://localhost:8766'];
 const PATHS = /^\/v3\/(player|guild|ability|leaderboards|map)(\/[^/]+){0,4}$/;
-const MARKET = /^\/market\/price\/([^/]{1,80})$/;
+const MARKET = /^\/market\/(price|history)\/([^/]{1,80})$/;
 const SHORT = /^\/s\/([A-Za-z0-9]{4,12})$/;
 const EMBED = /^\/b\/([A-Za-z0-9]{4,12})$/;
 const SITE = 'https://malynsx.github.io/wynnia/';
@@ -102,7 +103,9 @@ export default {
     const market = MARKET.exec(url.pathname);
     if (market && !env.WYNNVENTORY_KEY) return Response.json({ error: 'no-key' }, { status: 503, headers: cors });
     if (!market && !PATHS.test(url.pathname)) return new Response('Not found', { status: 404, headers: cors });
-    const target = market ? `https://wynnventory.com/api/v2/market/items/${market[1]}/price` : 'https://api.wynncraft.com' + url.pathname + url.search;
+    const dates = new URLSearchParams();
+    if (market && market[1] === 'history') ['start_date', 'end_date'].forEach(k => { const v = url.searchParams.get(k); if (v && /^\d{4}-\d{2}-\d{2}$/.test(v)) dates.set(k, v); });
+    const target = market ? `https://wynnventory.com/api/v2/market/items/${market[2]}/${market[1]}` + (dates.toString() ? '?' + dates : '') : 'https://api.wynncraft.com' + url.pathname + url.search;
     const headers = { 'User-Agent': 'Wynnia relay (github.com/malynsx/wynnia)' };
     if (market) headers.Authorization = 'Api-Key ' + env.WYNNVENTORY_KEY;
 
@@ -113,7 +116,7 @@ export default {
       const upstream = await fetch(target, { headers });
       res = new Response(upstream.body, upstream);
       if ([200, 300, 404].includes(upstream.status)) {
-        res.headers.set('Cache-Control', 'public, max-age=' + (market ? 600 : 120));
+        res.headers.set('Cache-Control', 'public, max-age=' + (market ? (market[1] === 'history' ? 3600 : 600) : 120));
         ctx.waitUntil(cache.put(key, res.clone()));
       }
     }

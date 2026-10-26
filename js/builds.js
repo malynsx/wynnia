@@ -25,7 +25,8 @@
   };
 
   /* the link that opens a saved build in the Loadout Builder */
-  W.buildLink = (b, local) => (local ? location.href.split('#')[0] : SITE) + '#items/loadout?b=' + b.code + (b.name ? '&n=' + encodeURIComponent(b.name) : '');
+  W.buildLink = (b, local) => (local ? location.href.split('#')[0] : SITE) + '#items/loadout?b=' + b.code + (b.name ? '&n=' + encodeURIComponent(b.name) : '')
+    + (b.cr && W.packCrafts(b.cr) ? '&cr=' + W.packCrafts(b.cr) : '');   // crafted gear
   /* tags the build earns by itself: class, archetype and its main damage elements */
   W.buildAutoTags = (s) => [s && s.cls && W.cap(s.cls), s && s.arch, ...((s && s.elems) || []).map(W.cap)].filter(Boolean);
   const fmt = (n) => n == null ? '—' : Math.abs(n) >= 10000 ? W.short(n) : Math.round(n).toLocaleString('en-US');
@@ -65,7 +66,7 @@
 
     function card(b) {
       const s = b.snap || {};
-      const open = '#items/loadout?b=' + b.code + (b.name ? '&n=' + encodeURIComponent(b.name) : '') + '&lib=' + b.id;
+      const open = '#' + W.buildLink(b, true).split('#')[1] + '&lib=' + b.id;
       return el('article', { class: 'libcard', style: { '--rc': s.rar ? W.tierColor(s.rar) : '#4a3d66' } },
         el('div', { class: 'libhead' },
           el('a', { class: 'islot', href: open, 'aria-label': 'Open ' + (b.name || 'build') }, s.ic ? W.art.item(s.ic) : W.art.wiki(s.cls || 'weaponsmithing')),

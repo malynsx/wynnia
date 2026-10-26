@@ -56,7 +56,7 @@
   /* ---------- Items ---------- */
   W.TIERS = {
     normal: ['Normal', '#ffffff'], unique: ['Unique', '#ffff55'], rare: ['Rare', '#ff55ff'], legendary: ['Legendary', '#55ffff'],
-    fabled: ['Fabled', '#ff5555'], mythic: ['Mythic', '#aa00aa'], set: ['Set', '#55ff55'],
+    fabled: ['Fabled', '#ff5555'], mythic: ['Mythic', '#aa00aa'], set: ['Set', '#55ff55'], crafted: ['Crafted', '#00aaaa'],
   };
   W.tierColor = (t) => (W.TIERS[t] || W.TIERS.normal)[1];
   W.ING_STARS = ['#aaaaaa', '#ffff55', '#ff55ff', '#55ffff'];

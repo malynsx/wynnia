@@ -92,7 +92,8 @@
 
   W.pages['items/loadout'] = function (root, q) {
     let picking = null, sel = 'w', pq = '', onlyUsable = true, owner = null, ownerErr = null, T = null;
-    W.withData(root, ['items', 'tomes', 'idkeys', 'itemids', 'engine'], (items, tomes, idKeys, itemIds, eng) => {
+    W.withData(root, ['items', 'tomes', 'idkeys', 'itemids', 'engine', 'ingredients', 'recipes'], (items, tomes, idKeys, itemIds, eng, ings, recipes) => {
+      const ingByName = Object.fromEntries(ings.map(g => [g.n, g]));
       const byName = Object.fromEntries(items.concat(tomes).map(i => [i.n, i]));
       const ctx = { ids: itemIds, names: Object.fromEntries(Object.entries(itemIds).map(([n, i]) => [i, n])), keyName: idKeys, keyNum: Object.fromEntries(Object.entries(idKeys).map(([n, k]) => [k, +n])) };
 
@@ -103,6 +104,7 @@
           if (b.startsWith('ey')) { const o = JSON.parse(decodeURIComponent(escape(atob(b.replace(/-/g, '+').replace(/_/g, '/'))))); LB = Object.assign(blank(), { s: o.s || {} }); }
           else { const d = W.decodeBuild(b, ctx); LB = Object.assign(blank(), { lvl: d.lvl, mode: d.mode, s: d.s, x: d.x, t: [], tIdx: d.tIdx }); }
           if (q.get('n')) LB.name = q.get('n').slice(0, 60);
+          if (q.get('cr')) LB.c = W.unpackCrafts(q.get('cr'));
           /* opened from the library: keep its tags and notes, and update that entry when saved */
           const lib = q.get('lib') && W.builds.get(q.get('lib'));
           if (lib) Object.assign(LB, { lib: lib.id, tags: lib.tags || [], notes: lib.notes || '' });
@@ -112,7 +114,9 @@
       }
       if (q && q.get('u')) { LB.u = q.get('u'); LB.ch = q.get('c') || null; LB.fromChar = true; store(); history.replaceState(null, '', '#items/loadout'); }
 
-      const piece = (k) => LB.s[k] && byName[LB.s[k][0]] ? { key: k, item: byName[LB.s[k][0]], r: LB.s[k][1], p: LB.s[k][2] } : null;
+      /* crafted gear (LB.c[slot]) is built from its recipe and ingredients; everything else comes from the item list */
+      const crafted = (k) => { const d = LB.c && LB.c[k]; const it = d && W.craftItem(d, recipes, ingByName, eng); return it ? { key: k, item: it, r: null, p: d.p || null } : null; };
+      const piece = (k) => crafted(k) || (LB.s[k] && byName[LB.s[k][0]] ? { key: k, item: byName[LB.s[k][0]], r: LB.s[k][1], p: LB.s[k][2] } : null);
       const pieces = () => W.BUILD_SLOTS.map(piece).filter(Boolean);
       const cls = () => { const w = piece('w'); return w ? WEAPON_CLASS[w.item.t] : (owner && owner.char ? String(owner.char.type).toLowerCase() : LB.cls || null); };
       const compute = () => W.computeBuild(pieces(), { mode: LB.mode, level: LB.lvl, extra: LB.x }, eng);
@@ -145,7 +149,7 @@
       }
 
       const code = () => W.encodeBuild(LB, { ...ctx, treeIds: T && T.cls === cls() ? T.ids : null });
-      const shareLink = () => W.buildLink({ code: code(), name: LB.name }, true);
+      const shareLink = () => W.buildLink({ code: code(), name: LB.name, cr: LB.c }, true);
       /* the archetype with the most unlocked abilities */
       const archetype = () => {
         if (!T || T.cls !== cls()) return null;
@@ -165,7 +169,7 @@
           spell: sum && sum.best ? sum.best.name : null, spellDmg: best != null ? Math.round(best) : null };
       };
       const saveToLibrary = (btn) => {
-        const e = W.builds.save({ id: LB.lib && W.builds.get(LB.lib) ? LB.lib : undefined, name: LB.name || '', tags: LB.tags || [], notes: LB.notes || '', code: code(), snap: snapshot() });
+        const e = W.builds.save({ id: LB.lib && W.builds.get(LB.lib) ? LB.lib : undefined, name: LB.name || '', tags: LB.tags || [], notes: LB.notes || '', code: code(), cr: LB.c && Object.keys(LB.c).length ? LB.c : undefined, snap: snapshot() });
         LB.lib = e.id; store();
         btn.textContent = 'Saved'; setTimeout(() => draw(), 900);
       };
@@ -230,9 +234,11 @@
           return el('div', { class: 'gpick' },
             el('div', { class: 'search' }, inp, g ? el('button', { onclick: () => { picking = false; draw(); } }, 'Cancel') : null),
             el('label', { class: 'check', style: { margin: '8px 0' } }, el('input', { type: 'checkbox', checked: onlyUsable, onchange: (e) => { onlyUsable = e.target.checked; draw(); } }), `Only items up to level ${LB.lvl}`),
-            el('div', { class: 'pick' }, list.map(i => W.tip(el('button', { class: 'pickrow', onclick: () => { LB.s[k] = [i.n, null, null]; picking = false; store(); draw(); } },
+            !isTome ? el('button', { class: 'mini craftbtn', onclick: () => startCraft(k, types) }, 'Craft one instead') : null,
+            el('div', { class: 'pick' }, list.map(i => W.tip(el('button', { class: 'pickrow', onclick: () => { LB.s[k] = [i.n, null, null]; if (LB.c) delete LB.c[k]; picking = false; store(); draw(); } },
               el('span', { class: 'pico' }, W.art.item(i.ic)), el('span', { style: { color: W.tierColor(i.r), fontWeight: 700 } }, i.n), el('small', {}, 'Lv. ' + i.l)), () => W.itemCard(i)))));
         }
+        if (g.item.crafted) return craftPanel(k, g);
         const it = g.item, rows = Object.entries(it.i || {});
         const setRoll = (key, v) => { const r = Object.assign({}, LB.s[k][1] || {}); r[key] = v; LB.s[k][1] = r; store(); draw(); };
         return el('div', { class: 'ipanel' },
@@ -241,7 +247,54 @@
             el('button', { class: 'mini', onclick: () => { picking = true; pq = ''; draw(); } }, 'Change'),
             el('button', { class: 'mini danger', onclick: () => { delete LB.s[k]; store(); draw(); } }, 'Remove')),
           rows.length ? rollTable(it, g.r, setRoll, () => { LB.s[k][1] = null; store(); draw(); }) : el('p', { class: 'hint' }, 'This item has no identifications to roll.'),
-          !isTome && it.ps ? powderEditor(k, it, g.p || []) : null);
+          !isTome && it.ps ? powderEditor(k, it, g.p || [], (v) => { LB.s[k][2] = v; }) : null);
+      }
+
+      /* ---------- crafted gear ---------- */
+      let craftSlot = 0, craftQ = '';
+      function startCraft(k, types) {
+        const t = k === 'w' ? CLASS_WEAPON[cls()] || 'spear' : types[0];
+        const rs = W.craftRecipes(recipes, t);
+        const fits = rs.map((r, i) => [r, i]).filter(([r]) => r.l[0] <= LB.lvl).map(([, i]) => i);
+        LB.c = LB.c || {}; LB.c[k] = { t, l: fits.length ? fits[fits.length - 1] : 0, m: [3, 3], g: Array(6).fill(null), as: 'normal' };
+        delete LB.s[k]; picking = false; craftSlot = 0; craftQ = ''; store(); draw();
+      }
+      function craftPanel(k, g) {
+        const def = LB.c[k], it = g.item, r = it.recipe, rs = W.craftRecipes(recipes, def.t);
+        const set = (patch) => { Object.assign(def, patch); store(); draw(); };
+        const slots = def.g.map(n => n && ingByName[n]);
+        const qq = craftQ.trim().toLowerCase();
+        const usable = ings.filter(x => x.sk.includes(r.s) && x.l <= r.l[1] && (!qq || x.n.toLowerCase().includes(qq) || Object.keys(x.i || {}).some(key => W.idInfo(key).name.toLowerCase().includes(qq))))
+          .sort((a, b) => b.l - a.l).slice(0, 60);
+        const search = el('input', { type: 'text', class: 'cingsearch', value: craftQ, placeholder: 'Ingredient name or bonus…', oninput: (e) => { craftQ = e.target.value; const box = root.querySelector('.ipanel.craft'); box.replaceWith(craftPanel(k, piece(k))); const i = root.querySelector('.ipanel.craft .cingsearch'); i.focus(); i.setSelectionRange(craftQ.length, craftQ.length); } });
+        const b = it.b || {}, base = b.baseHealth ? `${b.baseHealth[0]}–${b.baseHealth[1]} health` : b.baseDamage ? `${b.baseDamage[0]}–${b.baseDamage[1]} damage · ${W.words(it.as)} attack speed` : 'No base stats';
+        return el('div', { class: 'ipanel craft' },
+          el('div', { class: 'ihead' }, el('div', { class: 'iicon' }, W.art.item(it.ic)),
+            el('div', { class: 'ititle' }, el('div', { class: 'iname', style: { color: W.tierColor('crafted') } }, it.n), el('div', { class: 'isub' }, `${W.cap(r.s)} · Lv. ${r.l[0]}–${r.l[1]} · ${base}`)),
+            el('button', { class: 'mini', onclick: () => { picking = true; pq = ''; draw(); } }, 'Change'),
+            el('button', { class: 'mini danger', onclick: () => { delete LB.c[k]; store(); draw(); } }, 'Remove')),
+          el('div', { class: 'cfields' },
+            k === 'w' ? el('label', {}, 'Weapon', W.sel(['spear', 'dagger', 'bow', 'wand', 'relik'].map(t => [t, W.cap(t)]), def.t, (v) => set({ t: v, l: Math.min(def.l, W.craftRecipes(recipes, v).length - 1) }))) : null,
+            el('label', {}, 'Level', W.sel(rs.map((x, i) => [i, `${x.l[0]}–${x.l[1]}`]), def.l, (v) => set({ l: +v }))),
+            r.m.map((m, i) => el('label', {}, m[1], W.sel([[1, 'Tier 1'], [2, 'Tier 2'], [3, 'Tier 3']], def.m[i], (v) => { const mm = def.m.slice(); mm[i] = +v; set({ m: mm }); }))),
+            it.g === 'weapon' ? el('label', {}, 'Attack speed', W.sel(W.CRAFT_SPEEDS, def.as, (v) => set({ as: v }))) : null),
+          el('div', { class: 'ctable small' }, slots.map((x, i) => {
+            const s = W.slot(x ? W.art.ing(x.ic) : el('span', { class: 'plus' }, '+'), { big: true, sel: i === craftSlot, onclick: () => { craftSlot = i; draw(); }, tip: x ? x.n : 'Empty: pick an ingredient below' });
+            if (x) s.append(el('span', { class: 'eff ' + (it.eff[i] > 100 ? 'up' : it.eff[i] < 100 ? 'down' : '') }, it.eff[i] + '%'));
+            return s;
+          })),
+          el('div', { class: 'btns', style: { marginTop: '8px' } },
+            el('button', { class: 'mini', disabled: !def.g[craftSlot], onclick: () => { def.g[craftSlot] = null; store(); draw(); } }, 'Empty this slot'),
+            el('button', { class: 'mini', onclick: () => { def.g = Array(6).fill(null); store(); draw(); } }, 'Clear all')),
+          el('div', { class: 'search', style: { marginTop: '10px' } }, search),
+          el('div', { class: 'pick cingpick' }, usable.map(x => el('button', { class: 'pickrow', onclick: () => { def.g[craftSlot] = x.n; const next = def.g.findIndex(n => !n); craftSlot = next < 0 ? craftSlot : next; store(); draw(); } },
+            el('span', { class: 'pico' }, W.art.ing(x.ic)), el('span', { style: { color: W.ING_STARS[x.tr], fontWeight: 700 } }, x.n), el('small', {}, 'Lv. ' + x.l)))),
+          Object.keys(it.q).length ? el('div', { class: 'cap left' }, 'Skill requirements') : null,
+          Object.keys(it.q).length ? el('div', { class: 'kv' }, Object.entries(it.q).map(([s2, v]) => el('div', {}, el('span', {}, W.cap(s2)), el('b', {}, v)))) : null,
+          Object.keys(it.i).length ? el('div', { class: 'cap left' }, 'Identifications') : null,
+          Object.keys(it.i).length ? el('div', { class: 'idlist' }, Object.entries(it.i).map(([key, v]) => el('div', { class: 'il' }, el('span', { class: W.idGood(key, v) ? 'pos' : 'neg' }, W.fmtId(key, v)), el('span', { class: 'idn' }, W.idInfo(key).name)))) : null,
+          it.ps ? powderEditor(k, it, def.p || [], (v) => { def.p = v; }) : null,
+          el('p', { class: 'hint' }, 'Crafted gear uses the recipe, material tiers and ingredient placement like the crafting table. Identifications use the Unknown rolls setting.'));
       }
 
       function rollTable(it, rolls, setRoll, reset) {
@@ -269,14 +322,14 @@
           el('p', { class: 'hint' }, 'Percent is how close each roll is to its best value. Stars are the in-game roll stars (★ 101%+, ★★ 125%+, ★★★ 130% of the base value). Type a number to set a roll yourself.'));
       }
 
-      function powderEditor(k, it, pw) {
-        const add = (e, t) => { if (pw.length >= it.ps) return; LB.s[k][2] = pw.concat([[e, t]]); store(); draw(); };
+      function powderEditor(k, it, pw, setPw) {
+        const add = (e, t) => { if (pw.length >= it.ps) return; setPw(pw.concat([[e, t]])); store(); draw(); };
         let tier = 6;
         const tierSel = W.sel([1, 2, 3, 4, 5, 6, 7].map(t => [t, 'Tier ' + ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'][t - 1]]), tier, (v) => { tier = +v; });
         return el('div', { class: 'powders' },
           el('div', { class: 'cap left' }, `Powders · ${pw.length}/${it.ps} slots`),
           el('div', { class: 'pwrow' }, Array.from({ length: it.ps }, (_, i) => pw[i]
-            ? el('button', { class: 'pw', title: 'Remove', onclick: () => { LB.s[k][2] = pw.filter((_, j) => j !== i); store(); draw(); } }, el('img', { src: `img/ui/powder-${pw[i][0]}.webp`, alt: '' }), el('span', {}, ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'][pw[i][1] - 1]))
+            ? el('button', { class: 'pw', title: 'Remove', onclick: () => { setPw(pw.filter((_, j) => j !== i)); store(); draw(); } }, el('img', { src: `img/ui/powder-${pw[i][0]}.webp`, alt: '' }), el('span', {}, ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'][pw[i][1] - 1]))
             : el('span', { class: 'pw empty' }))),
           pw.length < it.ps ? el('div', { class: 'pwadd' }, tierSel, ['earth', 'thunder', 'water', 'fire', 'air'].map(e =>
             el('button', { class: 'mini pwbtn', title: 'Add ' + e, onclick: () => add(e, +tierSel.value) }, el('img', { src: `img/ui/powder-${e}.webp`, alt: '' }), W.cap(e)))) : null);
@@ -419,6 +472,99 @@
         return { res, spWin, defWin, dmgWin, manaWin, idWin, setWin, fighting, best: dmgSpells[0] };
       }
 
+      /* ---------- upgrade finder ---------- */
+      /* Try every item that fits each slot, keep the swaps that are wearable (skill points still add up) and raise the
+         chosen number most, then look up their trade market prices to show what each gain costs. */
+      const UP = { goal: 'dps', busy: false, res: null, done: 0, total: 0, sort: 'gain', budget: '', key: '' };
+      function upgradesWin() {
+        const sum = summary();
+        if (!sum || !piece('w')) return W.win('Upgrades', el('p', { class: 'empty' }, 'Put a weapon and some gear on first.'));
+        const bp = sum.best ? (Object.keys(sum.best.parts).length ? sum.best.parts : { neutral: sum.best.total }) : null;
+        if (!UP.picked) UP.goal = bp ? 'spell' : 'dps';   // spell builds care about their spell, until you choose
+        const GOALS = {
+          dps: ['Main attack DPS', (r) => r.melee ? r.melee.dps : 0],
+          spell: [sum.best ? `${sum.best.name} damage` : 'Best spell damage', (r) => r.melee && bp ? r.melee.spell(bp).expected * sum.best.hits : 0],
+          ehp: ['Effective HP', (r) => r.ehpAgi],
+          both: ['Damage and EHP together', (r) => (r.melee ? r.melee.dps : 0) * r.ehpAgi],
+        };
+        const metric = GOALS[UP.goal][1], cur = metric(sum.res);
+        const stateKey = UP.goal + '|' + JSON.stringify(LB.s) + '|' + JSON.stringify(LB.c || {}) + LB.lvl + LB.mode;
+        if (UP.key !== stateKey && !UP.busy) UP.res = null;
+
+        const run = () => {
+          UP.busy = true; UP.res = null; UP.key = stateKey; UP.done = 0;
+          const base = pieces(), c = cls();
+          const jobs = [];
+          EQUIP.forEach(([k, , types]) => {
+            const now = piece(k);
+            items.filter(i => types.includes(i.t) && i.l <= LB.lvl && (!now || i.n !== now.item.n) && (k !== 'w' || !c || WEAPON_CLASS[i.t] === c))
+              .forEach(i => jobs.push([k, i, now]));
+          });
+          UP.total = jobs.length;
+          const found = [];
+          const step = () => {
+            if (!root.isConnected || UP.key !== stateKey) { UP.busy = false; return; }
+            const end = Math.min(jobs.length, UP.done + 60);
+            for (; UP.done < end; UP.done++) {
+              const [k, i, now] = jobs[UP.done];
+              const p = { key: k, item: i, r: null, p: now && now.p && i.ps ? now.p.slice(0, i.ps) : null };
+              const r = W.computeBuild(base.filter(x => x.key !== k).concat(p), { mode: LB.mode, level: LB.lvl, extra: LB.x }, eng);
+              if (r.short.some(x => x) || r.spTotal > r.spAvail) continue;   // couldn't wear it
+              const v = metric(r);
+              if (v > cur * 1.005) found.push({ k, i, gain: v / (cur || 1) - 1 });
+            }
+            const bar = root.querySelector('.upbar i'); if (bar) bar.style.width = (UP.done / UP.total * 100) + '%';
+            if (UP.done < jobs.length) return setTimeout(step, 0);
+            /* best few per slot; the same ring for both ring slots counts once */
+            const seen = new Set(), perSlot = {};
+            UP.res = found.sort((a, b) => b.gain - a.gain).filter(f => {
+              const id = (f.k[0] === 'r' ? 'r' : f.k) + f.i.n; if (seen.has(id)) return false; seen.add(id);
+              perSlot[f.k] = (perSlot[f.k] || 0) + 1; return perSlot[f.k] <= 3;
+            }).slice(0, 18);
+            UP.busy = false; draw();
+          };
+          draw(); setTimeout(step, 0);
+        };
+
+        const slotName = (k) => (EQUIP.find(e => e[0] === k) || [0, k])[1];
+        let body;
+        if (UP.busy) body = el('div', {}, el('p', { class: 'empty busy' }, `Trying ${UP.total.toLocaleString()} items…`), el('div', { class: 'upbar' }, el('i', { style: { width: (UP.done / Math.max(1, UP.total) * 100) + '%' } })));
+        else if (!UP.res) body = el('p', { class: 'hint' }, 'Finds single-item swaps that raise your chosen number while every piece can still be worn, then checks their price on the trade market.');
+        else if (!UP.res.length) body = el('p', { class: 'empty' }, 'No single item beats your current gear on that. Try another goal.');
+        else {
+          const budget = W.parseEmeralds && W.parseEmeralds(UP.budget);
+          const list = el('div', { class: 'uplist' });
+          const rows = UP.res.map(f => {
+            const price = el('span', { class: 'upprice' }, '…');
+            const row = el('div', { class: 'uprow' },
+              el('span', { class: 'islot', style: { '--rc': W.tierColor(f.i.r) } }, W.art.item(f.i.ic)),
+              el('div', { class: 'upname' }, W.tip(el('b', { style: { color: f.i.r === 'mythic' ? '#cf5ce8' : W.tierColor(f.i.r) } }, f.i.n), () => W.itemCard(f.i)),
+                el('small', {}, `${slotName(f.k)}${piece(f.k) ? ' · instead of ' + piece(f.k).item.n : ''}`)),
+              el('b', { class: 'upgain' }, '+' + W.num(f.gain * 100, 1) + '%'),
+              price,
+              el('button', { class: 'mini', onclick: () => { LB.s[f.k] = [f.i.n, null, f.k === 'w' || f.i.ps ? ((piece(f.k) || {}).p || []).slice(0, f.i.ps || 0) : null]; if (LB.c) delete LB.c[f.k]; store(); draw(); } }, 'Use'));
+            row._f = f;
+            W.marketPrice(f.i.n).then(p => {
+              f.price = p; price.replaceChildren(p ? W.emeraldTag(p, 'span') : el('small', {}, 'no recent sales'));
+              if (budget && (!p || p > budget)) row.classList.add('over');
+              if (UP.sort === 'value') order();
+            });
+            return row;
+          });
+          const order = () => list.replaceChildren(...rows.slice().sort((a, b) => UP.sort === 'value'
+            ? ((b._f.price ? b._f.gain / b._f.price : -1) - (a._f.price ? a._f.gain / a._f.price : -1)) : b._f.gain - a._f.gain));
+          order();
+          body = el('div', {}, list, el('p', { class: 'hint' }, 'Gains use the same roll setting as the rest of the page. Prices are trade market averages; items with no recent sales may be untradable or rare.'));
+        }
+        return W.win('Upgrades',
+          el('div', { class: 'uptools' },
+            el('label', {}, 'Improve', W.sel(Object.entries(GOALS).map(([k, [n]]) => [k, n]), UP.goal, (v) => { UP.goal = v; UP.picked = true; UP.res = null; draw(); })),
+            el('label', {}, 'Budget', el('input', { type: 'text', value: UP.budget, placeholder: 'any, or e.g. 5 stx', onchange: (e) => { UP.budget = e.target.value; draw(); } })),
+            el('label', {}, 'Sort', W.sel([['gain', 'Biggest gain'], ['value', 'Most gain per emerald']], UP.sort, (v) => { UP.sort = v; draw(); })),
+            el('button', { onclick: run, disabled: UP.busy }, UP.res ? 'Search again' : 'Find upgrades')),
+          body);
+      }
+
       function treeWin() {
         const c = cls();
         if (!c) return W.win('Ability tree', el('p', { class: 'empty' }, 'Pick a weapon (or a class) to plan the ability tree.'));
@@ -432,7 +578,7 @@
       const GHOST = { h: 'helmet.pale_iron', c: 'chestplate.pale_iron', l: 'leggings.pale_iron', b: 'boots.pale_iron', r1: 'ring.basicIron', r2: 'ring.basicIron',
         br: 'bracelet.basicIron', n: 'necklace.basicIron', w: 'bow.basicWood', armour_tome: 'tome.armour', weapon_tome: 'tome.weapon', marathon_tome: 'tome.movement',
         expertise_tome: 'tome.utility', mysticism_tome: 'tome.mana', lootrun_tome: 'tome.lootrun', guild_tome: 'tome.guild' };
-      const TAB_LIST = [['stats', 'Stats'], ['damage', 'Damage'], ['mana', 'Mana'], ['sp', 'Skill points'], ['tree', 'Ability tree']];
+      const TAB_LIST = [['stats', 'Stats'], ['damage', 'Damage'], ['mana', 'Mana'], ['sp', 'Skill points'], ['tree', 'Ability tree'], ['upgrades', 'Upgrades']];
 
       /* one square slot: rarity-coloured frame, the item, powder pips, roll quality when exact */
       function invSlot(k, label, big) {
@@ -485,7 +631,7 @@
 
       function side() {
         const sum = summary();
-        const body = tab === 'tree' ? treeWin()
+        const body = tab === 'tree' ? treeWin() : tab === 'upgrades' ? upgradesWin()
           : !sum ? W.win('Nothing to show yet', el('p', { class: 'empty' }, 'Add some gear to see the numbers.'))
           : tab === 'damage' ? sum.dmgWin : tab === 'mana' ? sum.manaWin : tab === 'sp' ? sum.spWin
           : el('div', { class: 'stack' }, sum.setWin, sum.defWin, sum.idWin);

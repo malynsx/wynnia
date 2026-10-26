@@ -15,7 +15,8 @@
     ui: (name) => img(`img/ui/${name}.webp`, name),
     wiki: (name) => img(`img/wiki/${name}.webp`, name),
     item: (file) => { const i = img(file ? `img/items/${file}` : 'img/wiki/weaponsmithing.webp'); if (!file) i.classList.add('dim'); i.loading = 'lazy'; return i; },
-    ing: (file) => { const i = img(file ? `img/ing/${file}` : 'img/wiki/alchemism.webp'); i.classList.add('px'); if (!file) i.classList.add('dim'); i.loading = 'lazy'; return i; },
+    /* skin_74843ea5… is the placeholder head (a missing-texture checkerboard) some ingredients point at */
+    ing: (file) => { if (file && file.startsWith('skin_74843ea5fe093315')) file = null; const i = img(file ? `img/ing/${file}` : 'img/wiki/alchemism.webp'); i.classList.add('px'); if (!file) i.classList.add('dim'); i.loading = 'lazy'; return i; },
     /* Browser tab icon: the Wynnia rank ring (brand/wynnia-ring-*.png) */
     favicon() {
       if (document.querySelector('link[rel=icon]')) return;

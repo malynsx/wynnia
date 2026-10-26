@@ -1435,3 +1435,75 @@ details.win[open] > :not(summary) { animation: pagerise .18s ease-out; }
 .setcount { font: 700 12.5px var(--ui); background: var(--inset); border: 2px solid var(--navy); border-radius: 99px; padding: 1px 9px; color: var(--gold); }
 .setrow .hint { margin: 0; font-size: 13px; }
 .setparts { color: var(--mute); font-size: 12.5px; }
+
+/* ---------- prices ---------- */
+.pitemhead { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; margin-bottom: 14px; }
+.pitemhead .islot { width: 56px; height: 56px; padding: 6px; cursor: default; }
+.pitemhead > div { display: grid; } .pitemhead small { color: var(--mute); }
+.pnow .bigstats .emtag { display: flex; justify-content: center; font-size: 20px; }
+.pdays { display: flex; gap: 6px; margin: 16px 0 8px; }
+.pchart svg { display: block; width: 100%; height: 180px; background: var(--inset); border: 2px solid var(--navy); border-radius: 5px; }
+.pchart .pline { stroke: var(--acc); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+.pchart .pband { fill: var(--acc); opacity: .14; }
+.pchart .pdot { fill: var(--acc); stroke: #0d0c0b; stroke-width: 1; }
+.paxis { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--mute); margin-top: 4px; }
+.plabel { align-self: center; white-space: nowrap; color: var(--mute); font-size: 14px; }
+.watchlist { display: grid; gap: 6px; }
+.wrow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; background: var(--inset); border: 2px solid var(--navy); border-radius: 5px; padding: 5px 8px; }
+.wrow.hit { border-color: #2f8a4c; box-shadow: inset 4px 0 0 #2f8a4c; }
+.wname { display: flex; align-items: center; gap: 8px; background: none; border: 0; box-shadow: none; padding: 0; font: 700 15px var(--ui); color: #fff; text-align: left; min-width: 0; }
+.wname img { width: 24px; height: 24px; image-rendering: pixelated; }
+.wvals { display: grid; justify-items: end; } .wvals small { color: var(--mute); font-size: 12px; }
+.ptoasts { position: fixed; right: 16px; bottom: 16px; z-index: 150; display: grid; gap: 8px; max-width: min(360px, calc(100vw - 32px)); }
+.ptoast { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: center; background: var(--card); border: 3px solid #2f8a4c; border-radius: 6px; padding: 10px 12px; color: #fff; text-decoration: none; box-shadow: 0 6px 0 var(--navy); animation: pagerise .2s ease-out; }
+.ptoast img { width: 28px; height: 28px; } .ptoast > div { display: grid; } .ptoast small { color: var(--mute); font-size: 12.5px; }
+
+/* ---------- upgrade finder ---------- */
+.uptools { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; gap: 8px; align-items: end; margin-bottom: 12px; }
+.uptools label { display: grid; gap: 2px; font: 700 11.5px var(--ui); text-transform: uppercase; letter-spacing: .05em; color: var(--mute); }
+.uptools input, .uptools select { font-size: 14px; padding: 5px 7px; width: 100%; min-width: 0; }
+.uptools button { padding: 6px 14px; font-size: 14px; }
+.upbar { height: 8px; background: var(--inset); border-radius: 4px; overflow: hidden; margin-top: 6px; }
+.upbar i { display: block; height: 100%; background: var(--acc); transition: width .2s; }
+.uplist { display: grid; gap: 6px; }
+.uprow { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto auto auto; gap: 10px; align-items: center; background: var(--inset); border: 2px solid var(--navy); border-radius: 5px; padding: 5px 8px; }
+.uprow.over { opacity: .45; }
+.uprow .islot { width: 44px; height: 44px; padding: 4px; cursor: default; border-width: 2px; }
+.upname { display: grid; min-width: 0; } .upname b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .upname small { color: var(--mute); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.upgain { color: #55ff55; font-size: 16px; } .upprice { font-size: 13px; white-space: nowrap; } .upprice small { color: var(--mute); }
+
+/* ---------- crafted gear in the builder ---------- */
+.craftbtn { margin: 0 0 8px; }
+.cfields { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin: 10px 0; }
+.cfields label { display: grid; gap: 2px; font: 700 11.5px var(--ui); text-transform: uppercase; letter-spacing: .05em; color: var(--mute); }
+.cfields select { font-size: 14px; padding: 4px 6px; width: 100%; }
+.ctable.small { grid-template-columns: repeat(2, 76px); gap: 8px; }
+.cingpick { max-height: 240px; }
+.ipanel.craft .kv > div { padding: 5px 0; font-size: 15px; }
+
+/* ---------- next steps ---------- */
+.plancard { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 20px; align-items: center; background: var(--card); border: 3px solid var(--navy); border-radius: 8px; box-shadow: 0 5px 0 var(--navy); padding: 18px 22px; }
+.planhead { width: 80px; height: 80px; border-radius: 6px; image-rendering: pixelated; border: 3px solid var(--navy); }
+.plancard h2 { margin: 0 0 8px; font: 700 28px var(--ui); color: #fff; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.plancard h2 small { font-size: 15px; color: var(--mute); font-weight: 500; }
+.plancard .glevel { margin-bottom: 8px; }
+.todolist { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 8px; }
+.todo { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 10px; align-items: center; background: var(--inset); border: 2px solid var(--navy); border-left: 4px solid var(--acc); border-radius: 5px; padding: 8px 10px; color: #fff; text-decoration: none; }
+.todo:hover { border-color: var(--acc); }
+.todo img { width: 32px; height: 32px; object-fit: contain; image-rendering: pixelated; }
+.todo > div { display: grid; min-width: 0; } .todo small { color: var(--mute); font-size: 13px; }
+.planlist { display: grid; gap: 4px; margin-bottom: 10px; }
+.planrow { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 6px 8px; background: var(--inset); border-radius: 4px; color: #fff; text-decoration: none; font-size: 15px; }
+a.planrow:hover { filter: brightness(1.1); }
+.planrow b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .planrow small { color: var(--mute); font-size: 12.5px; text-align: right; }
+.plv { font: 700 13px var(--ui); color: var(--gold); text-align: center; }
+.planrow img { width: 28px; height: 28px; object-fit: contain; justify-self: center; }
+.planrow.raid.open small { color: #55ff55; } .planrow.raid.level, .planrow.raid.quest { opacity: .75; }
+@media (max-width: 760px) {
+  .uptools { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .uprow { grid-template-columns: 40px minmax(0, 1fr) auto; } .uprow .upprice { grid-column: 2; } .uprow > button { grid-column: 3; grid-row: 2; }
+  .plancard { grid-template-columns: 56px minmax(0, 1fr); padding: 14px; gap: 12px; } .planhead { width: 56px; height: 56px; }
+  .planrow { grid-template-columns: 34px minmax(0, 1fr); } .planrow small { grid-column: 2; text-align: left; }
+}
+.pnow .bigstats { grid-template-columns: repeat(3, minmax(0, 1fr)); } .pnow .bigstats > div { min-width: 0; }
+@media (max-width: 600px) { .pnow .bigstats .emtag { font-size: 14px; flex-wrap: wrap; gap: 3px; } .pnow .bigstats span { font-size: 10.5px; } }
