@@ -1012,9 +1012,6 @@ html { background: var(--page); }
 .wring i { width: 28px; height: 28px; border-radius: 50%; background: #1f1c1a; display: grid; place-items: center; font: 700 16px var(--logo); font-style: normal; color: #fff; }
 .wname { display: block; font: 700 31px/1 var(--logo); color: #fff; letter-spacing: .01em; }
 .wsub { display: block; font: 700 10.5px var(--ui); color: #a39c90; letter-spacing: .18em; text-transform: uppercase; margin-top: 4px; }
-.brand:hover .wring { animation: wspin 1.2s ease-in-out; }
-@keyframes wspin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .brand:hover .wring { animation: none; } }
 .theme-pick { font: 700 13px var(--ui); text-transform: uppercase; letter-spacing: .08em; color: #a39c90; }
 .qs input { background: #1f1c1a; border: 2px solid #3d3833; border-radius: 99px; padding-left: 16px; color: #fff; }
 /* frame */
@@ -1093,7 +1090,6 @@ input:focus, select:focus, textarea:focus, button:focus-visible { outline: 2px s
 .tab.pop, .sub.pop { animation: none; }
 .tab:active, .hcard:hover, .hcard:active, .badge:hover, .islot:hover, .brand:hover .wlogo, .brand:hover .emblem { transform: none; }
 .clsbtn:hover img { transform: none; }
-.brand:hover .wring { animation: none; }
 .badge.t5::after { display: none; }
 .hcard:hover, .islot:hover, .clsbtn:hover, .archbtn:hover { filter: brightness(1.08); }
 @media (prefers-reduced-motion: reduce) { .page.enter { animation: none; } }
@@ -1243,3 +1239,39 @@ details.lrd > summary { cursor: pointer; list-style: none; } details.lrd > summa
   .brow { grid-template-columns: minmax(0, 1fr); } .brow.head { display: none; } .rankrow { grid-template-columns: 24px minmax(0, 1fr) auto; } .rankrow span { grid-column: 2 / -1; } .gintro { grid-template-columns: 56px minmax(0, 1fr); } .gintro img { width: 56px; height: 56px; } }
 .mapbox .leaflet-container { background: #0e2232; }
 .rooms { align-items: start; } .room > small.hint { font-size: 12px; margin: 0; }
+
+/* ---------- loading indicators ---------- */
+.loadbar { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 200; pointer-events: none; opacity: 0; transition: opacity .2s;
+  background: linear-gradient(90deg, transparent, var(--acc, var(--gold)) 40%, var(--acc, var(--gold)) 60%, transparent) no-repeat; background-size: 40% 100%; }
+.loadbar.on { opacity: 1; animation: loadbar 1.1s ease-in-out infinite; }
+@keyframes loadbar { from { background-position: -60% 0; } to { background-position: 160% 0; } }
+.empty.busy { display: flex; align-items: center; gap: 10px; }
+.empty.busy::before { content: ''; width: 16px; height: 16px; flex: none; border-radius: 50%; border: 3px solid rgba(255,255,255,.14); border-top-color: var(--acc, var(--gold)); animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+img.imgwait { background: linear-gradient(90deg, rgba(255,255,255,.04) 30%, rgba(255,255,255,.1) 50%, rgba(255,255,255,.04) 70%) 0 0 / 300% 100%; border-radius: 4px; animation: shimmer 1.2s linear infinite; }
+img.imgwait:not([src*=".svg"]) { color: transparent; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+img.imgin { animation: imgin .25s ease-out; }
+@keyframes imgin { from { opacity: 0; } to { opacity: 1; } }
+img.imgfail { visibility: hidden; }
+.invbody:has(img.imgwait)::before { content: ''; position: absolute; width: 26px; height: 26px; border-radius: 50%; border: 3px solid rgba(255,255,255,.12); border-top-color: var(--acc, var(--gold)); animation: spin .7s linear infinite; }
+.invbody { position: relative; }
+
+/* ---------- gentle motion ---------- */
+/* pages fade up a few pixels; buttons, tabs and cards ease their hover colours instead of switching */
+.page.enter, .page.enter.from-r, .page.enter.from-l { animation: pagerise .2s ease-out both; }
+@keyframes pagerise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+button, .btnlink, .tab, .sub, .chip, .hcard, .islot, .clsbtn, .archbtn, .badge, .icard, a.card, input, select, textarea {
+  transition: filter .15s, background-color .15s, border-color .15s, color .15s, box-shadow .15s, transform .1s; }
+button:active, .btnlink:active { transform: translateY(2px); }
+.tooltip:not([hidden]) { animation: tipin .1s ease-out; }
+@keyframes tipin { from { opacity: 0; } to { opacity: 1; } }
+details.win[open] > :not(summary) { animation: pagerise .18s ease-out; }
+/* the logo ring turns once when you hover it; the W stays upright */
+.wring.turn { animation: wturn .9s cubic-bezier(.45, 0, .25, 1); }
+.wring.turn i { animation: wturn .9s cubic-bezier(.45, 0, .25, 1) reverse; }
+@keyframes wturn { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .page.enter, .wring.turn, .wring.turn i, img.imgin, .tooltip:not([hidden]), details.win[open] > :not(summary) { animation: none; }
+  .loadbar.on, img.imgwait { animation-duration: 3s; }
+}

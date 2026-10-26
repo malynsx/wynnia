@@ -68,6 +68,10 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     W.load(); W.art.favicon(); W.themes.init(); W.initSearch();
+    /* the logo ring turns once on hover, and always finishes its turn rather than snapping back */
+    const ring = document.querySelector('.wring');
+    document.querySelector('.brand').addEventListener('mouseenter', () => ring.classList.add('turn'));
+    ring.addEventListener('animationend', () => ring.classList.remove('turn'));
     window.addEventListener('hashchange', route);
     route();
   });

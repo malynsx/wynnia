@@ -76,6 +76,39 @@
   document.addEventListener('mousedown', () => { hint.hidden = true; hintFor = null; });
   window.addEventListener('scroll', () => { hint.hidden = true; }, true);
 
+  /* ---------- Loading indicators ---------- */
+  /* A thin bar along the top while anything is being fetched, shown only if it takes more than a moment. */
+  const bar = el('div', { class: 'loadbar' });
+  let inflight = 0, barTimer = 0;
+  const realFetch = window.fetch.bind(window);
+  window.fetch = (...a) => {
+    if (inflight++ === 0) barTimer = setTimeout(() => bar.classList.add('on'), 150);
+    return realFetch(...a).finally(() => { if (--inflight === 0) { clearTimeout(barTimer); bar.classList.remove('on'); } });
+  };
+  /* Images still on their way get a placeholder shimmer (and fade in when they land); ones that fail leave a gap, not a broken icon.
+     "Loading…" messages get a spinner. Both are picked up as they're added, so pages need nothing special. */
+  const BUSY = /^(Loading|Asking|Looking up|Fetching|Searching)\b/;
+  const watchImg = (img) => {
+    if (img.closest('.leaflet-container')) return;
+    if (!img.dataset.watched) {
+      img.dataset.watched = '1';
+      img.addEventListener('load', () => { if (img.classList.contains('imgwait')) img.classList.add('imgin'); img.classList.remove('imgwait', 'imgfail'); });
+      img.addEventListener('error', () => { img.classList.remove('imgwait'); img.classList.add('imgfail'); });
+    }
+    if (!img.complete) img.classList.add('imgwait');
+  };
+  const scan = (n) => {
+    if (n.nodeType !== 1) return;
+    if (n.tagName === 'IMG') return watchImg(n);
+    n.querySelectorAll('img').forEach(watchImg);
+    (n.matches('.empty') ? [n] : n.querySelectorAll('.empty')).forEach(p => p.classList.toggle('busy', BUSY.test(p.textContent.trim())));
+  };
+  document.addEventListener('DOMContentLoaded', () => {
+    document.body.append(bar);
+    scan(document.body);
+    new MutationObserver(ms => { for (const m of ms) m.addedNodes.forEach(scan); }).observe(document.body, { childList: true, subtree: true });
+  });
+
   /* ---------- State ---------- */
   const KEY = 'stableLedger.v1';
   W.defaultSettings = () => ({ bonus: 5, sd: 2, curSd: 0.5, slots: 3 });
