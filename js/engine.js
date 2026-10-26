@@ -58,7 +58,9 @@
     const sp = W.solveSkillPoints(pieces.filter(p => p.item.g !== 'tome'), mode);
     const extra = SK.map(s => (opts.extra && opts.extra[s]) || 0);
     const tomeBonus = SK.map(s => pieces.filter(p => p.item.g === 'tome').reduce((a, p) => a + W.idValue(p, SK_ID[s], mode), 0));
-    const assigned = sp.need.map((n, i) => n + extra[i]);
+    /* extra can be negative: you may set a skill below what your gear asks for (then that gear can't be worn) */
+    const assigned = sp.need.map((n, i) => Math.max(0, n + extra[i]));
+    const short = sp.need.map((n, i) => Math.max(0, n - assigned[i]));
     const finalSP = SK.map((_, i) => assigned[i] + sp.bonus[i] + tomeBonus[i]);
     const spTotal = assigned.reduce((a, b) => a + b, 0), spAvail = W.spAvailable(lvl);
 
@@ -158,7 +160,7 @@
       if (pct) c = pct < 0 ? Math.min(c - 1, c * (1 + pct / 100)) : Math.max(c + 1, c * (1 + pct / 100));
       return Math.max(1, Math.round(c));
     };
-    return { level: lvl, sp, extra, assigned, finalSP, spTotal, spAvail, ids, hp, ehp, ehpAgi, defPct, agiPct, elemDef, mana, melee, base, spellCost, intCost,
+    return { level: lvl, sp, extra, assigned, short, finalSP, spTotal, spAvail, ids, hp, ehp, ehpAgi, defPct, agiPct, elemDef, mana, melee, base, spellCost, intCost,
       lifeSteal: id('lifeSteal'), manaSteal: id('manaSteal'), manaRegen: id('manaRegen'), hpRegen: id('healthRegenRaw'), walk: id('walkSpeed') };
   };
 })(window.W);

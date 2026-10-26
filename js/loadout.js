@@ -274,17 +274,31 @@
         const effect = ['% damage (earth)', '% crit chance (thunder)', '% mana / water', '% less damage taken (fire)', '% dodge chance (air)'];
         const effVal = (i) => i === 3 ? scale(res.finalSP[i]) * 0.867 : i === 4 ? scale(res.finalSP[i]) * 0.951 : scale(res.finalSP[i]);
         const over = res.spTotal > res.spAvail;
+        /* skill points: set each one freely (0-100, like in game), with steppers, "max" and requirement warnings */
+        const left = res.spAvail - res.spTotal;
+        const setPoints = (i, v) => { const s = W.SK[i]; v = Math.max(0, Math.min(100, Math.round(v))); LB.x[s] = v - res.sp.need[i]; if (!LB.x[s]) delete LB.x[s]; store(); draw(); };
         const spWin = W.win('Skill points',
-          el('div', { class: 'sptable' },
-            el('div', { class: 'sprow sphead' }, ['', 'Assign', 'Extra', 'Gear', 'Total', 'Effect'].map(h => el('span', {}, h))),
-            W.SK.map((s, i) => el('div', { class: 'sprow' },
+          el('div', { class: 'spbar' },
+            el('div', { class: 'spleft' + (over ? ' bad' : left === 0 ? ' full' : '') }, el('b', {}, over ? `${-left} over` : left), el('span', {}, over ? 'too many points' : 'points left')),
+            el('div', { class: 'spmeter' }, el('i', { style: { width: Math.min(100, res.spTotal / Math.max(1, res.spAvail) * 100) + '%' } })),
+            el('small', {}, `${res.spTotal} / ${res.spAvail} at level ${LB.lvl}`),
+            el('button', { class: 'mini', onclick: () => { LB.x = {}; store(); draw(); } }, 'Reset to minimum')),
+          el('div', { class: 'sptable free' },
+            el('div', { class: 'sprow sphead' }, ['', 'Points', 'Needs', 'Gear', 'Total', 'Effect'].map(h => el('span', {}, h))),
+            W.SK.map((s, i) => el('div', { class: 'sprow' + (res.short[i] ? ' short' : '') },
               el('b', { class: 'elname', style: { color: W.ELEM[W.SK_ELEM[s]] } }, W.cap(s)),
-              el('span', {}, res.sp.need[i], has ? el('small', { class: has[i] >= res.sp.need[i] ? 'up' : 'down' }, ` (has ${has[i]})`) : null),
-              W.numIn(LB.x[s] || 0, (v) => { LB.x[s] = Math.max(0, Math.min(100, v)); store(); draw(); }, 0, 100),
+              el('div', { class: 'spedit' },
+                el('button', { class: 'mini', 'aria-label': 'Less ' + s, onclick: (e) => setPoints(i, res.assigned[i] - (e.shiftKey ? 5 : 1)) }, '−'),
+                W.numIn(res.assigned[i], (v) => setPoints(i, v), 0, 100),
+                el('button', { class: 'mini', 'aria-label': 'More ' + s, onclick: (e) => setPoints(i, res.assigned[i] + (e.shiftKey ? 5 : 1)) }, '+'),
+                el('button', { class: 'mini', title: 'Put every point that is left into ' + W.cap(s), disabled: left <= 0 || res.assigned[i] >= 100, onclick: () => setPoints(i, res.assigned[i] + left) }, 'Max')),
+              el('span', { class: 'spneed' }, res.sp.need[i] || '—', has ? el('small', { class: has[i] >= res.assigned[i] ? 'up' : 'down' }, `has ${has[i]}`) : null),
               el('span', {}, (res.sp.bonus[i] > 0 ? '+' : '') + res.sp.bonus[i]),
               el('b', {}, res.finalSP[i]),
               el('small', {}, W.num(effVal(i), 1) + effect[i])))),
-          el('div', { class: over ? 'warn' : 'hint' }, `${res.spTotal} of ${res.spAvail} skill points used at level ${LB.lvl}.` + (over ? ' That’s more than you have: the build can’t be worn yet.' : ` ${res.spAvail - res.spTotal} left to put in Extra.`)));
+          res.short.some(x => x) ? el('div', { class: 'warn' }, 'Below what your gear needs: ' + W.SK.filter((_, i) => res.short[i]).map((s, i2) => `${W.cap(s)} (${res.short[W.SK.indexOf(s)]} short)`).join(', ') + '. Those items won’t work until you add the points back.') : null,
+          over ? el('div', { class: 'warn' }, `That’s ${-left} more than level ${LB.lvl} gives, so the build can’t be worn yet.`) : null,
+          el('p', { class: 'hint' }, 'Type any amount from 0 to 100, or use − / + (Shift for 5 at a time). Max puts all your spare points into one skill. Needs is the least your gear asks for.'));
 
         const defWin = W.win('Health and defence',
           el('div', { class: 'bigstats' },
