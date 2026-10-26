@@ -281,7 +281,8 @@
             ...body.filter(Boolean));
         }
         render();
-        setTimeout(() => map.invalidateSize(), 50);
+        const startView = MS.view && MS.view.slice();
+        setTimeout(() => { map.invalidateSize(); if (startView) map.setView(ll(startView[0], startView[1]), startView[2], { animate: false }); }, 50);   // keep a shared view centred once the map knows its size
         W.onLeave && W.onLeave(() => map.remove());
       }
     });
