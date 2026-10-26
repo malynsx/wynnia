@@ -56,17 +56,15 @@
     if (q && q.get('i')) PF.item = q.get('i');
     W.withData(root, ['items'], (items) => {
       const byName = Object.fromEntries(items.map(i => [i.n, i]));
-      const names = items.map(i => i.n);
       const draw = () => root.replaceChildren(el('div', { class: 'cols wide-l' }, el('div', { class: 'stack' }, finder(), detail()), el('div', { class: 'stack' }, watchWin())));
 
       function finder() {
-        const list = el('datalist', { id: 'pitems' }, names.map(n => el('option', { value: n })));
-        const inp = el('input', { type: 'search', list: 'pitems', value: PF.item, placeholder: 'Item name, e.g. Freedom', onchange: (e) => pick(e.target.value) });
-        return W.win('Trade market prices', el('div', { class: 'search' }, inp, el('button', { onclick: () => pick(inp.value) }, 'Show')), list,
+        const box = W.itemPicker(items, { value: PF.item, placeholder: 'Item name, e.g. Freedom', onPick: (i) => pick(i.n) });
+        return W.win('Trade market prices', el('div', { class: 'search' }, box, el('button', { onclick: () => box.pick() }, 'Show')),
           el('p', { class: 'hint' }, 'Prices from Wynnventory, which records trade market listings. Daily history shows how an item’s price moved.'));
       }
       function pick(n) {
-        const hit = byName[n] ? n : names.find(x => x.toLowerCase() === String(n).trim().toLowerCase());
+        const hit = byName[n] ? n : (items.find(x => x.n.toLowerCase() === String(n).trim().toLowerCase()) || {}).n;
         PF.item = hit || ''; history.replaceState(null, '', '#items/prices' + (hit ? '?i=' + encodeURIComponent(hit) : '')); draw();
       }
 

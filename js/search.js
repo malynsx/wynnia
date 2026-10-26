@@ -10,6 +10,39 @@
     W.data('territories').then(d => { guilds = [...new Set(d.map(t => t.g).filter(Boolean))]; }).catch(() => {});
   };
 
+  /* An item name box with the header search's dropdown: icon, rarity and level, arrow keys and Enter.
+     Returns the wrapper to put on the page; onPick(item) runs when one is chosen. */
+  W.itemPicker = (list, { value = '', placeholder = 'Item name', onPick }) => {
+    const input = el('input', { type: 'search', value, placeholder, autocomplete: 'off', 'aria-label': placeholder });
+    const drop = el('div', { class: 'qsresults', hidden: true });
+    const wrap = el('div', { class: 'ipick' }, input, drop);
+    let hits = [], active = 0;
+    const pick = (i) => { if (!i) return; input.value = i.n; drop.hidden = true; onPick(i); };
+    const render = () => {
+      drop.replaceChildren(...hits.map((i, n) => el('a', { class: 'qsr' + (n === active ? ' on' : ''), href: '#', onmousedown: (e) => { e.preventDefault(); pick(i); } },
+        el('span', { class: 'qsi' }, W.art.item(i.ic)),
+        el('span', {}, el('b', { style: { color: i.r === 'mythic' ? '#cf5ce8' : W.tierColor(i.r) } }, i.n), el('small', {}, `${(W.TIERS[i.r] || ['Item'])[0]} ${W.cap(i.t)} · Lv. ${i.l}`)))));
+      drop.hidden = !hits.length;
+    };
+    const search = () => {
+      const q = input.value.trim().toLowerCase(); active = 0;
+      hits = q.length < 2 ? [] : list.filter(i => i.n.toLowerCase().includes(q))
+        .sort((a, b) => a.n.toLowerCase().indexOf(q) - b.n.toLowerCase().indexOf(q) || a.n.length - b.n.length).slice(0, 8);
+      render();
+    };
+    input.addEventListener('input', search);
+    input.addEventListener('focus', search);
+    input.addEventListener('blur', () => setTimeout(() => { drop.hidden = true; }, 100));
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') { active = Math.min(hits.length - 1, active + 1); render(); e.preventDefault(); }
+      else if (e.key === 'ArrowUp') { active = Math.max(0, active - 1); render(); e.preventDefault(); }
+      else if (e.key === 'Enter') { const exact = list.find(i => i.n.toLowerCase() === input.value.trim().toLowerCase()); pick(!drop.hidden && hits[active] || exact); }
+      else if (e.key === 'Escape') drop.hidden = true;
+    });
+    wrap.pick = () => { const exact = list.find(i => i.n.toLowerCase() === input.value.trim().toLowerCase()); pick(exact || hits[0]); };
+    return wrap;
+  };
+
   W.initSearch = () => {
     const box = document.getElementById('qs');
     const input = el('input', { type: 'search', placeholder: 'Search items, players, guilds…', 'aria-label': 'Search', autocomplete: 'off' });

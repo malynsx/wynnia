@@ -1507,3 +1507,7 @@ a.planrow:hover { filter: brightness(1.1); }
 }
 .pnow .bigstats { grid-template-columns: repeat(3, minmax(0, 1fr)); } .pnow .bigstats > div { min-width: 0; }
 @media (max-width: 600px) { .pnow .bigstats .emtag { font-size: 14px; flex-wrap: wrap; gap: 3px; } .pnow .bigstats span { font-size: 10.5px; } }
+
+/* item name box with the header search dropdown (Prices page) */
+.ipick { position: relative; flex: 1; min-width: 0; } .ipick input { width: 100%; }
+.ipick .qsi img { width: 30px; height: 30px; image-rendering: pixelated; object-fit: contain; }
