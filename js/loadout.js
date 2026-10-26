@@ -405,7 +405,18 @@
 
         const idWin = W.win('Identifications', el('div', { class: 'idlist' }, Object.entries(res.ids).filter(([, v]) => v).sort((a, b) => W.idInfo(a[0]).name.localeCompare(W.idInfo(b[0]).name)).map(([k, v]) =>
           el('div', { class: 'il' }, el('span', { class: W.idGood(k, v) ? 'pos' : 'neg' }, W.fmtId(k, v)), el('span', { class: 'idn' }, W.idInfo(k).name)))));
-        return { res, spWin, defWin, dmgWin, manaWin, idWin, fighting, best: dmgSpells[0] };
+        /* item sets being worn, and what their bonus adds (already counted in every number on this page) */
+        const majorName = (m) => m.toLowerCase().split('_').map(W.cap).join(' ');
+        const setWin = res.sets.length ? W.win('Set bonuses', el('div', { class: 'setlist' }, res.sets.map(s => el('div', { class: 'setrow' + (Object.keys(s.bonus).length || s.major.length ? '' : ' none') },
+          el('div', { class: 'sethead' }, el('b', {}, s.name + ' Set'), el('span', { class: 'setcount' }, `${s.count}/${s.of} pieces`)),
+          Object.keys(s.bonus).length || s.major.length
+            ? el('div', { class: 'idlist' }, Object.entries(s.bonus).map(([k, v]) => el('div', { class: 'il' }, el('span', { class: W.idGood(k, v) ? 'pos' : 'neg' }, W.fmtId(k, v)), el('span', { class: 'idn' }, W.idInfo(k).name))),
+              s.major.map(m => el('div', { class: 'il' }, el('span', { class: 'pos' }, 'Major ID'), el('span', { class: 'idn' }, majorName(m)))))
+            : el('small', { class: 'hint' }, `No bonus yet: the first one comes at ${s.next} pieces.`),
+          s.next && (Object.keys(s.bonus).length || s.major.length) ? el('small', { class: 'hint' }, `A bigger bonus comes at ${s.next} pieces.`) : null,
+          el('small', { class: 'setparts' }, 'Pieces: ' + s.parts.join(', '))))),
+          el('p', { class: 'hint' }, 'Set bonuses are included in health, defence, damage, mana and skill points. Their skill points aren’t used to meet the gear’s requirements here, so the points this page asks for are enough without the set.')) : null;
+        return { res, spWin, defWin, dmgWin, manaWin, idWin, setWin, fighting, best: dmgSpells[0] };
       }
 
       function treeWin() {
@@ -477,7 +488,7 @@
         const body = tab === 'tree' ? treeWin()
           : !sum ? W.win('Nothing to show yet', el('p', { class: 'empty' }, 'Add some gear to see the numbers.'))
           : tab === 'damage' ? sum.dmgWin : tab === 'mana' ? sum.manaWin : tab === 'sp' ? sum.spWin
-          : el('div', { class: 'stack' }, sum.defWin, sum.idWin);
+          : el('div', { class: 'stack' }, sum.setWin, sum.defWin, sum.idWin);
         return el('div', { class: 'stack lo-side' },
           kpis(sum),
           el('div', { class: 'lotabs', role: 'tablist' }, TAB_LIST.map(([k, label]) => el('button', { class: 'lotab' + (tab === k ? ' on' : ''), role: 'tab', 'aria-selected': tab === k,

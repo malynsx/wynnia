@@ -1424,3 +1424,14 @@ details.win[open] > :not(summary) { animation: pagerise .18s ease-out; }
   .herotiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; } .herotiles > div { padding: 7px 8px 6px; }
   .herotiles b { font-size: 19px; } .herotiles span { font-size: 10.5px; }
 }
+
+/* set bonuses in the Loadout Builder */
+.setlist { display: grid; gap: 12px; }
+.setrow { display: grid; gap: 6px; padding-bottom: 12px; border-bottom: 2px solid var(--navy); }
+.setrow:last-child { border-bottom: 0; padding-bottom: 0; }
+.sethead { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.sethead b { color: #55ff55; }
+.setrow.none .sethead b { color: var(--mute); }
+.setcount { font: 700 12.5px var(--ui); background: var(--inset); border: 2px solid var(--navy); border-radius: 99px; padding: 1px 9px; color: var(--gold); }
+.setrow .hint { margin: 0; font-size: 13px; }
+.setparts { color: var(--mute); font-size: 12.5px; }

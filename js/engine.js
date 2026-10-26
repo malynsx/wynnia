@@ -52,21 +52,41 @@
 
   W.spAvailable = (lvl) => Math.max(0, Math.min(200, (lvl - 1) * 2));
 
+  /* Item sets worn: every equipped piece counts (two of the same ring count twice). A set gives the bonus listed for
+     that many pieces, or for the most pieces it lists below that. Returns [{ name, count, of, bonus, major }]. */
+  W.setBonuses = (pieces, eng) => {
+    const sets = (eng && eng.sets) || {};
+    if (!eng.setOf) Object.defineProperty(eng, 'setOf', { value: Object.fromEntries(Object.entries(sets).flatMap(([n, s]) => s.p.map(p => [p, n]))) });
+    const count = {};
+    pieces.forEach(p => { const s = p.item.g !== 'tome' && eng.setOf[p.item.n]; if (s) count[s] = (count[s] || 0) + 1; });
+    return Object.entries(count).map(([name, n]) => {
+      const s = sets[name], key = Object.keys(s.b).map(Number).filter(k => k <= n).sort((a, b) => b - a)[0];
+      const top = Math.max(...Object.keys(s.b).map(Number));
+      return { name, count: n, of: Math.max(top, s.p.length), parts: s.p, bonus: key ? s.b[key] : {}, major: key ? (s.m || {})[key] || [] : [], next: Object.keys(s.b).map(Number).filter(k => k > n).sort((a, b) => a - b)[0] || null };
+    }).sort((a, b) => b.count - a.count);
+  };
+
   W.computeBuild = (pieces, opts, eng) => {
     const mode = opts.mode || 'max', lvl = opts.level || 106;
     const scale = (n) => eng.spScale[Math.max(0, Math.min(150, Math.round(n)))] || 0;   // percent
     const sp = W.solveSkillPoints(pieces.filter(p => p.item.g !== 'tome'), mode);
     const extra = SK.map(s => (opts.extra && opts.extra[s]) || 0);
     const tomeBonus = SK.map(s => pieces.filter(p => p.item.g === 'tome').reduce((a, p) => a + W.idValue(p, SK_ID[s], mode), 0));
+    /* set bonuses act like one more item's identifications; their skill points add to the total but aren't used to
+       meet gear requirements, so the points you're asked to assign never depend on finishing a set */
+    const sets = W.setBonuses(pieces, eng);
+    const setSP = SK.map(s => sets.reduce((a, x) => a + (x.bonus[SK_ID[s]] || 0), 0));
+    sp.bonus = sp.bonus.map((b, i) => b + setSP[i]);
     /* extra can be negative: you may set a skill below what your gear asks for (then that gear can't be worn) */
     const assigned = sp.need.map((n, i) => Math.max(0, n + extra[i]));
     const short = sp.need.map((n, i) => Math.max(0, n - assigned[i]));
     const finalSP = SK.map((_, i) => assigned[i] + sp.bonus[i] + tomeBonus[i]);
     const spTotal = assigned.reduce((a, b) => a + b, 0), spAvail = W.spAvailable(lvl);
 
-    /* identifications summed over every piece */
+    /* identifications summed over every piece, plus set bonuses */
     const ids = {};
     pieces.forEach(p => Object.keys(p.item.i || {}).forEach(k => { ids[k] = (ids[k] || 0) + W.idValue(p, k, mode); }));
+    sets.forEach(x => Object.entries(x.bonus).forEach(([k, v]) => { ids[k] = (ids[k] || 0) + v; }));
     const id = (k) => ids[k] || 0;
 
     /* base stats and powders */
@@ -160,7 +180,7 @@
       if (pct) c = pct < 0 ? Math.min(c - 1, c * (1 + pct / 100)) : Math.max(c + 1, c * (1 + pct / 100));
       return Math.max(1, Math.round(c));
     };
-    return { level: lvl, sp, extra, assigned, short, finalSP, spTotal, spAvail, ids, hp, ehp, ehpAgi, defPct, agiPct, elemDef, mana, melee, base, spellCost, intCost,
+    return { level: lvl, sp, sets, setSP, extra, assigned, short, finalSP, spTotal, spAvail, ids, hp, ehp, ehpAgi, defPct, agiPct, elemDef, mana, melee, base, spellCost, intCost,
       lifeSteal: id('lifeSteal'), manaSteal: id('manaSteal'), manaRegen: id('manaRegen'), hpRegen: id('healthRegenRaw'), walk: id('walkSpeed') };
   };
 })(window.W);
