@@ -30,7 +30,6 @@ const COMMANDS = [
   { name: 'build', description: 'Show a Wynnia build link: gear, level and a link to open it', options: [{ type: 3, name: 'link', description: 'A Wynnia build link (malynsx.github.io/wynnia/#s/…)', required: true }] },
   { name: 'lootpool', description: 'This week’s mythics in each lootrun camp and raid', options: [{ type: 3, name: 'where', description: 'Only this camp or raid', required: false, autocomplete: true }] },
   { name: 'events', description: 'World events starting in the next 15 minutes', options: [{ type: 4, name: 'level', description: 'Only events near this level', required: false, min_value: 1, max_value: 132 }] },
-  { name: 'wynnia', description: 'Links to the Wynnia tools' },
 ];
 
 /* ---------- helpers ---------- */
@@ -86,47 +85,89 @@ async function price(name, ctx) {
 }
 
 /* ---------- commands ---------- */
+/* ---------- embed styling ---------- */
+/* Every answer: the Wynnia author line, a colour, a footer with the time, and link buttons to the matching page.
+   Stat blocks use Discord's ANSI code blocks, coloured like in-game item lore (green good, red bad, element colours). */
+const RING = (n) => SITE + `brand/wynnia-ring-${n}.png`;
+const A = { r: '\u001b[0m', gray: '\u001b[0;30m', red: '\u001b[0;31m', green: '\u001b[0;32m', yellow: '\u001b[0;33m', blue: '\u001b[0;34m', pink: '\u001b[0;35m', cyan: '\u001b[0;36m', white: '\u001b[0;37m', bold: '\u001b[1;37m' };
+const ELEM_A = { neutral: A.yellow, earth: A.green, thunder: A.yellow, water: A.cyan, fire: A.red, air: A.white };
+const ELEM_ORDER = ['neutral', 'earth', 'thunder', 'water', 'fire', 'air'];
+const ansi = (lines) => '```ansi\n' + lines.join('\n') + '\n```';
+const pad = (s, n) => String(s) + ' '.repeat(Math.max(0, n - String(s).length));
+const lpad = (s, n) => ' '.repeat(Math.max(0, n - String(s).length)) + String(s);
+const RANK_COL = { vip: 0x87b85b, vipplus: 0x6f8fb8, hero: 0x9c7cc4, heroplus: 0xd16fa6, champion: 0xc9a75e };
+const CLASS_OF = { bow: 'Archer', spear: 'Warrior', wand: 'Mage', dagger: 'Assassin', relik: 'Shaman' };
+const link = (label, url) => ({ type: 2, style: 5, label, url });
+const buttons = (...b) => [{ type: 1, components: b.filter(Boolean).slice(0, 5) }];
+const embed = (e, foot) => Object.assign({ author: { name: 'Wynnia', url: SITE, icon_url: RING(64) } }, e,
+  { footer: { text: foot || 'Wynnia · Tools for Wynncraft', icon_url: RING(32) }, timestamp: new Date().toISOString() });
+const tierCol = (r) => r === 'mythic' ? 0xb44bd6 : TIER[r] || GOLD;
+const good = (k, v) => { const n = Array.isArray(v) ? v[1] : v; return /SpellCost/.test(k) ? n < 0 : n > 0; };
+const bar = (pct, n = 10) => '▰'.repeat(Math.round(pct / 100 * n)) + '▱'.repeat(n - Math.round(pct / 100 * n));
+let MAJORS = null;
+const majors = async (ctx) => MAJORS || (MAJORS = await getJSON(SITE + 'data/majorids.json', 86400, ctx).catch(() => ({})));
+const plain = (html) => String(html || '').replace(/<[^>]+>/g, '').replace(/[-]/g, '').replace(/\s+/g, ' ').trim();
+const priceFields = (pr) => pr && pr.err ? [{ name: 'Trade market', value: pr.err }]
+  : pr ? [{ name: 'Typical price', value: `**${emeralds(pr.p)}**`, inline: true }, { name: 'Cheapest', value: emeralds(pr.low), inline: true }, { name: 'Listings', value: String(pr.n ?? '—'), inline: true }]
+  : [{ name: 'Trade market', value: 'Not seen on the trade market lately.' }];
+
+/* ---------- commands ---------- */
 const H = {
   async item(o, ctx) {
     const it = findItem(await items(ctx), o.name);
     if (!it) return { content: `No item called “${o.name}”.` };
-    const req = Object.entries(it.q || {}).filter(([, v]) => v).map(([k, v]) => `${cap(k)} ${v}`).join(' · ');
-    const base = it.b || {}, bits = [];
-    if (base.baseHealth) bits.push(`Health ${Array.isArray(base.baseHealth) ? base.baseHealth.join('–') : base.baseHealth}`);
-    const dmg = Object.entries(base).filter(([k]) => /^base\w*Damage$/.test(k)).map(([k, v]) => `${k.replace(/^base|Damage$/g, '') || 'Neutral'} ${Array.isArray(v) ? v.join('–') : v}`);
-    if (dmg.length) bits.push('Damage: ' + dmg.join(', '));
-    if (it.as) bits.push(`${cap(it.as.replace(/([A-Z])/g, ' $1'))} attack speed`);
-    const ids = Object.entries(it.i || {}).slice(0, 18).map(([k, v]) => `\`${idVal(k, v)}\` ${idName(k)}`).join('\n');
-    const pr = await price(it.n, ctx);
-    const fields = [];
-    if (bits.length) fields.push({ name: 'Base', value: bits.join('\n'), inline: false });
-    if (ids) fields.push({ name: 'Identifications', value: ids.slice(0, 1024), inline: false });
-    if (it.m && it.m.length) fields.push({ name: 'Major ID', value: it.m.map(m => typeof m === 'string' ? m : m.n || JSON.stringify(m)).join(', ').slice(0, 1024) });
-    fields.push({ name: 'Trade market', value: pr && pr.err ? pr.err : pr ? `${emeralds(pr.p)} typical · ${emeralds(pr.low)} cheapest · ${pr.n} listings` : 'Not seen lately', inline: false });
-    return { embeds: [{ title: it.n, url: `${SITE}#items/search?q=${encodeURIComponent(it.n)}`, color: TIER[it.r] || GOLD,
-      description: `${cap(it.r)} ${cap(it.t)} · Lv. ${it.l}${req ? '\nRequires ' + req : ''}`, thumbnail: { url: itemIcon(it) }, fields, footer: { text: 'Wynnia · stats from Wynntils, prices from Wynnventory' } }] };
+    const [pr, mj] = await Promise.all([price(it.n, ctx), it.m && it.m.length ? majors(ctx) : null]);
+    const b = it.b || {}, fields = [];
+    const req = Object.entries(it.q || {}).filter(([, v]) => v).map(([k, v]) => `\`${k.slice(0, 3).toUpperCase()} ${v}\``).join(' ');
+    /* base: weapon damage per element, or armour health and defences */
+    const dmg = Object.entries(b).filter(([k]) => /^base\w*Damage$/.test(k)).map(([k, v]) => { const e = (k.replace(/^base|Damage$/g, '') || 'Neutral').toLowerCase(); return [e, Array.isArray(v) ? v.join('–') : v]; }).sort((x, y) => ELEM_ORDER.indexOf(x[0]) - ELEM_ORDER.indexOf(y[0]));
+    if (dmg.length) fields.push({ name: 'Damage', value: ansi(dmg.map(([e, v]) => `${ELEM_A[e] || A.white}${pad(cap(e), 8)}${A.r}${v}`).concat(it.dps ? [`${A.gray}${pad('DPS', 8)}${A.r}${Math.round(it.dps)}`] : [])), inline: true });
+    if (it.as) fields.push({ name: 'Attack speed', value: cap(it.as.replace(/([A-Z])/g, ' $1')), inline: true });
+    if (b.baseHealth) fields.push({ name: 'Health', value: `**${Array.isArray(b.baseHealth) ? b.baseHealth.join('–') : b.baseHealth}**`, inline: true });
+    const defs = Object.entries(b).filter(([k]) => /^base\w+Defence$/.test(k)).sort((x, y) => ELEM_ORDER.indexOf(x[0].slice(4, -7).toLowerCase()) - ELEM_ORDER.indexOf(y[0].slice(4, -7).toLowerCase())).map(([k, v]) => { const e = k.replace(/^base|Defence$/g, '').toLowerCase(); return `${ELEM_A[e] || A.white}${pad(cap(e), 8)}${A.r}${v > 0 ? '+' : ''}${Array.isArray(v) ? v.join('–') : v}`; });
+    if (defs.length) fields.push({ name: 'Defences', value: ansi(defs), inline: true });
+    const ids = Object.entries(it.i || {});
+    if (ids.length) {
+      const vals = ids.map(([k, v]) => idVal(k, v)), w = Math.min(20, Math.max(...vals.map(v => v.length)));
+      fields.push({ name: 'Identifications', value: ansi(ids.slice(0, 20).map(([k, v], n) => `${good(k, v) ? A.green : A.red}${lpad(vals[n], w)}${A.r}  ${idName(k)}`)).slice(0, 1024) });
+    }
+    (it.m || []).forEach(m => { const n = typeof m === 'string' ? m : m.n; fields.push({ name: 'Major ID: ' + n, value: (plain(mj && mj[n]) || '—').slice(0, 1024) }); });
+    fields.push(...priceFields(pr));
+    return { embeds: [embed({ author: { name: `${cap(it.r)} ${cap(it.t)} · Level ${it.l}`, icon_url: itemIcon(it), url: `${SITE}#items/search?q=${encodeURIComponent(it.n)}` },
+      title: it.n, url: `${SITE}#items/search?q=${encodeURIComponent(it.n)}`, color: tierCol(it.r), thumbnail: { url: itemIcon(it) },
+      description: [req ? 'Requires ' + req : null, it.ps ? `Powder slots ${'◇'.repeat(it.ps)}` : null].filter(Boolean).join('\n') || undefined, fields }, 'Wynnia · stats from Wynntils, prices from Wynnventory')],
+      components: buttons(link('Item search', `${SITE}#items/search?q=${encodeURIComponent(it.n)}`), link('Price history', `${SITE}#items/prices?i=${encodeURIComponent(it.n)}`), link('Loadout Builder', `${SITE}#items/loadout`)) };
   },
 
   async price(o, ctx) {
     const it = findItem(await items(ctx), o.item);
     if (!it) return { content: `No item called “${o.item}”.` };
     const pr = await price(it.n, ctx);
-    return { embeds: [{ title: `${it.n} on the trade market`, url: `${SITE}#items/prices?i=${encodeURIComponent(it.n)}`, color: TIER[it.r] || GOLD, thumbnail: { url: itemIcon(it) },
-      description: pr && pr.err ? pr.err : pr ? `**${emeralds(pr.p)}** typical price\n${emeralds(pr.low)} cheapest listing\n${pr.n} listings` : 'Not seen on the trade market lately.',
-      footer: { text: 'Prices from Wynnventory · open the link for history and alerts' } }] };
+    return { embeds: [embed({ author: { name: `${cap(it.r)} ${cap(it.t)} · Level ${it.l}`, icon_url: itemIcon(it) },
+      title: it.n, url: `${SITE}#items/prices?i=${encodeURIComponent(it.n)}`, color: tierCol(it.r), thumbnail: { url: itemIcon(it) },
+      description: 'Trade market right now', fields: priceFields(pr) }, 'Prices from Wynnventory')],
+      components: buttons(link('Price history and alerts', `${SITE}#items/prices?i=${encodeURIComponent(it.n)}`)) };
   },
 
   async player(o, ctx) {
     let d;
     try { d = await getJSON(`${WYNN}player/${encodeURIComponent(o.name)}?fullResult`, 120, ctx); } catch (e) { return { content: e.status === 404 ? `No player called “${o.name}”.` : 'The Wynncraft API didn’t answer. Try again in a moment.' }; }
     if (d.multiple || !d.username) return { content: 'That name matches several players. Use the exact username.' };
-    const chars = Object.values(d.characters || {}).sort((a, b) => (b.level || 0) - (a.level || 0)).slice(0, 6);
-    const g = d.guild;
-    return { embeds: [{ title: d.username, url: `${SITE}#players/lookup?u=${encodeURIComponent(d.username)}`, color: GOLD, thumbnail: { url: `https://mc-heads.net/avatar/${d.uuid}/128` },
-      description: [d.online ? `Online on **${d.server}**` : d.lastJoin ? `Last seen ${ts(Date.parse(d.lastJoin))}` : null, g ? `${cap(g.rank)} of **${g.name}** [${g.prefix}]` : null, d.rank && d.rank !== 'Player' ? d.rank : (d.supportRank ? STORE_RANK[d.supportRank] || cap(d.supportRank) : null),
-        `${Math.round(d.playtime || 0)} hours played`].filter(Boolean).join('\n'),
-      fields: chars.length ? [{ name: 'Characters', value: chars.map(c => `**${cap(c.reskin || c.type)}** Lv. ${c.level}${c.nickname ? ` · ${c.nickname}` : ''} · total ${c.totalLevel || '—'}`).join('\n') }] : [],
-      footer: { text: 'Wynnia · Next Steps on the site plans what to do next' } }] };
+    const chars = Object.values(d.characters || {}).sort((a, b) => (b.level || 0) - (a.level || 0)).slice(0, 8);
+    const g = d.guild, rank = d.rank && d.rank !== 'Player' ? d.rank : d.supportRank ? STORE_RANK[d.supportRank] || cap(d.supportRank) : 'Player';
+    const fields = [
+      { name: 'Status', value: d.online ? `Online on **${d.server}**` : d.lastJoin ? `Seen ${ts(Date.parse(d.lastJoin))}` : 'Offline', inline: true },
+      { name: 'Rank', value: rank, inline: true },
+      { name: 'Playtime', value: `${num(d.playtime)} h`, inline: true },
+      { name: 'Guild', value: g ? `[${g.name}](${SITE}#guilds/lookup?g=${encodeURIComponent(g.name)}) [${g.prefix}]\n${cap(g.rank)}` : 'None', inline: true },
+      { name: 'Wars', value: num(d.globalData && d.globalData.wars), inline: true },
+      { name: 'Raids', value: num(d.globalData && d.globalData.raids && d.globalData.raids.total), inline: true },
+    ];
+    if (chars.length) fields.push({ name: 'Characters', value: ansi([`${A.gray}${pad('Class', 12)}${lpad('Lv', 4)}${lpad('Total', 7)}${A.r}`,
+      ...chars.map(c => `${A.white}${pad(cap(c.reskin || c.type), 12)}${A.yellow}${lpad(c.level, 4)}${A.r}${lpad(c.totalLevel || '—', 7)}${c.nickname ? `  ${A.gray}${c.nickname}${A.r}` : ''}`)]) });
+    return { embeds: [embed({ title: d.username, url: `${SITE}#players/lookup?u=${encodeURIComponent(d.username)}`, color: RANK_COL[d.supportRank] || GOLD,
+      thumbnail: { url: `https://mc-heads.net/body/${d.uuid}/128` }, fields })],
+      components: buttons(link('Profile', `${SITE}#players/lookup?u=${encodeURIComponent(d.username)}`), link('Next Steps', `${SITE}#players/plan?u=${encodeURIComponent(d.username)}`), link('Quest checklist', `${SITE}#players/quests?u=${encodeURIComponent(d.username)}`)) };
   },
 
   async guild(o, ctx) {
@@ -134,14 +175,24 @@ const H = {
     let d = null;
     for (const t of tries) { try { d = await getJSON(WYNN + t, 120, ctx); if (d && d.name) break; } catch (e) { d = null; } }
     if (!d || !d.name) return { content: `No guild called “${o.name}”.` };
-    const type = !d.raids && !d.wars && !d.territories ? null : (d.raids || 0) > (d.wars || 0) || !d.territories ? 'Raiding guild' : 'War guild';
-    const seasons = Object.entries(d.seasonRanks || {}).sort((a, b) => b[0] - a[0]);
-    return { embeds: [{ title: `${d.name} [${d.prefix}]`, url: `${SITE}#guilds/lookup?g=${encodeURIComponent(d.name)}`, color: type === 'War guild' ? 0xff8a7a : type ? 0xc58cff : GOLD,
-      description: [type ? `**${type}**` : null, `Level ${d.level} · ${d.online ?? 0} online · ${d.members ? d.members.total : '—'} members`, d.created ? `Founded ${ts(Date.parse(d.created), 'D')}` : null].filter(Boolean).join('\n'),
+    const type = !d.raids && !d.wars && !d.territories ? null : (d.raids || 0) > (d.wars || 0) || !d.territories ? 'raid' : 'war';
+    const season = Object.entries(d.seasonRanks || {}).sort((a, b) => b[0] - a[0])[0];
+    const online = Object.entries(d.members || {}).filter(([r]) => r !== 'total').flatMap(([r, ms]) => Object.entries(ms).filter(([, m]) => m.online).map(([nm, m]) => `**${m.username || nm}** · ${m.server || 'online'}`));
+    const page = `${SITE}#guilds/lookup?g=${encodeURIComponent(d.name)}`;
+    return { embeds: [embed({
+      author: { name: type === 'war' ? 'War guild' : type ? 'Raiding guild' : 'Guild', icon_url: type === 'war' ? SITE + 'img/wiki/guild-banner-tier-3.webp' : SITE + 'img/guide/thecanyoncolossusicon.png', url: page },
+      title: `${d.name} [${d.prefix}]`, url: page, color: type === 'war' ? 0xff8a7a : type ? 0xc58cff : GOLD,
+      description: `**Level ${d.level}**  ${bar(d.xpPercent || 0)}  ${d.xpPercent || 0}%`,
       fields: [
-        { name: 'Territories', value: num(d.territories), inline: true }, { name: 'Wars', value: num(d.wars), inline: true }, { name: 'Guild raids', value: num(d.raids), inline: true },
-        seasons[0] ? { name: `Season ${seasons[0][0]}`, value: `${num(seasons[0][1].rating)} rating`, inline: true } : null,
-      ].filter(Boolean), footer: { text: 'Wynnia · raiding guild = more raids than wars, or no territory' } }] };
+        { name: 'Members', value: `${d.members ? d.members.total : '—'} · ${d.online ?? online.length} online`, inline: true },
+        { name: 'Territories', value: num(d.territories), inline: true },
+        { name: 'Founded', value: d.created ? ts(Date.parse(d.created), 'D') : '—', inline: true },
+        { name: 'Wars', value: num(d.wars), inline: true },
+        { name: 'Guild raids', value: num(d.raids), inline: true },
+        season ? { name: `Season ${season[0]}`, value: `${short(season[1].rating)} rating`, inline: true } : null,
+        online.length ? { name: `Online now · ${online.length}`, value: online.slice(0, 12).join('\n') + (online.length > 12 ? `\n…and ${online.length - 12} more` : '') } : null,
+      ].filter(Boolean) }, 'Wynnia · raiding guild = more raids than wars, or no territory')],
+      components: buttons(link('Guild page', page), d.territories ? link('Territories on the map', `${SITE}#world/map?m=territories&l=terr,routes,hq,tnames&g=${encodeURIComponent(d.name)}`) : null) };
   },
 
   async build(o, ctx) {
@@ -156,17 +207,25 @@ const H = {
     const q = new URLSearchParams(hash.split('?')[1]);
     const [list, ids, keys] = await Promise.all([items(ctx), getJSON(SITE + 'data/itemids.json', 3600, ctx), getJSON(SITE + 'data/idkeys.json', 3600, ctx)]);
     let b;
-    try { b = decodeBuild(q.get('b') || '', { names: Object.fromEntries(Object.entries(ids).map(([n, i]) => [i, n])), keyName: keys }); } catch (e) { return { content: 'That build link is broken: ' + e.message }; }
+    try { b = decodeBuild(q.get('b') || '', { names: Object.fromEntries(Object.entries(ids).map(([nm, i]) => [i, nm])), keyName: keys }); } catch (e) { return { content: 'That build link is broken: ' + e.message }; }
     const byName = Object.fromEntries(list.map(i => [i.n, i]));
-    const SLOT = { w: 'Weapon', h: 'Helmet', c: 'Chestplate', l: 'Leggings', b: 'Boots', r1: 'Ring', r2: 'Ring', br: 'Bracelet', n: 'Necklace' };
-    const gear = Object.keys(SLOT).filter(k => b.s[k]).map(k => `**${SLOT[k]}:** ${b.s[k][0]}${b.s[k][2] ? ' ' + '◆'.repeat(b.s[k][2].length) : ''}`);
-    const crafted = q.get('cr') ? ' (some gear is crafted: open the link to see it)' : '';
+    let crafted = [];
+    try { crafted = q.get('cr') ? Object.keys(JSON.parse(atob(q.get('cr').replace(/-/g, '+').replace(/_/g, '/')))) : []; } catch (e) { /* unreadable: show the rest */ }
+    const SLOT = [['w', 'Weapon'], ['h', 'Helmet'], ['c', 'Chestplate'], ['l', 'Leggings'], ['b', 'Boots'], ['n', 'Necklace'], ['r1', 'Ring'], ['r2', 'Ring'], ['br', 'Bracelet']];
+    const piece = (k) => {
+      if (crafted.includes(k)) return '*Crafted*';
+      const s = b.s[k]; if (!s) return '—';
+      const it = byName[s[0]];
+      return `**${s[0]}**${it ? `\n${cap(it.r)}` : ''}${s[2] ? ' · ' + s[2].length + ' powder' + (s[2].length === 1 ? '' : 's') : ''}`;
+    };
     const weapon = b.s.w && byName[b.s.w[0]];
     const tomes = Object.keys(b.s).filter(k => k[0] === 't').length;
     const url = m ? `${SITE}#s/${m[1]}` : SITE + hash;
-    return { embeds: [{ title: q.get('n') || 'Wynnia build', url, color: weapon ? TIER[weapon.r] || GOLD : GOLD, thumbnail: { url: itemIcon(weapon) },
-      description: `Level ${b.lvl}${tomes ? ` · ${tomes} mastery tomes` : ''}${crafted}\n\n${gear.join('\n') || 'No gear'}`,
-      footer: { text: 'Open the link for damage, defence, skill points and the ability tree' } }] };
+    return { embeds: [embed({ author: { name: 'Wynnia build', url, icon_url: RING(64) }, title: q.get('n') || (weapon ? `${CLASS_OF[weapon.t] || 'Custom'} build` : 'Build'), url,
+      color: weapon ? tierCol(weapon.r) : GOLD, thumbnail: { url: itemIcon(weapon) },
+      description: [weapon ? CLASS_OF[weapon.t] : null, `Level ${b.lvl}`, tomes ? `${tomes} mastery tomes` : null].filter(Boolean).join(' · '),
+      fields: SLOT.map(([k, label]) => ({ name: label, value: piece(k), inline: true })) }, 'Open the build for damage, defence, skill points and the ability tree')],
+      components: buttons(link('Open build', url), link('Build Library', `${SITE}#items/builds`)) };
   },
 
   async lootpool(o, ctx) {
@@ -175,13 +234,13 @@ const H = {
     const want = (o.where || '').toLowerCase();
     const shown = pools.filter(p => !want || p.name.toLowerCase().includes(want)).slice(0, 12);
     if (!shown.length) return { content: `No camp or raid called “${o.where}”.` };
-    const reset = nextPoolReset();
-    return { embeds: [{ title: 'This week’s loot pools', url: `${SITE}#world/events`, color: TIER.mythic,
-      description: `Pools change ${ts(reset)} (Friday 19:00 UTC).`,
+    return { embeds: [embed({ title: 'This week’s loot pools', url: `${SITE}#world/events`, color: 0xb44bd6, thumbnail: { url: SITE + 'img/guide/inspect-beacon-rainbow.png' },
+      description: `Mythics in each pool. They change ${ts(nextPoolReset())}, Friday 19:00 UTC.`,
       fields: shown.map(p => {
         const myth = p.rewards.filter(r => r.type === 'ITEM' && r.tier === 'MYTHIC').sort((a, b) => (b.shiny ? 1 : 0) - (a.shiny ? 1 : 0));
-        return { name: p.name + (p.type === 'RAID' ? ' (raid)' : ''), value: (myth.map(r => r.shiny ? `**${r.name} (Shiny)**` : r.name).join(', ') || 'No mythics this week').slice(0, 1024), inline: false };
-      }), footer: { text: 'Wynnia · reset time from Wynnpool; Wynncraft doesn’t publish one' } }] };
+        return { name: (p.type === 'RAID' ? 'Raid · ' : '') + p.name.replace(/^The /, ''), value: (myth.map(r => r.shiny ? `**${r.name}** · Shiny` : r.name).join('\n') || 'No mythics').slice(0, 1024), inline: true };
+      }) }, 'Reset time from Wynnpool · Wynncraft doesn’t publish one')],
+      components: buttons(link('Events and loot pools', `${SITE}#world/events`), link('Lootrun guide', `${SITE}#world/lootruns`)) };
   },
 
   async events(o, ctx) {
@@ -189,84 +248,12 @@ const H = {
     try { ev = await getJSON(WYNN + 'map/world-events', 60, ctx); } catch (e) { return { content: 'The Wynncraft API didn’t answer. Try again in a moment.' }; }
     const now = Date.now(), near = (e) => !o.level || Math.abs(e.level - o.level) <= 10;
     const soon = ev.filter(e => e.schedule && Date.parse(e.schedule) > now - 60000 && near(e)).sort((a, b) => Date.parse(a.schedule) - Date.parse(b.schedule)).slice(0, 15);
-    return { embeds: [{ title: 'World events starting soon', url: `${SITE}#world/events`, color: 0x4fb3a9,
-      description: soon.length ? soon.map(e => { const l = e.location && e.location[0] && e.location[0].event; return `**${e.name}** · Lv. ${e.level} · ${cap(e.difficulty)} · ${ts(Date.parse(e.schedule))}${l ? ` · ${l.x}, ${l.z}` : ''}`; }).join('\n')
-        : 'Nothing starts in the next 15 minutes' + (o.level ? ' around that level.' : '.'),
-      footer: { text: 'Wynncraft only lists events starting in the next 15 minutes' } }] };
+    return { embeds: [embed({ title: 'World events starting soon', url: `${SITE}#world/events`, color: 0x4fae9f,
+      description: soon.length ? soon.map(e => { const l = e.location && e.location[0] && e.location[0].event; return `\`Lv. ${lpad(e.level, 3)}\` **${e.name}** · ${cap(e.difficulty)} · ${ts(Date.parse(e.schedule))}${l ? `\n-# ${l.x}, ${l.z}${e.location.length > 1 ? ` (+${e.location.length - 1} other spots)` : ''}` : ''}`; }).join('\n')
+        : 'Nothing starts in the next 15 minutes' + (o.level ? ' around that level.' : '.') }, 'Wynncraft lists events starting in the next 15 minutes')],
+      components: buttons(link('Events page', `${SITE}#world/events`), link('Map', `${SITE}#world/map`)) };
   },
-
-  async wynnia() { return panel('home'); },
 };
-
-/* ---------- the /wynnia panel ---------- */
-/* One message you can click through: the home card, then a page per site section (its rank colour, its picture,
-   a line about each tool and a button to open it). The menu and Home button edit the same message. */
-const SECTIONS = [
-  { k: 'items', name: 'Items', color: 0x6f8fb8, pic: 'img/wiki/3d-items.webp', blurb: 'Every item, your builds and what they cost.', pages: [
-    ['loadout', 'Loadout Builder', 'Gear, exact rolls, powders, tomes, skill points and the ability tree, with damage worked out like the game.'],
-    ['builds', 'Build Library', 'Save builds with tags and share them as short links.'],
-    ['recommend', 'Recommended Build', 'The best gear for a class and archetype, or for your own character.'],
-    ['prices', 'Prices', 'Trade market prices, price history and alerts when an item gets cheap.'],
-    ['search', 'Search', 'Filter every item by type, level, class and identification.'],
-    ['compare', 'Compare', 'Put items side by side.']] },
-  { k: 'players', name: 'Players', color: 0xd16fa6, pic: 'img/wiki/3d-players.webp', blurb: 'Look anyone up and plan what to do next.', pages: [
-    ['plan', 'Next Steps', 'A to-do list for your character: quests, raids, caves, professions and gear.'],
-    ['lookup', 'Lookup', 'Characters, professions, badges, stats and their mounts.'],
-    ['compare', 'Compare', 'Two players side by side.'],
-    ['leaderboards', 'Leaderboards', 'The top 100 in every category.'],
-    ['quests', 'Quest Checklist', 'What you’ve done and what’s left, by province.'],
-    ['watchlist', 'Watchlist', 'Friends you follow, and who’s online.']] },
-  { k: 'guilds', name: 'Guilds', color: 0xc9a75e, pic: 'img/wiki/3d-guilds.webp', blurb: 'Raiding guilds, war guilds and who holds what.', pages: [
-    ['lookup', 'Lookup', 'Raiding or war guild, seasons, activity, raids by raid and every member.'],
-    ['territories', 'Territories', 'Which guild holds every territory.']] },
-  { k: 'world', name: 'World', color: 0x4fae9f, pic: 'img/guide/thecanyoncolossusicon.png', blurb: 'The map, live events and guides.', pages: [
-    ['map', 'Map', 'World, guild territories and gathering nodes, with routes and share links.'],
-    ['events', 'Events', 'World events starting soon, this week’s loot pools and season timers.'],
-    ['raids', 'Raids', 'Every raid: requirements, rooms, bosses and rewards.'],
-    ['lootruns', 'Lootruns', 'Camps, beacons, challenges, curses and rewards.'],
-    ['caves', 'Caves', 'Every cave by level and difficulty.']] },
-  { k: 'crafting', name: 'Crafting', color: 0x9c7cc4, pic: 'img/wiki/3d-crafting.webp', blurb: 'Plan crafts before you spend the ingredients.', pages: [
-    ['combiner', 'Ingredient Combiner', 'Lay out ingredients and see what the craft rolls.'],
-    ['finder', 'Ingredient Finder', 'The best ingredients for the bonuses you want.'],
-    ['ingredients', 'Ingredients', 'Search every ingredient by bonus, profession and stars.']] },
-  { k: 'professions', name: 'Professions', color: 0xd9894a, pic: 'img/wiki/3d-professions.webp', blurb: 'Level professions faster.', pages: [
-    ['xp', 'XP Calculator', 'How much it takes to reach your next level.'],
-    ['spots', 'Grinding Spots', 'Where to gather at every level.'],
-    ['materials', 'Material Calculator', 'Materials, crafting XP and the level a batch of crafts gets you to.'],
-    ['gathering', 'Gathering', 'What you can gather at your level, and what comes next.']] },
-  { k: 'mounts', name: 'Mounts', color: 0x87b85b, pic: 'img/ui/flute.webp', blurb: 'Breed, feed and train better mounts.', pages: [
-    ['stable', 'Stable', 'Paste mounts from Wynntils and keep them in one place.'],
-    ['pairs', 'Pair Finder', 'Which two mounts make the best foal.'],
-    ['feeder', 'Feeder', 'Pick two parents and see the predicted foal.'],
-    ['lineage', 'Lineage', 'How many generations and how much feeding a goal takes.'],
-    ['training', 'Training', 'A training plan for a mount, and what each powerup does.'],
-    ['market', 'Market', 'Listings by price per Potential, against breeding one yourself.']] },
-];
-function panel(key) {
-  const sec = SECTIONS.find(s => s.k === key);
-  const menu = { type: 1, components: [{ type: 3, custom_id: 'wy:sec', placeholder: 'Browse a section…', options: [
-    { label: 'Home', value: 'home', description: 'Everything Wynnia does', default: !sec },
-    ...SECTIONS.map(s => ({ label: s.name, value: s.k, description: s.blurb.slice(0, 100), default: sec === s }))] }] };
-  const link = (label, url) => ({ type: 2, style: 5, label, url });
-  if (!sec) {
-    return { embeds: [{ author: { name: 'Wynnia', url: SITE, icon_url: SITE + 'brand/wynnia-ring-64.png' }, title: 'Tools for Wynncraft', url: SITE, color: GOLD,
-      thumbnail: { url: SITE + 'brand/wynnia-ring-256.png' },
-      description: 'Builds, prices, players, guilds and the world map, all free and in your browser.\n​',
-      fields: [
-        ...SECTIONS.map(s => ({ name: s.name, value: `${s.blurb}\n${s.pages.slice(0, 3).map(p => `[${p[1]}](${SITE}#${s.k}/${p[0]})`).join(' · ')}`, inline: true })),
-        { name: 'This week', value: `Loot pools change ${ts(nextPoolReset())}`, inline: true },
-        { name: 'In Discord', value: '`/item` `/price` `/player` `/guild` `/build` `/lootpool` `/events`', inline: false },
-      ], footer: { text: 'Pick a section below to see every tool in it', icon_url: SITE + 'brand/wynnia-ring-32.png' } }],
-      components: [menu, { type: 1, components: [link('Open Wynnia', SITE), link('Loadout Builder', SITE + '#items/loadout'), link('Next Steps', SITE + '#players/plan'), link('Prices', SITE + '#items/prices'), link('Map', SITE + '#world/map')] }] };
-  }
-  const rows = [];
-  for (let i = 0; i < sec.pages.length && rows.length < 2; i += 5) rows.push({ type: 1, components: sec.pages.slice(i, i + 5).map(p => link(p[1], `${SITE}#${sec.k}/${p[0]}`)) });
-  rows.push({ type: 1, components: [{ type: 2, style: 2, label: 'Back to Home', custom_id: 'wy:home' }, link('Open Wynnia', SITE)] });
-  return { embeds: [{ author: { name: 'Wynnia', url: SITE, icon_url: SITE + 'brand/wynnia-ring-64.png' }, title: sec.name, url: `${SITE}#${sec.k}`, color: sec.color,
-    thumbnail: { url: SITE + sec.pic }, description: sec.blurb + '\n​',
-    fields: sec.pages.map(p => ({ name: p[1], value: `${p[2]}\n[Open](${SITE}#${sec.k}/${p[0]})`, inline: true })),
-    footer: { text: 'Wynnia · ' + sec.name, icon_url: SITE + 'brand/wynnia-ring-32.png' } }], components: [menu, ...rows] };
-}
 
 /* autocomplete for item names and loot pool names */
 async function autocomplete(i, ctx) {
@@ -374,13 +361,7 @@ export default {
     const i = JSON.parse(body);
     if (i.type === 1) return json({ type: 1 });                                         // Discord checking the endpoint
     if (i.type === 4) return json({ type: 8, data: { choices: await autocomplete(i, ctx).catch(() => []) } });
-    if (i.type === 2 && i.data.name === 'wynnia') return json({ type: 4, data: panel('home') });   // instant, nothing to fetch
     if (i.type === 2) { ctx.waitUntil(runCommand(i, env, ctx)); return json({ type: 5 }); }   // "Wynnia is thinking…", then the answer
-    if (i.type === 3) {                                                                   // the /wynnia menu and Home button: edit that message
-      const id = i.data.custom_id;
-      if (id === 'wy:sec') return json({ type: 7, data: panel((i.data.values || [])[0]) });
-      if (id === 'wy:home') return json({ type: 7, data: panel('home') });
-    }
     return json({ error: 'unknown interaction' }, 400);
   },
 };
