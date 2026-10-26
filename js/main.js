@@ -11,6 +11,7 @@
     { k: 'professions', name: 'Professions', icon: () => W.art.wiki('mining'), pages: [['xp', 'XP Calculator'], ['spots', 'Grinding Spots'], ['materials', 'Material Calculator'], ['gathering', 'Gathering']] },
     { k: 'players', name: 'Players', icon: () => W.art.wiki('warrior'), pages: [['lookup', 'Lookup'], ['compare', 'Compare'], ['watchlist', 'Watchlist'], ['leaderboards', 'Leaderboards'], ['quests', 'Quest Checklist']] },
     { k: 'guilds', name: 'Guilds', icon: () => W.art.wiki('guild-banner-tier-3'), pages: [['lookup', 'Lookup'], ['territories', 'Territories']] },
+    { k: 'world', name: 'World', icon: () => W.art.wiki('scribing'), pages: [['map', 'Map'], ['raids', 'Raids'], ['lootruns', 'Lootruns'], ['caves', 'Caves']] },
   ];
   /* Old Paddock links (#stable, #want?…, #player?…) keep working. */
   const LEGACY = { player: 'players/lookup' };
@@ -31,7 +32,7 @@
   }
 
   /* each section wears a Wynncraft rank colour: VIP, VIP+, HERO, HERO+, CHAMPION (plus stone and amber) */
-  const SEC_COLOR = { home: 'var(--r-stone)', mounts: 'var(--r-vip)', items: 'var(--r-vipp)', crafting: 'var(--r-hero)', professions: 'var(--r-amber)', players: 'var(--r-herop)', guilds: 'var(--r-champ)' };
+  const SEC_COLOR = { home: 'var(--r-stone)', mounts: 'var(--r-vip)', items: 'var(--r-vipp)', crafting: 'var(--r-hero)', professions: 'var(--r-amber)', players: 'var(--r-herop)', guilds: 'var(--r-champ)', world: 'var(--r-teal)' };
   let last = null;   // where we were, so the new page can slide in from the side of the tab you clicked
   function route() {
     cleanup.forEach(f => { try { f(); } catch (e) { /* ignore */ } }); cleanup = [];

@@ -250,6 +250,8 @@
   };
 
   W.cap = cap; W.words = words;
+  /* text -> safe HTML, for the few places that build HTML strings (map labels and tooltips) */
+  W.esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   W.copyText = (text, btn) => {
     try { navigator.clipboard.writeText(text).catch(() => {}); } catch (e) { /* manual copy */ }
     if (btn) { const t = btn.textContent; btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = t; }, 1200); }

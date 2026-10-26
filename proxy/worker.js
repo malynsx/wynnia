@@ -12,7 +12,7 @@ const PATHS = /^\/v3\/(player|guild|ability|leaderboards)(\/[^/]+){0,4}$/;
 const MARKET = /^\/market\/price\/([^/]{1,80})$/;
 const SHORT = /^\/s\/([A-Za-z0-9]{4,12})$/;
 /* only Wynnia pages that carry shared data can be shortened */
-const SHAREABLE = /^#(items\/loadout|mounts\/stable|mounts\/want|players\/lookup)\?[A-Za-z0-9_\-=&%.~+]{1,6000}$/;
+const SHAREABLE = /^#(items\/loadout|mounts\/stable|mounts\/want|players\/lookup|world\/map|crafting\/ingredients)\?[A-Za-z0-9_\-=&%.~+,:;]{1,6000}$/;
 const B62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
 async function shortId(text, len) {

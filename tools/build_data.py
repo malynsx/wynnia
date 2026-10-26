@@ -468,6 +468,11 @@ def main():
                                    for k, v in terr.items()])
     except Exception as e:
         print('territory step skipped:', e)
+    try:   # map + guides (Wynntils data and the wiki); keep last week's files if this fails
+        import build_world
+        build_world.build_world(); build_world.build_nodes(); build_world.build_guides(); build_world.build_guide_images()
+    except Exception as e:
+        print('world/guides step skipped:', e)
     save('meta.json', {'built': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M UTC')})
     print('done')
 
