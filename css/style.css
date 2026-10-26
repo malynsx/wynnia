@@ -921,3 +921,5 @@ details.win > summary h2::after { content: ' +'; color: var(--gold); } details.w
 .recgrid .invhot { grid-template-columns: repeat(7, minmax(0, 1fr)); }
 @media (max-width: 1300px) { .recgrid { grid-template-columns: minmax(0, 1fr); } .recgrid .inv { max-width: 460px; } }
 @media (max-width: 600px) { .clspick { grid-template-columns: repeat(3, minmax(0, 1fr)); } .archpick { grid-template-columns: minmax(0, 1fr); } .archbtn { grid-template-columns: 52px minmax(0, 1fr); justify-items: start; text-align: left; } .archbtn .archico { grid-row: 1 / 4; } }
+.icard .imajor b { color: #55ffff; } .imdesc { margin-top: 3px; color: #c9bfdc; font-size: 13.5px; line-height: 1.4; }
+.cval.cmajor { display: grid; gap: 6px; } .cval.cmajor b { color: #55ffff; } .cval.cmajor .imdesc { color: var(--mute); }

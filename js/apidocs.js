@@ -15,6 +15,7 @@
     ['olinus-spots.json', 'Olinus10’s recommended gathering spots per profession and level bracket.'],
     ['territories.json', 'Territory owners at the time of the last rebuild.'],
     ['profession-xp.json', 'XP needed for each profession level (index 0 = level 1 to 2).'],
+    ['major-ids.json', 'Every major ID with its in-game description (HTML with Wynncraft colours).'],
   ];
 
   W.pages['home/api'] = function (root) {

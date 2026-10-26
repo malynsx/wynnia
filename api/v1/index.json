@@ -1,1 +1,20 @@
-{"name":"Wynntools API","version":1,"updated":"2026-10-25 11:29 UTC","docs":"https://malynsx.github.io/wynntools/#home/api","endpoints":["items.json","item/{slug}.json","ingredients.json","ingredient/{slug}.json","materials.json","recipes.json","quests.json","spots.json","olinus-spots.json","territories.json","profession-xp.json"]}
+{
+ "name": "Wynntools API",
+ "version": 1,
+ "updated": "2026-10-25 11:29 UTC",
+ "docs": "https://malynsx.github.io/wynntools/#home/api",
+ "endpoints": [
+  "items.json",
+  "item/{slug}.json",
+  "ingredients.json",
+  "ingredient/{slug}.json",
+  "materials.json",
+  "recipes.json",
+  "quests.json",
+  "spots.json",
+  "olinus-spots.json",
+  "territories.json",
+  "profession-xp.json",
+  "major-ids.json"
+ ]
+}

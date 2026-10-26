@@ -110,7 +110,7 @@
             ...section('Base stats', baseKeys.map(k => row(W.BASE_NAMES[k] || W.words(k), list.map(i => i.b && i.b[k]), show, /Defence/.test(k) || /ealth/.test(k) || /Damage/.test(k) ? hi : null))),
             ...section('Skill requirements', skills.map(s => row(W.cap(s), list.map(i => (i.q && i.q[s]) || null), show, lo))),
             ...section('Identifications', idKeys.map(k => row(W.idInfo(k).name, list.map(i => i.i && i.i[k]), (v) => W.fmtId(k, v), W.idInfo(k).inverse ? lo : hi, (v) => (W.idGood(k, v) ? 'pos' : 'neg')))),
-            list.some(i => i.m) ? el('div', { class: 'crow2' }, el('div', { class: 'clabel' }, 'Major ID'), list.map(i => el('div', { class: 'cval' }, i.m ? i.m.join(', ') : '—'))) : null)),
+            list.some(i => i.m) ? el('div', { class: 'crow2' }, el('div', { class: 'clabel' }, 'Major ID'), list.map(i => el('div', { class: 'cval cmajor' }, i.m ? i.m.map(n => el('div', {}, el('b', {}, n), W.MAJOR[n] ? el('div', { class: 'imdesc' }, W.mcHtml(W.MAJOR[n])) : null)) : '—'))) : null)),
           el('p', { class: 'hint' }, 'The best value in each row is marked in gold. Identifications compare their maximum roll; spell costs and skill requirements count lower as better.')));
       };
       draw();

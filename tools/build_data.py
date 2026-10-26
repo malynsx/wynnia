@@ -185,6 +185,15 @@ def build_gear(gear, icons):
     return out
 
 
+def build_major_ids(gear):
+    """Major ID name -> its in-game description (HTML with Wynncraft colours and glyphs, rendered by W.mcHtml)."""
+    out = {}
+    for it in gear.values():
+        for name, desc in (it.get('majorIds') or {}).items():
+            out.setdefault(name, desc)
+    return dict(sorted(out.items()))
+
+
 def build_ingredients(ing, adv):
     legacy = get_json(LEGACY)
     os.makedirs(os.path.join(ROOT, 'img', 'ing'), exist_ok=True)
@@ -411,11 +420,12 @@ def build_api():
     write('olinus-spots.json', data('olinus.json'))
     write('territories.json', data('territories.json') if os.path.exists(os.path.join(DATA, 'territories.json')) else [])
     write('profession-xp.json', data('profxp.json'))
+    write('major-ids.json', data('majorids.json'))
     write('index.json', {
         'name': 'Wynntools API', 'version': 1, 'updated': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M UTC'),
         'docs': 'https://malynsx.github.io/wynntools/#home/api',
         'endpoints': ['items.json', 'item/{slug}.json', 'ingredients.json', 'ingredient/{slug}.json', 'materials.json', 'recipes.json',
-                      'quests.json', 'spots.json', 'olinus-spots.json', 'territories.json', 'profession-xp.json'],
+                      'quests.json', 'spots.json', 'olinus-spots.json', 'territories.json', 'profession-xp.json', 'major-ids.json'],
     })
 
 
@@ -433,6 +443,7 @@ def main():
     print('item icons:', sum(1 for v in icons.values() if v), '/', len(icons))
 
     save('items.json', build_gear(gear, icons))
+    save('majorids.json', build_major_ids(gear))
     save('tomes.json', build_tomes(tomes, icons))
     stable_ids(list(gear.keys()) + list(tomes.keys()))
     save('ingredients.json', build_ingredients(ing, adv_ing))

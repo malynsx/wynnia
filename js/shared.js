@@ -114,6 +114,9 @@
   const range = (v) => Array.isArray(v) ? (v[0] === v[1] ? String(v[0]) : `${v[0]}–${v[1]}`) : String(v);
   const glyph = (e) => el('span', { class: 'ig', style: { color: W.ELEM[e] } }, GLYPH[e]);
   const divider = () => el('div', { class: 'idiv' }, el('i'), el('span', {}, '◆◆'), el('i'));
+  /* major ID descriptions, loaded once in the background so item cards can show what each one does */
+  W.MAJOR = {};
+  setTimeout(() => W.data('majorids').then(m => { W.MAJOR = m; }).catch(() => {}), 0);
   W.itemCard = (it, opts = {}) => {
     const col = W.tierColor(it.r), b = it.b || {}, tier = (W.TIERS[it.r] || ['Item'])[0];
     const text = it.r === 'mythic' ? '#cf5ce8' : col;   // mythic purple is too dark to read on the card
@@ -145,7 +148,7 @@
       reqs, meta,
       ids.length ? divider() : null,
       ids.length ? el('div', { class: 'iblock' }, ids) : null,
-      it.m ? el('div', { class: 'imajor' }, el('b', {}, 'Major ID: '), it.m.join(', ')) : null,
+      it.m ? it.m.map(name => el('div', { class: 'imajor' }, el('b', {}, 'Major ID: ', name), W.MAJOR[name] ? el('div', { class: 'imdesc' }, W.mcHtml(W.MAJOR[name])) : null)) : null,
       it.ps || it.rs ? el('div', { class: 'ifoot' },
         it.ps ? el('span', { class: 'islots' }, Array.from({ length: it.ps }, () => el('i')), `${it.ps} powder slot${it.ps > 1 ? 's' : ''}`) : null,
         it.rs ? el('span', {}, cap(String(it.rs).replace('_', ' '))) : null) : null,
