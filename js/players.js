@@ -10,13 +10,15 @@
   W.pages['players/lookup'] = (root, q) => W.pages.player(root, q);
 
   const CMP = { a: '', b: '', da: null, db: null, err: null, busy: false };
-  W.pages['players/compare'] = function (root) {
+  W.pages['players/compare'] = function (root, q) {
     const ROWS = [
       ['Playtime (hours)', 'playtime'], ['Total level', 'globalData.totalLevel'], ['Completed quests', 'globalData.completedQuests'],
-      ['Mobs killed', 'globalData.killedMobs'], ['Chests found', 'globalData.chestsFound'], ['Wars', 'globalData.wars'],
+      ['Mobs killed', 'globalData.mobsKilled'], ['Chests found', 'globalData.chestsFound'], ['Wars', 'globalData.wars'],
       ['Dungeons', 'globalData.dungeons.total'], ['Raids', 'globalData.raids.total'], ['PvP kills', 'globalData.pvp.kills'],
     ];
     const draw = () => root.replaceChildren(el('div', {}, form(), result()));
+    /* #players/compare?a=…&b=… (the Discord bot's /compare links here) */
+    if (q && q.get('a') && q.get('b') && (q.get('a') !== CMP.a || q.get('b') !== CMP.b || !CMP.da)) { CMP.a = q.get('a'); CMP.b = q.get('b'); setTimeout(go, 0); }
     async function go() {
       CMP.busy = true; CMP.err = null; draw();
       try {

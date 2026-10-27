@@ -7,8 +7,9 @@
   const TOKEN = 'wynnia.auth', ME = 'wynnia.me', SYNC = 'wynnia.sync', BACKUP = 'wynnia.sync.backup';
   /* what gets saved to your account: every bit of the site that remembers something for you */
   const SYNCED = [
-    ['wynnia.builds', 'Build library'], ['wt.loadout2', 'Loadout Builder'], ['stableLedger.v1', 'Stable and ledger'], ['wt.market', 'Mount market'],
-    ['wynnia.watch', 'Price alerts'], ['wt.watch', 'Player watchlist'], ['wt.timers', 'Timers'], ['wt.compare', 'Item compare'], ['wt.theme', 'Theme'],
+    ['wynnia.builds', 'Build library', 'chestplate.diamond'], ['wt.loadout2', 'Loadout Builder', 'helmet.gold'], ['stableLedger.v1', 'Stable and ledger', 'profession.grainWheat'],
+    ['wt.market', 'Mount market', 'profession.ingotGold'], ['wynnia.watch', 'Price alerts', 'profession.gemGold'], ['wt.watch', 'Player watchlist', 'necklace.basicCross'],
+    ['wt.timers', 'Timers', 'profession.meatStar'], ['wt.compare', 'Item compare', 'dagger.multi2'], ['wt.theme', 'Theme', 'charm.light'],
   ];
   const KEYS = SYNCED.map(s => s[0]);
   const ls = {
@@ -137,36 +138,58 @@
           .catch(e => msg.replaceChildren(el('div', { class: 'warn' }, e.message)));
       };
       const s = ls.json(SYNC, { at: 0 }), backup = ls.json(BACKUP, null);
-      const count = (k) => {
-        const v = ls.json(k, null);
-        if (v == null) return null;
-        if (Array.isArray(v)) return v.length;
-        if (k === 'stableLedger.v1') return (v.mounts || []).length + ' mounts';
-        if (k === 'wt.loadout2') return Object.values(v.s || {}).filter(Boolean).length + ' slots';
-        return 'saved';
-      };
+      const unlink = () => api('/api/link', { method: 'DELETE' }).then(() => A.refresh()).then(draw).catch(e => msg.replaceChildren(el('div', { class: 'warn' }, e.message)));
+      const saving = A.status && A.status !== 'Saved';
+      const when = s.at ? (Date.now() - s.at < 60000 ? 'just now' : W.ago(new Date(s.at).toISOString()) || 'just now') : null;
       return [
-        el('section', { class: 'acctcard' },
-          me.avatar ? el('img', { src: me.avatar, alt: '' }) : el('span', { class: 'acctnone big' }, (me.name || '?')[0]),
-          el('div', {}, el('h2', {}, me.name), el('small', {}, '@' + me.username + ' on Discord')),
-          el('button', { class: 'mini', onclick: A.logout }, 'Log out')),
-        el('div', { class: 'cols even' },
-          W.win('Wynncraft account', l
-            ? el('div', { class: 'stack' },
-              el('div', { class: 'acctlink' }, el('img', { src: `https://mc-heads.net/avatar/${l.uuid}/64`, alt: '' }), el('div', {}, el('b', {}, l.name), el('small', {}, 'Linked. Your profile shows the Discord badge.'))),
-              el('div', { class: 'btns', style: { marginTop: 0 } },
-                el('a', { class: 'btnlink', href: '#players/lookup?u=' + encodeURIComponent(l.name) }, 'Open my profile'),
-                el('a', { class: 'btnlink', href: '#players/plan?u=' + encodeURIComponent(l.name) }, 'My next steps'),
-                el('button', { class: 'mini', onclick: () => api('/api/link', { method: 'DELETE' }).then(() => A.refresh()).then(draw).catch(e => msg.replaceChildren(el('div', { class: 'warn' }, e.message))) }, 'Unlink')), msg)
-            : el('div', {}, el('p', { style: { marginTop: 0 } }, 'Link your username to open your profile in one click, get the Discord badge on it, and use /me in the Wynnia bot.'),
-              el('div', { class: 'acctrow' }, name, el('button', { onclick: doLink }, 'Link')), msg)),
-          W.win('Saved to your account',
-            el('div', { class: 'acctsync' }, SYNCED.map(([k, label]) => { const c = count(k); return el('div', { class: c == null ? 'off' : '' }, el('span', {}, label), el('b', {}, c == null ? '—' : String(c))); })),
-            el('p', { class: 'hint' }, A.status === 'Saved' || !A.status ? (s.at ? 'Everything is saved. Last saved ' + (Date.now() - s.at < 60000 ? 'just now' : W.ago(new Date(s.at).toISOString()) || 'just now') + '.' : 'Not saved yet.') : A.status),
-            el('div', { class: 'btns', style: { marginTop: '8px' } }, el('button', { onclick: push }, 'Save now'),
-              backup ? el('button', { class: 'mini', onclick: () => { if (confirm('Replace your saved data with what this browser had before you logged in?')) A.restoreBackup(); } }, 'Restore this browser’s old data') : null)))];
+        el('section', { class: 'accthero' },
+          el('div', { class: 'acctside' },
+            me.avatar ? el('img', { class: 'acctav', src: me.avatar, alt: '' }) : el('span', { class: 'acctnone big' }, (me.name || '?')[0]),
+            el('div', { class: 'acctwho' }, el('small', { class: 'eyebrow' }, 'Discord'), el('h2', {}, me.name), el('span', { class: 'muted' }, '@' + me.username),
+              el('button', { class: 'mini', onclick: A.logout }, 'Log out'))),
+          el('div', { class: 'acctside' }, ...(l
+            ? [el('img', { class: 'acctskin', src: `https://mc-heads.net/head/${l.uuid}/120`, alt: '' }),
+              el('div', { class: 'acctwho' }, el('small', { class: 'eyebrow' }, 'Wynncraft'), el('h2', {}, l.name), el('span', { class: 'muted' }, 'Linked: your profile shows the Discord badge'),
+                el('div', { class: 'acctbtns' },
+                  el('a', { class: 'btnlink', href: '#players/lookup?u=' + encodeURIComponent(l.name) }, 'Open my profile'),
+                  el('a', { class: 'btnlink alt', href: '#players/plan?u=' + encodeURIComponent(l.name) }, 'My next steps'),
+                  el('button', { class: 'mini', onclick: unlink }, 'Unlink')), msg)]
+            : [el('div', { class: 'acctwho' }, el('small', { class: 'eyebrow' }, 'Wynncraft'), el('h2', {}, 'Not linked yet'),
+              el('span', { class: 'muted' }, 'Link your username to open your profile in one click, get the Discord badge on it, and use /me in the bot.'),
+              el('div', { class: 'acctrow' }, name, el('button', { onclick: doLink }, 'Link')), msg)]))),
+        W.win('Saved to your account',
+          el('div', { class: 'acctstatus' },
+            el('span', { class: 'dot ' + (saving ? (A.status === 'Saving…' ? 'busy' : 'bad') : s.at ? 'ok' : '') }),
+            el('span', {}, saving ? A.status : when ? `Everything is saved to your account. Last saved ${when}.` : 'Nothing saved yet.'),
+            el('button', { class: 'mini', onclick: push }, 'Save now')),
+          el('div', { class: 'acctsync' }, SYNCED.map(([k, label, icon]) => {
+            const c = describe(k);
+            return el('div', { class: 'acctitem' + (c ? '' : ' off') }, el('img', { src: `img/items/${icon}.webp`, alt: '' }),
+              el('div', {}, el('b', {}, label), el('small', {}, c || 'Nothing yet')));
+          })),
+          backup ? el('p', { class: 'hint' }, 'This browser had its own data before you logged in. ',
+            el('a', { href: '#home/account', onclick: (e) => { e.preventDefault(); if (confirm('Replace your saved data with what this browser had before you logged in?')) A.restoreBackup(); } }, 'Use that instead')) : null)];
     }
   };
+
+  /* a short line about what each saved thing holds, or null when it's empty */
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : many || one + 's'}`;
+  function describe(k) {
+    const v = ls.json(k, null);
+    if (v == null || (Array.isArray(v) && !v.length)) return null;
+    switch (k) {
+      case 'wynnia.builds': return plural(v.length, 'build');
+      case 'wt.loadout2': { const n = Object.values(v.s || {}).filter(Boolean).length; return n ? plural(n, 'gear slot') + ' filled' : null; }
+      case 'stableLedger.v1': return [(v.mounts || []).length && plural(v.mounts.length, 'mount'), (v.ledger || []).length && plural(v.ledger.length, 'ledger entry', 'ledger entries')].filter(Boolean).join(', ') || null;
+      case 'wt.market': return plural((v.rows || []).length, 'listing');
+      case 'wynnia.watch': return plural(v.length, 'item') + ' watched';
+      case 'wt.watch': return plural(v.length, 'player');
+      case 'wt.timers': return plural(v.length, 'timer');
+      case 'wt.compare': return plural(v.length, 'item');
+      case 'wt.theme': return W.cap(ls.get(k));
+      default: return 'Saved';
+    }
+  }
 
   /* is this Wynncraft account linked to a Discord account (for the profile badge); asked once per page load */
   const linkedCache = {};
