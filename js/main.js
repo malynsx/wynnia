@@ -2,7 +2,7 @@
   const { el } = W;
   const mountIcon = () => W.art.ui('flute');
   W.SECTIONS = [
-    { k: 'home', name: 'Home', icon: () => W.art.wiki('emeraldicon'), pages: [['home', 'Home'], ['api', 'API']] },
+    { k: 'home', name: 'Home', icon: () => W.art.wiki('emeraldicon'), pages: [['home', 'Home'], ['account', 'Account'], ['api', 'API']] },
     { k: 'mounts', name: 'Mounts', icon: mountIcon, pages: [
       ['stable', 'Stable'], ['feeder', 'Feeder'], ['pairs', 'Pair Finder'], ['lineage', 'Lineage'], ['cookbook', 'Cookbook'],
       ['training', 'Training'], ['timers', 'Timers'], ['market', 'Market'], ['want', 'Wanted'], ['ledger', 'Ledger'], ['almanac', 'Almanac']] },

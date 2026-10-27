@@ -31,6 +31,9 @@
     const draw = () => root.replaceChildren(el('div', { class: 'stack' }, lookup(), profile(), showcase()));
 
     if (q && q.get('u') && !P.name) P.name = q.get('u');
+    /* logged in with a linked account: an empty lookup opens your own profile */
+    const mine = W.account && W.account.me();
+    if (!(q && q.get('u')) && !P.name && mine && mine.linked) { P.name = mine.linked.name; setTimeout(() => find(P.name), 0); }
     if (q && q.get('d') && !P.text) { try { P.text = b64.dec(q.get('d')).t || ''; } catch (e) { /* bad link */ } }
     if (q && q.get('u') && !P.data && !P.loading && !P.err) setTimeout(() => find(P.name), 0);
 

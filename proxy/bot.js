@@ -10,10 +10,14 @@
      DISCORD_TOKEN       secret  Bot > Reset Token
      REGISTER_KEY        secret  any password you make up; opening /register?key=<it> (re)creates the slash commands
      ACCOUNTS            KV      (Bindings > KV namespace) where /link remembers whose username is whose
+     DISCORD_CLIENT_SECRET secret OAuth2 > Client Secret, for "Log in with Discord" on the site
    and a service binding (Settings > Bindings > Service binding) named RELAY to the relay worker: Cloudflare won't let
    one worker fetch another on the same workers.dev address, so short links and prices go through that binding.
+   For the site's login, add <this worker>/auth/callback under OAuth2 > Redirects in the Discord developer portal.
 
-   Routes: POST /interactions (set as the Interactions Endpoint URL), GET /register?key=… */
+   Routes: POST /interactions (set as the Interactions Endpoint URL), GET /register?key=…,
+   GET /auth/login and /auth/callback (Discord login for the site), /api/me, /api/link, /api/save (signed in),
+   GET /api/linked?uuid=… (public: is this Wynncraft account linked to a Discord account). */
 const SITE = 'https://malynsx.github.io/wynnia/';
 const RELAY = 'https://api-wynntools.connormaltren.workers.dev';
 const WYNN = 'https://api.wynncraft.com/v3/';
@@ -38,6 +42,105 @@ const COMMANDS = [
 
 /* ---------- helpers ---------- */
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'Content-Type': 'application/json' } });
+
+/* a link is stored both ways: acct:<discord id> → the Wynncraft account, wynn:<uuid> → the Discord id (for the site's badge) */
+async function setLink(env, uid, d) {
+  await clearLink(env, uid);
+  await env.ACCOUNTS.put('acct:' + uid, JSON.stringify({ name: d.username, uuid: d.uuid, at: Date.now() }));
+  if (d.uuid) await env.ACCOUNTS.put('wynn:' + d.uuid, uid);
+}
+async function clearLink(env, uid) {
+  const had = await env.ACCOUNTS.get('acct:' + uid);
+  if (had) {
+    const u = JSON.parse(had).uuid;
+    if (u && await env.ACCOUNTS.get('wynn:' + u) === uid) await env.ACCOUNTS.delete('wynn:' + u);
+    await env.ACCOUNTS.delete('acct:' + uid);
+  }
+  return had;
+}
+
+/* ---------- the site's "Log in with Discord" and saved data ----------
+   Login is Discord OAuth (scope "identify": the username and avatar only). The worker swaps the code for the user's
+   id, makes a random session token kept 30 days in ACCOUNTS (sess:<token>), and sends it back to the site in the URL
+   fragment, which never reaches a server. The site sends it as "Authorization: Bearer <token>". */
+const SESSION_DAYS = 30, SAVE_LIMIT = 400 * 1024;
+const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Authorization, Content-Type', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS', 'Access-Control-Max-Age': '86400' };
+const cjson = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: Object.assign({ 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, cors) });
+const randomId = (bytes) => [...crypto.getRandomValues(new Uint8Array(bytes))].map(b => b.toString(16).padStart(2, '0')).join('');
+const backTo = (hash) => SITE + (/^#[\w/?=&%.+-]*$/.test(hash || '') ? hash : '#home/account');
+
+async function siteApi(request, env, url, ctx) {
+  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
+  if (!env.ACCOUNTS) return cjson({ error: 'Accounts aren’t set up yet (the bot needs the ACCOUNTS KV namespace).' }, 503);
+  const p = url.pathname;
+
+  if (p === '/auth/login') {
+    if (!env.DISCORD_APP_ID || !env.DISCORD_CLIENT_SECRET) return new Response('Discord login isn’t set up yet (DISCORD_CLIENT_SECRET is missing).', { status: 503 });
+    const state = randomId(16);
+    await env.ACCOUNTS.put('state:' + state, url.searchParams.get('back') || '', { expirationTtl: 600 });
+    const q = new URLSearchParams({ client_id: env.DISCORD_APP_ID, response_type: 'code', scope: 'identify', redirect_uri: url.origin + '/auth/callback', state, prompt: 'none' });
+    return Response.redirect('https://discord.com/oauth2/authorize?' + q, 302);
+  }
+  if (p === '/auth/callback') {
+    const state = url.searchParams.get('state') || '', code = url.searchParams.get('code');
+    const back = await env.ACCOUNTS.get('state:' + state);
+    if (back == null) return new Response('That login link expired. Go back to Wynnia and try again.', { status: 400 });
+    await env.ACCOUNTS.delete('state:' + state);
+    if (!code) return Response.redirect(backTo(back), 302);   // they pressed Cancel on Discord's page
+    const tok = await fetch('https://discord.com/api/v10/oauth2/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ client_id: env.DISCORD_APP_ID, client_secret: env.DISCORD_CLIENT_SECRET, grant_type: 'authorization_code', code, redirect_uri: url.origin + '/auth/callback' }) });
+    if (!tok.ok) return new Response('Discord didn’t accept the login (' + tok.status + '). Go back to Wynnia and try again.', { status: 502 });
+    const { access_token } = await tok.json();
+    const me = await fetch('https://discord.com/api/v10/users/@me', { headers: { Authorization: 'Bearer ' + access_token } });
+    if (!me.ok) return new Response('Couldn’t read your Discord account. Try again.', { status: 502 });
+    const u = await me.json();
+    const session = randomId(32);
+    await env.ACCOUNTS.put('sess:' + session, JSON.stringify({ uid: u.id, name: u.global_name || u.username, username: u.username, avatar: u.avatar }), { expirationTtl: SESSION_DAYS * 86400 });
+    const h = backTo(back);
+    return Response.redirect(h.replace(/#.*$/, '') + '#auth=' + session + '&back=' + encodeURIComponent(h.slice(h.indexOf('#'))), 302);
+  }
+
+  /* public: does this Wynncraft account have a Discord account linked (yes/no only, never who) */
+  if (p === '/api/linked') {
+    const uuid = (url.searchParams.get('uuid') || '').toLowerCase();
+    if (!/^[0-9a-f-]{32,36}$/.test(uuid)) return cjson({ error: 'Give ?uuid=' }, 400);
+    return cjson({ linked: !!(await env.ACCOUNTS.get('wynn:' + uuid)) });
+  }
+
+  const token = (request.headers.get('Authorization') || '').replace(/^Bearer /, '');
+  const raw = /^[0-9a-f]{64}$/.test(token) && await env.ACCOUNTS.get('sess:' + token);
+  if (!raw) return cjson({ error: 'Not logged in.' }, 401);
+  const s = JSON.parse(raw);
+
+  if (p === '/auth/logout') { await env.ACCOUNTS.delete('sess:' + token); return cjson({ ok: true }); }
+  if (p === '/api/me') {
+    const l = await env.ACCOUNTS.get('acct:' + s.uid);
+    return cjson({ id: s.uid, name: s.name, username: s.username, avatar: s.avatar ? `https://cdn.discordapp.com/avatars/${s.uid}/${s.avatar}.png?size=128` : null, linked: l ? JSON.parse(l) : null });
+  }
+  if (p === '/api/link') {
+    if (request.method === 'DELETE') { await clearLink(env, s.uid); return cjson({ linked: null }); }
+    if (request.method !== 'POST') return cjson({ error: 'POST or DELETE' }, 405);
+    const name = String(((await request.json().catch(() => ({}))).name) || '').trim();
+    if (!/^\w{1,16}$/.test(name)) return cjson({ error: 'That isn’t a Minecraft username.' }, 400);
+    let d;
+    try { d = await getJSON(`${WYNN}player/${encodeURIComponent(name)}`, 120, { env, waitUntil: (x) => ctx.waitUntil(x) }); } catch (e) { return cjson({ error: e.status === 404 ? `No player called “${name}”.` : 'The Wynncraft API didn’t answer. Try again in a moment.' }, e.status === 404 ? 404 : 502); }
+    if (d.multiple || !d.username) return cjson({ error: 'That name matches several players. Use the exact username.' }, 400);
+    await setLink(env, s.uid, d);
+    return cjson({ linked: { name: d.username, uuid: d.uuid } });
+  }
+  if (p === '/api/save') {
+    if (request.method === 'GET') { const v = await env.ACCOUNTS.get('save:' + s.uid); return cjson(v ? JSON.parse(v) : { at: 0, data: null }); }
+    if (request.method !== 'PUT') return cjson({ error: 'GET or PUT' }, 405);
+    const body = await request.text();
+    if (body.length > SAVE_LIMIT) return cjson({ error: 'That’s more than 400 KB of saved data.' }, 413);
+    let data; try { data = JSON.parse(body).data; } catch (e) { return cjson({ error: 'Not JSON.' }, 400); }
+    if (!data || typeof data !== 'object') return cjson({ error: 'Nothing to save.' }, 400);
+    const at = Date.now();
+    await env.ACCOUNTS.put('save:' + s.uid, JSON.stringify({ at, data }));
+    return cjson({ at });
+  }
+  return cjson({ error: 'Not found.' }, 404);
+}
 const hex = (s) => new Uint8Array(s.match(/../g).map(h => parseInt(h, 16)));
 const cap = (s) => String(s || '').charAt(0).toUpperCase() + String(s || '').slice(1).toLowerCase();
 const num = (n) => Math.round(n || 0).toLocaleString('en-US');
@@ -158,14 +261,13 @@ const H = {
     let d;
     try { d = await getJSON(`${WYNN}player/${encodeURIComponent(o.name.trim())}`, 120, ctx); } catch (e) { return { content: e.status === 404 ? `No player called “${o.name}”.` : 'The Wynncraft API didn’t answer. Try again in a moment.' }; }
     if (d.multiple || !d.username) return { content: 'That name matches several players. Use the exact username.' };
-    await ctx.env.ACCOUNTS.put('acct:' + o.__uid, JSON.stringify({ name: d.username, uuid: d.uuid, at: Date.now() }));
+    await setLink(ctx.env, o.__uid, d);
     return { embeds: [embed({ title: `Linked to ${d.username}`, color: 0x55c46a, thumbnail: { url: `https://mc-heads.net/avatar/${d.uuid}/128` },
       description: 'Now `/me` shows your profile, and `/player` without a name looks you up.\nUse `/unlink` to remove it.' })] };
   },
   async unlink(o, ctx) {
     if (!ctx.env.ACCOUNTS) return { content: 'Linking isn’t set up yet: the bot needs a KV namespace bound as ACCOUNTS.' };
-    const had = await ctx.env.ACCOUNTS.get('acct:' + o.__uid);
-    await ctx.env.ACCOUNTS.delete('acct:' + o.__uid);
+    const had = await clearLink(ctx.env, o.__uid);
     return { content: had ? `Unlinked from ${JSON.parse(had).name}.` : 'Your Discord account isn’t linked to anyone.' };
   },
   async me(o, ctx) { return H.player(o, ctx); },
@@ -381,6 +483,8 @@ export default {
       await probe('relay: a short link', '/s/fcDmDsg');
       return new Response('Wynnia bot status\n\n' + lines.join('\n') + '\n', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
     }
+
+    if (/^\/(auth|api)\//.test(url.pathname)) return siteApi(request, env, url, ctx);
 
     if (url.pathname !== '/interactions' || request.method !== 'POST') return new Response('Wynnia Discord bot. Nothing to see here.', { status: 404 });
     const body = await request.text();

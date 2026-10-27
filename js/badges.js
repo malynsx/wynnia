@@ -72,6 +72,19 @@
       tiers: [1, 2, 3, 5, 6], fmt: (v, d) => d.guild ? `${W.cap(String(d.guild.rank).toLowerCase())} of ${d.guild.name}` : 'no guild' },
   ];
 
+  const LINKED = ['#c3c8ff', '#5865f2', '#2a318a'];
+  function linkedBadge() {
+    const node = el('div', { class: 'badge linked' },
+      el('img', { class: 'bgem', src: gem(LINKED), alt: '' }),
+      el('img', { class: 'bicon', src: 'img/items/necklace.basicPearl.webp', alt: '' }));
+    node.style.setProperty('--tc', LINKED[1]); node.style.setProperty('--tl', LINKED[0]); node.style.setProperty('--gemmask', `url("${gem(LINKED)}")`);
+    return W.tip(node, () => el('div', { class: 'badgetip' },
+      el('div', { class: 'tt-name', style: { color: LINKED[0] } }, 'Linked'),
+      el('div', { class: 'tt-sub' }, 'Discord'),
+      el('div', {}, 'This account is linked to a Discord account on Wynnia.'),
+      el('small', {}, 'Link yours with /link in the Wynnia bot, or on Home › Account.')));
+  }
+
   const tierOf = (b, v) => b.tiers.reduce((t, need, i) => (b.low ? v <= need : v >= need) ? i + 1 : t, 0);
 
   W.badges = (d) => {
@@ -98,8 +111,10 @@
           el('div', { class: 'bar' }, el('i', { class: 'bcur', style: { width: Math.max(2, Math.min(100, b.low ? (isFinite(v) ? next / v * 100 : 0) : v / next * 100)) + '%', '--c': 'var(--gold)' } })))
           : el('small', {}, 'Highest tier reached.')));
     };
-    const box = W.win(`Badges · ${earned.length} of ${BADGES.length}`,
-      el('div', { class: 'badgegrid' }, list.map(badge)));
+    const grid = el('div', { class: 'badgegrid' }, list.map(badge));
+    const box = W.win(`Badges · ${earned.length} of ${BADGES.length}`, grid);
+    /* a Discord-blue badge, first in the grid, when the account is linked on Wynnia (bot /link or the site's Account page) */
+    if (d.uuid && W.linkedDiscord) W.linkedDiscord(d.uuid).then(yes => { if (yes) grid.prepend(linkedBadge()); });
     return box;
   };
 })(window.W);
