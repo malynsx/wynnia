@@ -19,6 +19,15 @@
     return blank();
   })();
   const store = () => { try { localStorage.setItem(KEY, JSON.stringify(LB)); } catch (e) { /* storage blocked */ } };
+  /* put one item (with its exact rolls) into the current build, for other pages (the Roll Appraiser) */
+  W.loadoutPut = (item, rolls, powders) => {
+    const slot = item.t === 'ring' ? (!LB.s.r1 ? 'r1' : !LB.s.r2 ? 'r2' : 'r1') : ({ helmet: 'h', chestplate: 'c', leggings: 'l', boots: 'b', bracelet: 'br', necklace: 'n' })[item.t] || (WEAPON_CLASS[item.t] ? 'w' : null);
+    if (!slot) return null;
+    LB.s[slot] = [item.n, rolls || null, powders && powders.length ? powders : null];
+    if (LB.c) delete LB.c[slot];
+    store();
+    return slot;
+  };
 
   /* Spells from ability text: cost, damage % of DPS and its element split, and which spell slot (1st–4th) it is. */
   const GLYPH_EL = { '✣': 'neutral', '✤': 'earth', '✦': 'thunder', '❉': 'water', '✹': 'fire', '❋': 'air' };
@@ -43,6 +52,29 @@
     const unit = count ? count[2].toLowerCase() : every && dur ? `ticks over ${dur[1]}s` : '';
     return { name: W.treePlain(a.name), cost: cost ? +cost[1] : null, total: total ? +total[1] : null, per: total ? total[2].replace(/^,\s*/, '').trim() : '', parts, slot, combo: combo ? combo.join('-') : '', hits, unit,
       perStream: count ? +count[1] : null };
+  };
+
+  /* A damaging tree skill that isn't one of the four spells (Basaltic Trap, Guardian Angels, Bryophyte Roots…):
+     its own "Total Damage: N% (of your DPS, per shot)" line, whether it scales off Main Attack Damage, and how many
+     hits one use makes when the text says ("every 0.4s" for "Duration: 5s", "75 piercing arrows", "2 bows … 10 ammunition"). */
+  W.parseSkill = (a) => {
+    const txt = W.mcHtml(a.description).textContent.replace(/\s+/g, ' ');
+    if (/Click Combo/.test(txt)) return null;
+    const d = /Total Damage:\s*([\d.]+)%\s*\(([^)]*)\)/.exec(txt);
+    if (!d) return null;
+    const line = txt.slice(d.index).split(/[◆➼☀]/)[0];
+    const parts = {};
+    for (const m of line.matchAll(/\(([✣✤✦❉✹❋])\s*\w+:\s*([\d.]+)%\)/g)) parts[GLYPH_EL[m[1]]] = (parts[GLYPH_EL[m[1]]] || 0) + +m[2];
+    if (!Object.keys(parts).length) parts.neutral = +d[1];
+    const per = (/per ([\w% ]+?)(?:,|$)/.exec(d[2]) || [])[1] || '';
+    let hits = null, how = '';
+    const every = /every ([\d.]+)s/.exec(txt), dur = /Duration:\s*([\d.]+)s/.exec(txt);
+    const count = /(?<!every )\b(\d+) (?:piercing |smaller |homing )?(arrows|shrapnel|waves|bolts|bombs|tentacles)\b/i.exec(txt);   // not "for every 16 arrows"
+    const ammo = /(\d+) sentient \w+.*?(\d+) ammunition/i.exec(txt);
+    if (ammo) { hits = +ammo[1] * +ammo[2]; how = `${ammo[1]} × ${ammo[2]} shots`; }
+    else if (count && /per /.test(d[2])) { hits = +count[1]; how = `${count[1]} ${count[2].toLowerCase()}`; }
+    else if (every && dur) { hits = Math.round(+dur[1] / +every[1]); how = `every ${every[1]}s for ${dur[1]}s`; }
+    return { name: W.treePlain(a.name), total: +d[1], parts, per: per ? 'per ' + per : '', melee: /Main Attack Damage/.test(d[2]), hits, how, perStream: null, unit: how, cost: null };
   };
 
   /* A spell with the unlocked tree upgrades that change it applied: signed damage changes ("-20% per arrow"),
@@ -196,6 +228,17 @@
           hp: r ? Math.round(r.hp) : null, ehp: r ? Math.round(r.ehpAgi) : null, dps: r && r.melee ? Math.round(r.melee.dps) : null,
           spell: sum && sum.best ? sum.best.name : null, spellDmg: best != null ? Math.round(best) : null };
       };
+      /* the picture for "Copy card": weapon, build name, the headline numbers and the gear */
+      const buildCard = () => {
+        const s = snapshot(), w = piece('w'), sum = summary();
+        const col = (it) => it.r === 'mythic' ? '#cf5ce8' : W.tierColor(it.r);
+        return { accent: w ? col(w.item) : '#ffd65a', title: LB.name || `${s.arch || W.cap(s.cls || 'Custom')} build`,
+          subtitle: [W.cap(s.cls || ''), s.arch, 'Level ' + s.lvl].filter(Boolean).join(' · '),
+          art: w ? 'img/items/' + w.item.ic : null, artLabel: w ? w.item.n : 'No weapon',
+          tiles: [['Health', fmt(s.hp || 0)], ['EHP with dodge', fmt(s.ehp || 0)], ['Main attack DPS', fmt(s.dps || 0)],
+            [s.spell ? s.spell + ' per cast' : 'Best spell', fmt(s.spellDmg || 0)], ['Mana / s', sum ? W.num(sum.fighting, 1) : '—'], ['Elements', (s.elems || []).map(W.cap).join(', ') || 'Neutral']],
+          gear: EQUIP.filter(([k]) => k !== 'w').map(([k]) => { const p = piece(k); return p ? { ic: p.item.ic, color: col(p.item) } : { ic: null, color: '#3d3833' }; }) };
+      };
       const saveToLibrary = (btn) => {
         const e = W.builds.save({ id: LB.lib && W.builds.get(LB.lib) ? LB.lib : undefined, name: LB.name || '', tags: LB.tags || [], notes: LB.notes || '', code: code(), cr: LB.c && Object.keys(LB.c).length ? LB.c : undefined, snap: snapshot() });
         LB.lib = e.id; store();
@@ -222,7 +265,7 @@
             el('button', { onclick: (e) => saveToLibrary(e.target) }, LB.lib && W.builds.get(LB.lib) ? 'Update in library' : 'Save to library')),
           el('p', { class: 'hint' }, 'Class, archetype and main elements are tagged for you. ', el('a', { href: '#items/builds' }, 'Open your build library'), '.'),
           el('div', { class: 'cap left' }, 'Share this build'),
-          el('div', { class: 'search' }, box, el('button', { onclick: (e) => W.copyShort(shareLink(), e.target, box) }, 'Copy link')),
+          el('div', { class: 'search' }, box, el('button', { onclick: (e) => W.copyShort(shareLink(), e.target, box) }, 'Copy link'), W.cardButton(buildCard, (LB.name || 'build') + '-wynnia')),
           el('p', { class: 'hint' }, 'Copy link makes a short link that keeps every item, exact roll, powder, tome, skill point and ability.'),
           buildValue(),
           el('div', { class: 'btns' }, el('a', { class: 'btnlink', href: '#items/recommend' + (LB.u ? '?u=' + encodeURIComponent(LB.u) : '') }, 'Recommended build'),
@@ -486,6 +529,7 @@
               el('div', { class: 'sv' }, el('b', {}, !hit ? '—' : sp.hits > 1 ? fmt(hit.expected) : ''), el('small', {}, !hit ? 'no damage' : sp.hits > 1 ? (sp.per || 'per hit') : 'single hit')),
               el('div', { class: 'sv total' }, el('b', {}, hit ? fmt(hit.expected * sp.hits) : '—'), el('small', {}, !hit ? '' : sp.hits > 1 ? `per cast · ${sp.hits} ${sp.unit}` : 'per cast')));
           }),
+          skillsBlock(res),
           el('p', { class: 'hint' }, 'Worked out the way WynnBuilder models the game. Unlocked tree upgrades that change a spell’s damage, mana cost or arrow/hit count are included (listed under each spell), and element masteries add their damage. Bonuses that stack in a fight (like Feedback Loop) count the stacks you set. “Per cast” assumes every arrow or hit lands on one target; crits are averaged in.')) :
           W.win('Damage', el('p', { class: 'empty' }, 'Add a weapon to see damage.'));
 
@@ -531,7 +575,12 @@
           s.next && (Object.keys(s.bonus).length || s.major.length) ? el('small', { class: 'hint' }, `A bigger bonus comes at ${s.next} pieces.`) : null,
           el('small', { class: 'setparts' }, 'Pieces: ' + s.parts.join(', '))))),
           el('p', { class: 'hint' }, 'Set bonuses are included in health, defence, damage, mana and skill points. Their skill points aren’t used to meet the gear’s requirements here, so the points this page asks for are enough without the set.')) : null;
-        return { res, spWin, defWin, dmgWin, manaWin, idWin, setWin, fighting, best: dmgSpells[0] };
+        /* every unlocked spell you can cast, with its mana cost and damage per cast, for the rotation simulator */
+        const castable = spells.filter(sp => sp.on && sp.slot && sp.cost != null).map(sp => {
+          const hit = sp.total && res.melee ? res.melee.spell(Object.keys(sp.parts).length ? sp.parts : { neutral: sp.total }).expected * sp.hits : 0;
+          return { name: sp.name, slot: sp.slot, cost: res.spellCost(sp.slot, sp.cost), dmg: hit };
+        }).sort((a, b) => a.slot - b.slot);
+        return { res, spWin, defWin, dmgWin, manaWin, idWin, setWin, fighting, idle, castable, best: dmgSpells[0] };
       }
 
       /* ---------- upgrade finder ---------- */
@@ -627,6 +676,90 @@
           body);
       }
 
+      /* ---------- rotation simulator ---------- */
+      /* Cast a sequence of spells over and over for N seconds, starting with a full mana bar and regaining mana at the
+         fighting rate (Mana Regen, Mana Steal, natural regen). When a spell costs more than you have, main attacks fill
+         the gap until it's affordable (or you wait, if that's switched off). Damage per cast is the Damage tab's. */
+      function rotationWin() {
+        const sum = summary();
+        if (!sum || !sum.res.melee) return W.win('Rotation', el('p', { class: 'empty' }, 'Put a weapon on first.'));
+        const casts = sum.castable;
+        if (!casts.length) return W.win('Rotation', el('p', { class: 'empty' }, 'Unlock some spells in the Ability tree tab first.'));
+        const R = LB.rot = Object.assign({ seq: [], secs: 30, cast: 0.6, filler: true }, LB.rot);
+        R.seq = R.seq.filter(n => casts.some(c => c.name === n));
+        if (!R.seq.length) R.seq = [(casts.slice().sort((a, b) => b.dmg / b.cost - a.dmg / a.cost)[0] || casts[0]).name];
+        const save = () => { store(); draw(); };
+        const byName = Object.fromEntries(casts.map(c => [c.name, c]));
+        const res = sum.res, regen = sum.fighting, hitTime = 1 / res.melee.hits;
+
+        /* the simulation, in small time steps */
+        let t = 0, mana = res.mana, dmg = 0, i = 0, melee = 0, waited = 0;
+        const done = {}, trace = [[0, mana, 0]];
+        while (t < R.secs) {
+          const c = byName[R.seq[i % R.seq.length]];
+          if (mana >= c.cost) {
+            mana -= c.cost; dmg += c.dmg; done[c.name] = (done[c.name] || 0) + 1;
+            t += R.cast; mana = Math.min(res.mana, mana + regen * R.cast); i++;
+          } else if (R.filler) {
+            dmg += res.melee.expected; melee++; t += hitTime; mana = Math.min(res.mana, mana + regen * hitTime);
+          } else {
+            const wait = Math.min(R.secs - t, (c.cost - mana) / Math.max(0.01, regen)); t += wait; waited += wait; mana += regen * wait;
+          }
+          trace.push([Math.min(t, R.secs), mana, dmg]);
+        }
+        /* chart: damage climbing, mana underneath */
+        const Wd = 600, Hh = 150, X = (x) => x / R.secs * Wd, maxD = Math.max(1, dmg);
+        const svg = `<svg viewBox="0 0 ${Wd} ${Hh}" preserveAspectRatio="none" role="img" aria-label="Damage and mana over the rotation">` +
+          `<polyline class="rmana" fill="none" points="${trace.map(([x, m]) => `${X(x)},${Hh - m / res.mana * (Hh - 6) - 3}`).join(' ')}"/>` +
+          `<polyline class="rdmg" fill="none" points="${trace.map(([x, , d]) => `${X(x)},${Hh - d / maxD * (Hh - 6) - 3}`).join(' ')}"/></svg>`;
+        const chart = el('div', { class: 'rchart' }); chart.innerHTML = svg;
+        return W.win('Rotation',
+          el('div', { class: 'uptools rtools' },
+            el('label', {}, 'Fight length', W.sel([[10, '10 seconds'], [30, '30 seconds'], [60, '1 minute'], [120, '2 minutes']], R.secs, (v) => { R.secs = +v; save(); })),
+            el('label', {}, 'Seconds per cast', W.numIn(R.cast, (v) => { R.cast = Math.max(0.2, Math.min(3, v)); save(); }, 0.2, 3, 0.1)),
+            el('label', { class: 'check' }, el('input', { type: 'checkbox', checked: R.filler, onchange: (e) => { R.filler = e.target.checked; save(); } }), 'Main attack while out of mana')),
+          el('div', { class: 'cap left' }, 'Your rotation (click to remove)'),
+          el('div', { class: 'rseq' }, R.seq.map((n, k) => el('button', { class: 'rstep', title: 'Remove', onclick: () => { R.seq.splice(k, 1); save(); } }, el('small', {}, k + 1), n))),
+          el('div', { class: 'rsadd' }, casts.map(c => el('button', { class: 'mini', onclick: () => { R.seq.push(c.name); save(); } }, `+ ${c.name}`, el('small', {}, ` ${c.cost} mana`)))),
+          el('div', { class: 'bigstats' },
+            el('div', {}, el('b', {}, fmt(dmg)), el('span', {}, `Damage in ${R.secs}s`)),
+            el('div', {}, el('b', {}, fmt(dmg / R.secs)), el('span', {}, 'Damage per second')),
+            el('div', {}, el('b', {}, R.filler ? melee : W.num(waited, 1) + 's'), el('span', {}, R.filler ? 'Main attacks to refill' : 'Spent waiting for mana'))),
+          chart,
+          el('div', { class: 'slegend' }, el('span', {}, el('i', { class: 'lg rd' }), 'Damage so far'), el('span', {}, el('i', { class: 'lg rm' }), 'Mana')),
+          el('div', { class: 'kv', style: { marginTop: '10px' } }, Object.entries(done).map(([n, k]) => el('div', {}, el('span', {}, n), el('b', {}, `${k} casts · ${fmt(byName[n].dmg * k)}`)))),
+          el('p', { class: 'hint' }, `Starts with a full bar (${res.mana} mana) and regains ${W.num(regen, 1)} mana a second while fighting. Every hit is assumed to land on one target, crits averaged in; stacking bonuses use the stacks set in the Damage tab.`));
+      }
+
+      /* ---------- archetype skills ---------- */
+      /* Pick an archetype (it starts on the one you've unlocked most of) and see what each of its damaging skills
+         does per hit and per use, with the tree upgrades you've unlocked. Skills of no archetype show when unlocked. */
+      function skillsBlock(res) {
+        if (!T || T.cls !== cls() || !res.melee) return null;
+        const detected = (() => { const nm = archetype(); const a = nm && T.archetypes.find(x => x.name === nm); return a ? a.key : T.archetypes[0].key; })();
+        const pick = LB.arch && T.archetypes.some(a => a.key === LB.arch) ? LB.arch : detected;
+        const list = Object.entries(T.abilities).map(([id, a]) => {
+          if (a._arch ? a._arch !== pick : !LB.t.includes(id)) return null;
+          const sk = W.parseSkill(a); if (!sk) return null;
+          const on = LB.t.includes(id);
+          const s = on ? W.treeSpell(Object.assign({}, sk, { hits: sk.hits || 1 }), id, T, LB.t, LB.stacks || {}) : Object.assign({}, sk);
+          if (sk.hits == null) s.hits = null;   // the text doesn't say how many times it hits
+          const hit = (sk.melee ? res.melee.attack : res.melee.spell)(Object.keys(s.parts).length ? s.parts : { neutral: sk.total });
+          return { id, on, s, hit, req: (T.abilities[id].archetypeMin || 0) };
+        }).filter(Boolean).sort((a, b) => (b.on ? 1 : 0) - (a.on ? 1 : 0) || b.hit.expected - a.hit.expected);
+        const archName = (k) => (T.archetypes.find(a => a.key === k) || {}).name;
+        return el('div', { class: 'skills' },
+          el('div', { class: 'cap left skillhead' }, 'Archetype skills',
+            W.sel(T.archetypes.map(a => [a.key, a.name + (a.key === detected ? ' (yours)' : '')]), pick, (v) => { LB.arch = v; store(); draw(); })),
+          list.length ? list.map(({ on, s, hit }) => el('div', { class: 'spell' + (on ? '' : ' off') },
+            el('div', {}, el('b', {}, s.name), el('small', {}, [s.melee ? 'scales with Main Attack Damage' : null, on ? null : 'not unlocked'].filter(Boolean).join(' · ') || archName(pick)),
+              on && s.applied && s.applied.length ? el('small', { class: 'spup' }, 'With ' + s.applied.join(', ')) : null),
+            el('div', { class: 'sv' }, el('b', {}, W.num(Object.values(s.parts).reduce((a, b) => a + b, 0), 0) + '%'), el('small', {}, s.melee ? 'of main attack' : 'of your DPS')),
+            el('div', { class: 'sv' }, el('b', {}, fmt(hit.expected)), el('small', {}, s.per || 'per hit')),
+            el('div', { class: 'sv total' }, el('b', {}, s.hits ? fmt(hit.expected * s.hits) : '—'), el('small', {}, s.hits ? `per use · ${s.hits} hits${s.how ? ` (${s.how})` : ''}` : 'per use: depends on the fight'))))
+            : el('p', { class: 'empty' }, `No damaging ${archName(pick)} skills found in the tree text.`));
+      }
+
       function treeWin() {
         const c = cls();
         if (!c) return W.win('Ability tree', el('p', { class: 'empty' }, 'Pick a weapon (or a class) to plan the ability tree.'));
@@ -640,7 +773,7 @@
       const GHOST = { h: 'helmet.pale_iron', c: 'chestplate.pale_iron', l: 'leggings.pale_iron', b: 'boots.pale_iron', r1: 'ring.basicIron', r2: 'ring.basicIron',
         br: 'bracelet.basicIron', n: 'necklace.basicIron', w: 'bow.basicWood', armour_tome: 'tome.armour', weapon_tome: 'tome.weapon', marathon_tome: 'tome.movement',
         expertise_tome: 'tome.utility', mysticism_tome: 'tome.mana', lootrun_tome: 'tome.lootrun', guild_tome: 'tome.guild' };
-      const TAB_LIST = [['stats', 'Stats'], ['damage', 'Damage'], ['mana', 'Mana'], ['sp', 'Skill points'], ['tree', 'Ability tree'], ['upgrades', 'Upgrades']];
+      const TAB_LIST = [['stats', 'Stats'], ['damage', 'Damage'], ['mana', 'Mana'], ['sp', 'Skill points'], ['tree', 'Ability tree'], ['rotation', 'Rotation'], ['upgrades', 'Upgrades']];
 
       /* one square slot: rarity-coloured frame, the item, powder pips, roll quality when exact */
       function invSlot(k, label, big) {
@@ -696,7 +829,7 @@
 
       function side() {
         const sum = summary();
-        const body = tab === 'tree' ? treeWin() : tab === 'upgrades' ? upgradesWin()
+        const body = tab === 'tree' ? treeWin() : tab === 'upgrades' ? upgradesWin() : tab === 'rotation' ? rotationWin()
           : !sum ? W.win('Nothing to show yet', el('p', { class: 'empty' }, 'Add some gear to see the numbers.'))
           : tab === 'damage' ? sum.dmgWin : tab === 'mana' ? sum.manaWin : tab === 'sp' ? sum.spWin
           : el('div', { class: 'stack' }, sum.setWin, sum.defWin, sum.idWin);

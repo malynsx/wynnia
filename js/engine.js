@@ -189,6 +189,8 @@
       melee = { ...hit, hits, speed: speedKey, dps: hit.expected * hits, critChance, baseDps: baseAvg * hits };
       /* a spell part: { neutral: %, fire: %, ... } from the ability text */
       melee.spell = (parts) => damage(parts, 'spell', true);
+      /* a % of Main Attack Damage (Twain's Arc, Arsenal Synergy's flints): main attack scaling, no attack speed */
+      melee.attack = (parts) => damage(parts, 'mainAttack', false);
     }
     const intCost = scale(finalSP[2]) * 0.5 / 80.8;
     const spellCost = (n, baseCost) => {

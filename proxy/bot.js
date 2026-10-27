@@ -9,6 +9,7 @@
      DISCORD_APP_ID      text    General Information > Application ID
      DISCORD_TOKEN       secret  Bot > Reset Token
      REGISTER_KEY        secret  any password you make up; opening /register?key=<it> (re)creates the slash commands
+     ACCOUNTS            KV      (Bindings > KV namespace) where /link remembers whose username is whose
    and a service binding (Settings > Bindings > Service binding) named RELAY to the relay worker: Cloudflare won't let
    one worker fetch another on the same workers.dev address, so short links and prices go through that binding.
 
@@ -25,7 +26,10 @@ const TIER = { normal: 0xffffff, unique: 0xffff55, rare: 0xff55ff, legendary: 0x
 const COMMANDS = [
   { name: 'item', description: 'An item’s stats and trade market price', options: [{ type: 3, name: 'name', description: 'Item name', required: true, autocomplete: true }] },
   { name: 'price', description: 'Trade market price of an item', options: [{ type: 3, name: 'item', description: 'Item name', required: true, autocomplete: true }] },
-  { name: 'player', description: 'A player’s characters, guild and status', options: [{ type: 3, name: 'name', description: 'Username', required: true }] },
+  { name: 'player', description: 'A player’s characters, guild and status', options: [{ type: 3, name: 'name', description: 'Username (leave empty for your linked account)', required: false }] },
+  { name: 'me', description: 'Your own profile (link your account first with /link)' },
+  { name: 'link', description: 'Link your Discord account to your Wynncraft username', options: [{ type: 3, name: 'name', description: 'Your Wynncraft username', required: true }] },
+  { name: 'unlink', description: 'Remove the link between your Discord account and your Wynncraft username' },
   { name: 'guild', description: 'A guild: raiding or war guild, members, territories, season', options: [{ type: 3, name: 'name', description: 'Guild name or tag', required: true }] },
   { name: 'build', description: 'Show a Wynnia build link: gear, level and a link to open it', options: [{ type: 3, name: 'link', description: 'A Wynnia build link (malynsx.github.io/wynnia/#s/…)', required: true }] },
   { name: 'lootpool', description: 'This week’s mythics in each lootrun camp and raid', options: [{ type: 3, name: 'where', description: 'Only this camp or raid', required: false, autocomplete: true }] },
@@ -148,7 +152,30 @@ const H = {
       components: buttons(link('Price history and alerts', `${SITE}#items/prices?i=${encodeURIComponent(it.n)}`)) };
   },
 
+  /* account linking: your Discord account remembers one Wynncraft username (in the ACCOUNTS KV namespace) */
+  async link(o, ctx) {
+    if (!ctx.env.ACCOUNTS) return { content: 'Linking isn’t set up yet: the bot needs a KV namespace bound as ACCOUNTS.' };
+    let d;
+    try { d = await getJSON(`${WYNN}player/${encodeURIComponent(o.name.trim())}`, 120, ctx); } catch (e) { return { content: e.status === 404 ? `No player called “${o.name}”.` : 'The Wynncraft API didn’t answer. Try again in a moment.' }; }
+    if (d.multiple || !d.username) return { content: 'That name matches several players. Use the exact username.' };
+    await ctx.env.ACCOUNTS.put('acct:' + o.__uid, JSON.stringify({ name: d.username, uuid: d.uuid, at: Date.now() }));
+    return { embeds: [embed({ title: `Linked to ${d.username}`, color: 0x55c46a, thumbnail: { url: `https://mc-heads.net/avatar/${d.uuid}/128` },
+      description: 'Now `/me` shows your profile, and `/player` without a name looks you up.\nUse `/unlink` to remove it.' })] };
+  },
+  async unlink(o, ctx) {
+    if (!ctx.env.ACCOUNTS) return { content: 'Linking isn’t set up yet: the bot needs a KV namespace bound as ACCOUNTS.' };
+    const had = await ctx.env.ACCOUNTS.get('acct:' + o.__uid);
+    await ctx.env.ACCOUNTS.delete('acct:' + o.__uid);
+    return { content: had ? `Unlinked from ${JSON.parse(had).name}.` : 'Your Discord account isn’t linked to anyone.' };
+  },
+  async me(o, ctx) { return H.player(o, ctx); },
+
   async player(o, ctx) {
+    if (!o.name) {
+      const linked = ctx.env.ACCOUNTS && await ctx.env.ACCOUNTS.get('acct:' + o.__uid);
+      if (!linked) return { content: 'Link your account first: `/link name:<your username>`. Or give a name: `/player name:<username>`.' };
+      o.name = JSON.parse(linked).name;
+    }
     let d;
     try { d = await getJSON(`${WYNN}player/${encodeURIComponent(o.name)}?fullResult`, 120, ctx); } catch (e) { return { content: e.status === 404 ? `No player called “${o.name}”.` : 'The Wynncraft API didn’t answer. Try again in a moment.' }; }
     if (d.multiple || !d.username) return { content: 'That name matches several players. Use the exact username.' };
@@ -310,6 +337,7 @@ async function verify(request, body, env) {
 
 async function runCommand(i, env, ctx) {
   const o = Object.fromEntries((i.data.options || []).map(x => [x.name, x.value]));
+  o.__uid = (i.member && i.member.user && i.member.user.id) || (i.user && i.user.id);   // who ran it (servers send member, DMs send user)
   let msg;
   const c = { waitUntil: (p) => ctx.waitUntil(p), env };   // handlers reach the relay binding through c.env
   try { msg = H[i.data.name] ? await H[i.data.name](o, c) : { content: 'Unknown command.' }; }
@@ -360,7 +388,10 @@ export default {
     const i = JSON.parse(body);
     if (i.type === 1) return json({ type: 1 });                                         // Discord checking the endpoint
     if (i.type === 4) return json({ type: 8, data: { choices: await autocomplete(i, ctx).catch(() => []) } });
-    if (i.type === 2) { ctx.waitUntil(runCommand(i, env, ctx)); return json({ type: 5 }); }   // "Wynnia is thinking…", then the answer
+    if (i.type === 2) {   // "Wynnia is thinking…", then the answer; linking answers only to the person who ran it
+      ctx.waitUntil(runCommand(i, env, ctx));
+      return json({ type: 5, data: ['link', 'unlink'].includes(i.data.name) ? { flags: 64 } : undefined });
+    }
     return json({ error: 'unknown interaction' }, 400);
   },
 };

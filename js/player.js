@@ -76,7 +76,15 @@
           el('div', { class: 'herometa' }, status,
             d.guild ? el('a', { class: 'guildchip', href: '#guilds/lookup?g=' + encodeURIComponent(d.guild.name) },
               el('span', { class: 'stars' }, W.rankStars(d.guild.rank)), `${W.cap(String(d.guild.rank || '').toLowerCase())} of ${d.guild.name} [${d.guild.prefix}]`) : null,
-            d.firstJoin ? el('span', {}, 'Joined ' + new Date(d.firstJoin).toLocaleDateString()) : null),
+            d.firstJoin ? el('span', {}, 'Joined ' + new Date(d.firstJoin).toLocaleDateString()) : null,
+            W.cardButton(() => {
+              const STORE = { vip: ['VIP', '#87b85b'], vipplus: ['VIP+', '#6f8fb8'], hero: ['HERO', '#9c7cc4'], heroplus: ['HERO+', '#d16fa6'], champion: ['CHAMPION', '#c9a75e'] }, sr = STORE[d.supportRank];
+              return { accent: sr ? sr[1] : '#ffd65a', title: d.username, art: `https://mc-heads.net/body/${d.uuid}/300`,
+                subtitle: [sr ? sr[0] : null, d.guild ? `${W.cap(String(d.guild.rank || '').toLowerCase())} of ${d.guild.name}` : null].filter(Boolean).join(' · ') || 'Wynncraft player',
+                tiles: [['Playtime', d.playtime != null ? W.num(d.playtime, 0) + ' h' : '—'], ['Total level', gd.totalLevel != null ? gd.totalLevel.toLocaleString() : '—'], ['Quests', gd.completedQuests ?? '—'],
+                  ['Raids', gd.raids ? gd.raids.total : '—'], ['Dungeons', gd.dungeons ? gd.dungeons.total : '—'], ['Wars', gd.wars ?? '—']],
+                lines: chars.slice(0, 3).map(c => [c.nickname || cls(c), `${c.nickname ? cls(c) + ' · ' : ''}Lv. ${c.level ?? '?'}`]) };
+            }, d.username + '-wynnia')),
           el('div', { class: 'herotiles four' },
             tile('Playtime', d.playtime != null ? W.num(d.playtime, 0) + ' h' : null),
             tile('Total level', gd.totalLevel != null ? gd.totalLevel.toLocaleString() : null),
